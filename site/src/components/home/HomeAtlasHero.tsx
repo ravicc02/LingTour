@@ -79,7 +79,7 @@ export function HomeAtlasHero({
   return (
     <section
       ref={scope}
-      className="home-hero relative isolate flex min-h-[100dvh] overflow-hidden border-b border-[var(--line)] bg-[var(--paper-deep)] text-[var(--river-deep)]"
+      className="home-hero relative isolate flex min-h-[100dvh] overflow-hidden bg-[var(--paper-deep)] text-[var(--river-deep)]"
     >
       <div className="absolute inset-0 overflow-hidden bg-[var(--paper-deep)]">
         <img
@@ -91,6 +91,13 @@ export function HomeAtlasHero({
         />
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(236,233,226,0.97)_0%,rgba(236,233,226,0.91)_22%,rgba(236,233,226,0.58)_43%,rgba(236,233,226,0.14)_66%,rgba(236,233,226,0.02)_84%)] max-lg:bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.02)_25%,rgba(236,233,226,0.26)_38%,rgba(236,233,226,0.94)_55%,#ece9e2_70%)]" />
+      {/* Desktop keeps the photo visible to the very bottom edge, so it used to
+          butt straight into the paper background below. Fade the last slice of
+          the image into --paper-deep instead, matching the section that follows. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[22vh] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.28)_44%,rgba(236,233,226,0.74)_76%,#ece9e2_100%)] max-lg:hidden"
+      />
 
       <div className="site-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
         <div data-home-copy className="max-w-[46rem] lg:max-w-[53rem]">

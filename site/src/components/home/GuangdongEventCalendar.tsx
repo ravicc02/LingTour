@@ -136,7 +136,10 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
   return (
     <section className="site-container py-16 sm:py-20 lg:py-40">
       <div className="grid items-start gap-10 lg:grid-cols-[1fr_420px] lg:gap-20">
-        <div className="flex flex-col">
+        {/* The route card is sticky, but it only has as much travel as this
+            column is taller than the card. The extra lg bottom space gives the
+            card a real pin while the month and notes scroll past. */}
+        <div className="flex flex-col lg:pb-56">
           <Reveal>
             <div className="mb-12 flex flex-wrap items-center justify-between gap-6 sm:mb-16">
               <h2 className="font-[family:var(--font-display)] text-4xl leading-[0.94] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl md:text-7xl">

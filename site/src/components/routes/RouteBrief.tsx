@@ -60,7 +60,7 @@ export function RouteBrief({ route }: Props) {
           <div className="relative z-10 order-2 mx-2 -mt-8 min-w-0 max-w-3xl border border-[var(--line)] bg-[var(--background)] p-4 scrapbook-shadow sm:mx-3 sm:-mt-12 sm:p-5 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:border-0 min-[620px]:bg-transparent min-[620px]:p-0 min-[620px]:shadow-none lg:max-w-none">
             <h1
               data-route-brief-title
-              className="max-w-[13ch] text-balance font-[family:var(--font-display)] text-4xl leading-[1] tracking-[-0.04em] text-[var(--river-deep)] sm:text-5xl md:text-6xl xl:text-7xl"
+              className="text-pretty font-[family:var(--font-display)] text-4xl leading-[1.02] tracking-[-0.04em] text-[var(--river-deep)] sm:text-5xl md:text-6xl lg:text-[clamp(2.75rem,4.3vw,4rem)]"
             >
               {route.title}
             </h1>

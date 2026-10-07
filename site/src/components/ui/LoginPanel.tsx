@@ -314,22 +314,12 @@ export function LoginPanel() {
               </label>
             ) : (
               <div className="grid gap-2">
-                <div className="flex items-center justify-between gap-3">
-                  <label
-                    htmlFor="login-password"
-                    className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]"
-                  >
-                    Password
-                  </label>
-                  {isLogin ? (
-                    <Link
-                      href="/forgot-password"
-                      className="-my-2 inline-flex min-h-11 items-center text-sm font-semibold text-[var(--river-deep)] underline decoration-[var(--line)] underline-offset-4 transition-colors hover:text-[var(--cinnabar)]"
-                    >
-                      Forgot password?
-                    </Link>
-                  ) : null}
-                </div>
+                <label
+                  htmlFor="login-password"
+                  className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]"
+                >
+                  Password
+                </label>
                 <span className="relative block">
                   <input
                     id="login-password"
@@ -409,21 +399,34 @@ export function LoginPanel() {
               </button>
             ) : null}
 
-            <p className="pt-1 text-sm text-[var(--muted)]">
-              {isLogin ? "New to Culvoy?" : "Already have an account?"}{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setMode(isLogin ? "signup" : "login");
-                  setSignInMethod(isLogin ? "code" : "password");
-                  setCodeSent(false);
-                  setDevCode(null);
-                  setError(null);
-                }}
-                className="min-h-11 px-1 font-semibold text-[var(--cinnabar)] underline decoration-[var(--cinnabar)]/45 underline-offset-4"
-              >
-                {isLogin ? "Create account" : "Log in"}
-              </button>
+            {/* Both rows use the same 44px inline-flex box so the two links sit on
+                one baseline instead of drifting apart, and both share the same
+                hover treatment (the switch action used to be red-only). */}
+            <p className="flex flex-wrap items-center gap-x-7 gap-y-0 pt-1 text-sm text-[var(--muted)]">
+              <span className="inline-flex min-h-11 items-center gap-1.5">
+                <span>{isLogin ? "New to Culvoy?" : "Already have an account?"}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode(isLogin ? "signup" : "login");
+                    setSignInMethod(isLogin ? "code" : "password");
+                    setCodeSent(false);
+                    setDevCode(null);
+                    setError(null);
+                  }}
+                  className="inline-flex min-h-11 items-center px-0.5 font-semibold text-[var(--cinnabar)] underline decoration-[var(--cinnabar)]/45 underline-offset-4 transition-colors hover:text-[var(--river-deep)] hover:decoration-[var(--river-deep)]/55"
+                >
+                  {isLogin ? "Create account" : "Log in"}
+                </button>
+              </span>
+              {isLogin ? (
+                <Link
+                  href="/forgot-password"
+                  className="inline-flex min-h-11 items-center px-0.5 font-semibold text-[var(--river-deep)] underline decoration-[var(--line)] underline-offset-4 transition-colors hover:text-[var(--cinnabar)] hover:decoration-[var(--cinnabar)]/55"
+                >
+                  Forgot password?
+                </Link>
+              ) : null}
             </p>
           </form>
         </div>

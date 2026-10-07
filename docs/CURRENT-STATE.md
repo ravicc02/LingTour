@@ -1,5 +1,30 @@
 # Culvoy Current State
 
+## Browser Comment Fixes - 2026-10-07 (Uncommitted)
+
+- Root branch remains `main`, six local commits ahead of `origin/main`; the
+  independent admin repository is unchanged. Current uncommitted site files:
+  `site/src/app/culture/[slug]/CultureDetailClient.tsx`,
+  `site/src/components/home/GuangdongEventCalendar.tsx`,
+  `site/src/components/home/HomeAtlasHero.tsx`,
+  `site/src/components/home/HomeVideoChapter.tsx`, and
+  `site/src/test/culture-detail.test.tsx`.
+- Culture detail mastheads now use a persistent `Opening field media` label
+  above the framed primary image, matching the route-detail composition. Every
+  published city now receives the same masthead, including fallback-image-only
+  cities such as Chaozhou and Zhanjiang.
+- The home calendar and route card now stay in the same normal document flow;
+  neither side is sticky, so they do not move relative to each other while
+  scrolling. The home hero/video boundary uses a shorter continuous paper fade,
+  and the hero tag row is centered inside a wider desktop hero container.
+- Site TypeScript and targeted ESLint passed; the targeted culture test passed;
+  the Docker site production build passed. Playwright verified static calendar
+  positioning, all three city mastheads, and no horizontal overflow on Home and
+  Culture at 390px.
+- Local Docker site/api/admin are healthy on 3000/8000/5173. No commit, push,
+  deploy, migration, production write, or production browser verification was
+  performed.
+
 ## Local API Review Fixes - 2026-10-03 (Committed 2026-10-07)
 
 - Root base HEAD before this batch: `cf302a6`; independent admin HEAD: `02f8805`,

@@ -1,6 +1,11 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Next.js ships a glibc-linked native swc binary for linux-x64; alpine is musl,
+# so without this shim Next falls back to the wasm compiler and then fails to
+# load next.config.ts. The official alpine image docs require libc6-compat.
+RUN apk add --no-cache libc6-compat
+
 COPY site/package.json site/package-lock.json ./
 RUN npm ci
 

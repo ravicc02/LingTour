@@ -499,6 +499,183 @@ describe('OrdersService PayPal capture', () => {
 });
 
 describe('OrdersService payment completion', () => {
+  it.each([
+    ['pending', 'confirmed'],
+    ['shipped', 'delivered'],
+    ['pending', 'cancelled'],
+  ] as const)('preserves valid %s to %s transitions', async (status, next) => {
+    const order = makeOrder({ status, paymentStatus: 'paid', stockReserved: false });
+    const manager = {
+      findOne: jest.fn().mockResolvedValue(order),
+      save: jest.fn(async (_entity, value) => value),
+    };
+    const service = new OrdersService(
+      { manager: { transaction: (work: any) => work(manager) } } as any,
+      {} as any, paypalConfig as any, {} as any, {} as any, {} as any,
+    );
+    await expect(service.updateStatusAdmin(order.id, next)).resolves.toMatchObject({
+      status: next,
+      paymentStatus: 'paid',
+    });
+  });
+
+  it('ships a paid confirmed order and sends the shipping notification', async () => {
+    const order = makeOrder({
+      status: 'confirmed', paymentStatus: 'paid', guestEmail: 'buyer@example.com',
+    });
+    const manager = {
+      findOne: jest.fn().mockResolvedValue(order),
+      save: jest.fn(async (_entity, value) => value),
+    };
+    const mailer = { sendTemplated: jest.fn().mockResolvedValue(true) };
+    const service = new OrdersService(
+      { manager: { transaction: (work: any) => work(manager) } } as any,
+      {} as any, paypalConfig as any, {} as any, {} as any, mailer as any,
+    );
+    await expect(service.shipOrder(order.id, 'TRACK1')).resolves.toMatchObject({
+      status: 'shipped', trackingNo: 'TRACK1',
+    });
+    expect(mailer.sendTemplated).toHaveBeenCalledWith(
+      'order_shipped', 'buyer@example.com',
+      expect.objectContaining({ trackingNo: 'TRACK1' }), 'en',
+      expect.objectContaining({ resourceId: order.id }),
+    );
+  });
+
+  it('cancels an unpaid reserved order and releases its stock', async () => {
+    const order = makeOrder({
+      stockReserved: true,
+      items: [{ productId: 'p1', quantity: 2 } as any],
+    });
+    const manager = {
+      findOne: jest.fn().mockResolvedValue(order),
+      increment: jest.fn(),
+      save: jest.fn(async (_entity, value) => value),
+    };
+    const service = new OrdersService(
+      { manager: { transaction: (work: any) => work(manager) } } as any,
+      {} as any, paypalConfig as any, {} as any, {} as any, {} as any,
+    );
+    await expect(service.updateStatusAdmin(order.id, 'cancelled')).resolves.toMatchObject({
+      status: 'cancelled', stockReserved: false,
+    });
+    expect(manager.increment).toHaveBeenCalledWith(
+      expect.anything(), { id: 'p1' }, 'stock', 2,
+    );
+  });
+
+  describe('PayPal capture recovery', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it.each([
+      'already-captured', 'lost-response', 'paid-replay', 'refunded-replay',
+      'wrong-amount', 'wrong-currency', 'wrong-binding', 'incomplete',
+    ] as const)(
+      'reconciles a %s capture using verified gateway details',
+      async (scenario) => {
+        const order = makeOrder({
+          orderType: 'shop',
+          paymentMethod: 'paypal',
+          paymentId: scenario === 'paid-replay' || scenario === 'refunded-replay'
+            ? 'cap_1' : 'pp_123',
+          paymentStatus: scenario === 'paid-replay' ? 'paid'
+            : scenario === 'refunded-replay' ? 'refunded' : 'unpaid',
+        });
+        const repository = {
+          findOne: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(order),
+        };
+        const service = new OrdersService(
+          repository as any, {} as any, paypalConfig as any,
+          {} as any, {} as any, {} as any,
+        );
+        const markPaid = jest.spyOn(service, 'markPaid').mockResolvedValue(order);
+        const gateway = {
+          id: 'pp_123', status: 'COMPLETED',
+          purchase_units: [{
+            reference_id: 'LT123', custom_id: 'order-id',
+            payments: { captures: [{
+              id: 'cap_1', status: 'COMPLETED',
+              amount: { currency_code: 'SGD', value: '120.00' },
+            }] },
+          }],
+        };
+        const unit = gateway.purchase_units[0]!;
+        const capture = unit.payments.captures[0]!;
+        if (scenario === 'wrong-amount') capture.amount.value = '1.00';
+        if (scenario === 'wrong-currency') capture.amount.currency_code = 'USD';
+        if (scenario === 'wrong-binding') unit.reference_id = 'another-order';
+        if (scenario === 'incomplete') gateway.status = 'APPROVED';
+        const fetch = jest.spyOn(global, 'fetch').mockImplementation(async (url, options) => {
+          if (String(url).includes('/oauth2/token')) {
+            return { ok: true, json: async () => ({ access_token: 'mock' }) } as Response;
+          }
+          if (options?.method === 'POST') {
+            if (scenario === 'lost-response') throw new Error('Connection reset');
+            return {
+              ok: false,
+              json: async () => ({ details: [{ issue: 'ORDER_ALREADY_CAPTURED' }] }),
+            } as Response;
+          }
+          return { ok: true, json: async () => gateway } as Response;
+        });
+        if (scenario.startsWith('wrong-') || scenario === 'incomplete') {
+          await expect(service.capturePayPalOrder('pp_123')).rejects.toBeInstanceOf(
+            BadRequestException,
+          );
+          expect(markPaid).not.toHaveBeenCalled();
+          return;
+        }
+        await expect(service.capturePayPalOrder('pp_123')).resolves.toBe(order);
+        expect(fetch).toHaveBeenCalledWith(
+          expect.stringContaining('/v2/checkout/orders/pp_123'),
+          expect.objectContaining({ method: 'GET' }),
+        );
+        if (scenario === 'refunded-replay') {
+          expect(markPaid).not.toHaveBeenCalled();
+        } else {
+          expect(markPaid).toHaveBeenCalledWith('LT123', 'cap_1');
+        }
+      },
+    );
+  });
+
+  it.each(['confirmed', 'shipped', 'delivered'] as const)(
+    'rejects generic fulfilment transition to %s',
+    async (next) => {
+      const order = makeOrder({
+        status: next === 'confirmed' ? 'pending' : next === 'shipped' ? 'confirmed' : 'shipped',
+        paymentStatus: 'unpaid',
+      });
+      const manager = {
+        findOne: jest.fn().mockResolvedValue(order),
+        save: jest.fn(),
+      };
+      const service = new OrdersService(
+        { manager: { transaction: (work: any) => work(manager) } } as any,
+        {} as any, paypalConfig as any, {} as any, {} as any, {} as any,
+      );
+      await expect(service.updateStatusAdmin(order.id, next)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(manager.save).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['unpaid', 'paid'] as const)(
+    'requires the dedicated shipping endpoint even for %s orders',
+    async (paymentStatus) => {
+      const order = makeOrder({ status: 'confirmed', paymentStatus });
+      const manager = { findOne: jest.fn().mockResolvedValue(order), save: jest.fn() };
+      const service = new OrdersService(
+        { manager: { transaction: (work: any) => work(manager) } } as any,
+        {} as any, paypalConfig as any, {} as any, {} as any, {} as any,
+      );
+      await expect(service.updateStatusAdmin(order.id, 'shipped')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+    },
+  );
+
   it('does not downgrade a paid order when a late failure event arrives', async () => {
     const order = makeOrder({ paymentStatus: 'paid', status: 'confirmed' });
     const manager = {

@@ -1,5 +1,27 @@
 # Culvoy Current State
 
+## Local API Review Fixes - 2026-10-03 (Uncommitted)
+
+- Root base HEAD: `cf302a6`; independent admin HEAD: `02f8805`, unchanged.
+- Traveler booking ownership now uses a parameterized case-insensitive equality
+  predicate, not `ILIKE`, so email `_` and `%` characters cannot widen access.
+- PayPal capture failures and lost responses fall back to fetching gateway order
+  details. Completion, requested gateway order ID, local binding, currency and
+  amount are validated before reconciliation. Existing capture-ID rows support
+  replay; refunded orders are not moved back to paid. No schema change: the
+  gateway order and capture IDs are still resolved through gateway details.
+- Generic order status changes cannot ship orders; shipping must use the dedicated
+  endpoint and its payment check / notification. Confirming and delivering also
+  require paid status; cancellation and stock release remain available.
+- Regression tests cover ownership predicates, payment recovery/replay and
+  mismatched gateway details, unpaid fulfilment rejection and shipping entry-point
+  enforcement, successful fulfilment, shipping notification and cancellation
+  stock release. API tsc and Nest build passed; all 28 suites / 197 tests passed.
+- Final coverage: traveler bookings 100% lines; orders 72.03% lines
+  (below the 80% target). This is not a complete coverage claim.
+- No commit, push, deploy, migration, real payment, production write, or browser
+  verification was performed. Production/tracker state below remains historical.
+
 > **Live status source — 2026-09-19.** Update this file whenever Git, production, protected WIP, verification, deployment, recovery, or task status changes. [`LINGTOUR-HANDOFF-2026-07-26.md`](archive/LINGTOUR-HANDOFF-2026-07-26.md) and [`PROGRESS-2026-07-26-mobile-and-data-layer.md`](archive/PROGRESS-2026-07-26-mobile-and-data-layer.md) are historical snapshots now stored under [`archive/`](archive/). Stable operating rules live in [`../AGENT.md`](../AGENT.md); team guides in [`development.md`](development.md) and [`release.md`](release.md).
 
 ## 1. Production baseline

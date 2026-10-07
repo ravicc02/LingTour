@@ -434,18 +434,28 @@ export class OrdersService {
     }
 
     const accessToken = await this.getPayPalAccessToken();
-    const response = await fetch(
-      `${this.paypalBaseUrl}/v2/checkout/orders/${encodeURIComponent(paypalOrderId)}/capture`,
-      {
+    const orderUrl = `${this.paypalBaseUrl}/v2/checkout/orders/${encodeURIComponent(paypalOrderId)}`;
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    };
+    let response: Response;
+    try {
+      response = await fetch(`${orderUrl}/capture`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+        headers,
+      });
+    } catch {
+      // The gateway may have captured the payment before the connection failed.
+      response = await fetch(orderUrl, { method: 'GET', headers });
+    }
     if (!response.ok) {
-      throw new BadRequestException('PayPal payment could not be captured');
+      // Includes ORDER_ALREADY_CAPTURED and ambiguous gateway failures.
+      // Only verified COMPLETED details below can update the local order.
+      response = await fetch(orderUrl, { method: 'GET', headers });
+      if (!response.ok) {
+        throw new BadRequestException('PayPal payment could not be captured');
+      }
     }
 
     const data = (await response.json()) as {
@@ -477,8 +487,13 @@ export class OrdersService {
     });
     if (
       !order ||
+      data.id !== paypalOrderId ||
       order.orderNo !== unit.reference_id ||
-      order.paymentId !== data.id
+      (order.paymentId !== data.id &&
+        !(
+          order.paymentId === capture.id &&
+          (order.paymentStatus === 'paid' || order.paymentStatus === 'refunded')
+        ))
     ) {
       throw new BadRequestException(
         'PayPal payment is not linked to this order',
@@ -495,6 +510,7 @@ export class OrdersService {
       );
     }
 
+    if (order.paymentStatus === 'refunded') return order;
     return this.markPaid(order.orderNo, capture.id);
   }
 
@@ -679,6 +695,16 @@ export class OrdersService {
         throw new BadRequestException(
           `Cannot transition from "${order.status}" to "${next}"`,
         );
+      }
+
+      if (next === 'shipped') {
+        throw new BadRequestException('Use the shipping endpoint to ship an order');
+      }
+      if (
+        (next === 'confirmed' || next === 'delivered') &&
+        order.paymentStatus !== 'paid'
+      ) {
+        throw new BadRequestException('Cannot fulfil an order that is not paid');
       }
 
       if (next === 'cancelled') {

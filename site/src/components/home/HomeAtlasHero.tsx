@@ -96,10 +96,10 @@ export function HomeAtlasHero({
           the image into --paper-deep instead, matching the section that follows. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[22vh] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.28)_44%,rgba(236,233,226,0.74)_76%,#ece9e2_100%)] max-lg:hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[32vh] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.24)_42%,rgba(236,233,226,0.72)_76%,#ece9e2_100%)] max-lg:hidden"
       />
 
-      <div className="site-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
+      <div className="site-container home-hero-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
         <div data-home-copy className="max-w-[46rem] lg:max-w-[53rem]">
           <p className="font-mono text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--cinnabar)]">
             {eyebrow}
@@ -122,15 +122,15 @@ export function HomeAtlasHero({
           </div>
         </div>
 
-        <div className="mt-12 grid gap-5 border-t border-[var(--line)] pt-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:bottom-10 lg:left-[var(--space-gutter)] lg:right-[var(--space-gutter)] lg:mt-0 max-lg:mt-8 max-lg:gap-3 max-lg:pt-4">
-          <div className="flex max-w-[95%] flex-wrap gap-x-7 gap-y-2 max-lg:gap-x-5 max-lg:gap-y-1.5">
+        <div className="mt-12 grid gap-5 border-t border-[var(--line)] pt-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:bottom-10 lg:left-[var(--space-gutter)] lg:right-[var(--space-gutter)] lg:mt-0 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center max-lg:mt-8 max-lg:gap-3 max-lg:pt-4">
+          <div className="flex max-w-[95%] flex-wrap gap-x-7 gap-y-2 lg:col-start-2 lg:max-w-none lg:flex-nowrap lg:justify-self-center max-lg:gap-x-5 max-lg:gap-y-1.5">
             {tags.map((label) => (
               <span key={label} className="font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
                 {label}
               </span>
             ))}
           </div>
-          <span className="hidden items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)] sm:flex">
+          <span className="hidden items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)] sm:flex lg:col-start-3 lg:justify-self-end">
             <span className="h-8 w-px bg-[var(--gold)]" />
             Scroll to explore
           </span>

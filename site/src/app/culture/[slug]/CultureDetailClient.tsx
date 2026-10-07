@@ -64,10 +64,11 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
   const isSummaryInArticle = Boolean(
     activeCity.summary && activeCity.contentMarkdown?.includes(activeCity.summary),
   );
-  const isMediaInArticle = Boolean(
-    activeCity.primaryMedia && activeCity.contentMarkdown?.includes(activeCity.primaryMedia.url),
+  const mastheadMedia = activeCity.primaryMedia ?? (
+    activeCity.image.trim()
+      ? { type: "image" as const, url: activeCity.image }
+      : null
   );
-  const mastheadMedia = activeCity.primaryMedia && !isMediaInArticle ? activeCity.primaryMedia : null;
   const briefTextClassName = mastheadMedia
     ? "relative z-10 order-2 mx-2 -mt-8 min-w-0 max-w-3xl border border-[var(--line)] bg-[var(--background)] p-4 scrapbook-shadow sm:mx-3 sm:-mt-12 sm:p-5 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:border-0 min-[620px]:bg-transparent min-[620px]:p-0 min-[620px]:shadow-none lg:max-w-none"
     : "relative z-10 min-w-0 max-w-3xl lg:max-w-none";
@@ -78,12 +79,17 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
         <div className="site-container py-tight">
           <div className="grid min-w-0 items-center gap-6 min-[620px]:grid-cols-[minmax(13rem,0.78fr)_minmax(0,1.1fr)] min-[620px]:gap-10 lg:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] lg:gap-16">
             {mastheadMedia ? (
-              <figure
-                data-culture-brief-media
-                className="relative order-1 aspect-[4/3] min-w-0 overflow-hidden border-[0.55rem] border-white bg-[var(--paper)] scrapbook-shadow sm:border-[0.75rem] min-[620px]:order-none lg:aspect-[4/5] lg:border-[0.9rem]"
-              >
-                <MediaFrame asset={mastheadMedia} alt={activeCity.name} mode={mastheadMedia.type === "video" ? "interactive" : "image"} eager />
-              </figure>
+              <div className="relative order-1 min-w-0 min-[620px]:order-none">
+                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
+                  Opening field media
+                </p>
+                <figure
+                  data-culture-brief-media
+                  className="relative aspect-[4/3] min-w-0 overflow-hidden border-[0.55rem] border-white bg-[var(--paper)] scrapbook-shadow sm:border-[0.75rem] lg:aspect-[4/5] lg:border-[0.9rem]"
+                >
+                  <MediaFrame asset={mastheadMedia} alt={activeCity.name} mode={mastheadMedia.type === "video" ? "interactive" : "image"} eager />
+                </figure>
+              </div>
             ) : null}
 
             <div className={briefTextClassName}>

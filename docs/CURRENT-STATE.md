@@ -1,8 +1,13 @@
 # Culvoy Current State
 
-## Local API Review Fixes - 2026-10-03 (Uncommitted)
+## Local API Review Fixes - 2026-10-03 (Committed 2026-10-07)
 
-- Root base HEAD: `cf302a6`; independent admin HEAD: `02f8805`, unchanged.
+- Root base HEAD before this batch: `cf302a6`; independent admin HEAD: `02f8805`,
+  unchanged.
+- Committed locally on `main` on 2026-10-07: `df91440` (API review fixes),
+  `76f2f3a` (community feed grid), `df39d15` (home/route/login polish),
+  `42639a5` (local-only showcase seed) and `32ef0f3` (alpine site-image
+  `libc6-compat`). Not pushed.
 - Traveler booking ownership now uses a parameterized case-insensitive equality
   predicate, not `ILIKE`, so email `_` and `%` characters cannot widen access.
 - PayPal capture failures and lost responses fall back to fetching gateway order
@@ -16,11 +21,13 @@
 - Regression tests cover ownership predicates, payment recovery/replay and
   mismatched gateway details, unpaid fulfilment rejection and shipping entry-point
   enforcement, successful fulfilment, shipping notification and cancellation
-  stock release. API tsc and Nest build passed; all 28 suites / 197 tests passed.
+  stock release. API tsc, Nest build and all 28 suites / 197 tests passed; site
+  tsc, lint, 19 test files / 105 tests and `next build` passed.
 - Final coverage: traveler bookings 100% lines; orders 72.03% lines
   (below the 80% target). This is not a complete coverage claim.
-- No commit, push, deploy, migration, real payment, production write, or browser
-  verification was performed. Production/tracker state below remains historical.
+- The local Docker stack was rebuilt and restarted; site/api/admin are healthy on
+  3000/8000/5173. No push, deploy, migration, real payment, production write, or
+  browser verification was performed. Production/tracker state below remains historical.
 
 > **Live status source — 2026-09-19.** Update this file whenever Git, production, protected WIP, verification, deployment, recovery, or task status changes. [`LINGTOUR-HANDOFF-2026-07-26.md`](archive/LINGTOUR-HANDOFF-2026-07-26.md) and [`PROGRESS-2026-07-26-mobile-and-data-layer.md`](archive/PROGRESS-2026-07-26-mobile-and-data-layer.md) are historical snapshots now stored under [`archive/`](archive/). Stable operating rules live in [`../AGENT.md`](../AGENT.md); team guides in [`development.md`](development.md) and [`release.md`](release.md).
 

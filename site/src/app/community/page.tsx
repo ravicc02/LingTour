@@ -398,24 +398,13 @@ export default function CommunityPage() {
   };
 
   /**
-   * Editorial sequence rather than masonry. The feed runs a repeating
-   * six-item rhythm — a wide feature, its companion, a full-width band, then
-   * three rail cards. 7+5, 12 and 4+4+4 each fill the twelve-column grid
-   * exactly, so no row is left dangling, and DOM order finally matches visual
-   * order, which masonry could not guarantee for keyboard users.
+   * Two even columns at `lg`. Earlier the feed mixed 7/5, full-width and
+   * 4/4/4 rows, so neighbouring cards were wildly different sizes and short
+   * cards left a gap beside tall ones. A single six-of-twelve span keeps every
+   * card the same width; the cards themselves stretch to the row height.
+   * DOM order still matches visual order for keyboard users.
    */
-  const feedSpanClass = (index: number): string => {
-    switch (index % 6) {
-      case 0:
-        return "lg:col-span-7";
-      case 1:
-        return "lg:col-span-5";
-      case 2:
-        return "lg:col-span-12";
-      default:
-        return "lg:col-span-4";
-    }
-  };
+  const feedSpanClass = (): string => "lg:col-span-6";
 
   const resolveVariant = (
     post: CommunityFeedPost,
@@ -530,11 +519,6 @@ export default function CommunityPage() {
     }
   };
 
-  const latestNote = allPosts[0];
-  const latestNoteCover = latestNote
-    ? latestNote.media[0]?.url ?? latestNote.image ?? ""
-    : "";
-
   return (
     <CommunityJournalMotion
       motionKey={`${activeChannel}:${sortMode}:${query}:${masonryItems
@@ -543,55 +527,19 @@ export default function CommunityPage() {
     >
     <div className="min-h-screen overflow-clip bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)]">
       <section data-community-hero className="relative overflow-hidden border-b border-[var(--line)] py-land">
-        <div className="site-container relative grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] lg:items-end lg:gap-16">
-          <div className="min-w-0">
+        <div className="site-container">
+          <div className="mx-auto max-w-4xl text-center">
             <h1 className="font-[family:var(--font-display)] text-[clamp(3.25rem,15vw,5rem)] leading-[0.86] tracking-tight md:text-8xl lg:text-[8rem]">
               <span className="block overflow-hidden pb-1"><span data-community-title className="block">{t("community.hero.title")}</span></span>
               <span className="block overflow-hidden pb-3"><span data-community-title className="block italic text-[var(--gold)]">{t("community.hero.titleAccent")}</span></span>
             </h1>
-            <p className="mt-8 max-w-xl handwritten text-base leading-7 text-[var(--river-deep)]/85 sm:text-lg">
+            <p className="mx-auto mt-8 max-w-xl handwritten text-base leading-7 text-[var(--river-deep)]/85 sm:text-lg">
               What travellers noticed on the ground, and what the editors are chasing next.
             </p>
             <p aria-live="polite" className="mt-6 font-mono text-[12px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
               {allPosts.length} traveller notes · {fieldBriefs.length} editor briefs
             </p>
           </div>
-
-          {/* The community's own newest note is the best possible artwork for this
-              masthead — replacing the two decorative blur blobs that used to sit
-              behind a centred headline. */}
-          {latestNote ? (
-            <button
-              type="button"
-              onClick={() => setSelectedPost(latestNote)}
-              className="group block min-w-0 text-left"
-              aria-label={`${t("community.hero.latestNote")}: ${latestNote.title}`}
-            >
-              <span className="font-mono text-[12px] font-bold uppercase tracking-[0.24em] text-[var(--cinnabar)]">
-                {t("community.hero.latestNote")}
-              </span>
-              <span className="mt-3 block overflow-hidden border border-[var(--line)] bg-white/70 scrapbook-shadow">
-                {latestNoteCover ? (
-                  <span
-                    className="block aspect-[16/10] overflow-hidden bg-[var(--parchment-deep)] bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.04]"
-                    style={{ backgroundImage: `url(${latestNoteCover})` }}
-                  />
-                ) : null}
-                <span className="block p-5">
-                  <span className="block font-[family:var(--font-display)] text-2xl leading-tight text-[var(--river-deep)] transition-colors group-hover:text-[var(--cinnabar)]">
-                    {latestNote.title}
-                  </span>
-                  <span className="mt-2 line-clamp-2 block text-sm leading-6 text-[var(--muted)]">
-                    {latestNote.excerpt}
-                  </span>
-                  <span className="mt-3 block font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)]">
-                    {latestNote.user.name}
-                    {latestNote.location ? ` · ${latestNote.location}` : ""}
-                  </span>
-                </span>
-              </span>
-            </button>
-          ) : null}
         </div>
       </section>
 
@@ -681,10 +629,10 @@ export default function CommunityPage() {
           <div className="grid gap-6 pb-6 sm:gap-8 lg:grid-cols-12">
             {visibleItems.length ? (
               visibleItems.map((item, index) => {
-                const span = feedSpanClass(index);
+                const span = feedSpanClass();
                 if (item.type === "dispatch") {
                   return (
-                    <div key={item.id} data-community-card className={span}>
+                    <div key={item.id} data-community-card className={`min-w-0 ${span}`}>
                       <Reveal delay={index * 40}>
                         <DispatchCard
                           stampCount={stampCount}
@@ -699,7 +647,7 @@ export default function CommunityPage() {
 
                 if (item.type === "brief") {
                   return (
-                    <div key={item.data.id} data-community-card className={span}>
+                    <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
                       <Reveal delay={index * 40}>
                         <BriefCard
                           brief={item.data}
@@ -716,7 +664,7 @@ export default function CommunityPage() {
 
                 if (item.type === "post") {
                   return (
-                    <div key={item.data.id} data-community-card className={span}>
+                    <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
                       <Reveal delay={index * 40}>
                         <PostCard
                           post={item.data}

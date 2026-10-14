@@ -9,6 +9,7 @@
  */
 
 export type StoryRoute = {
+  id?: string;
   slug: string;
   title: string;
   culture:

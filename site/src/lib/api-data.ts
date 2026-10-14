@@ -260,6 +260,7 @@ function mapRoute(apiRoute: ApiStoryRoute): StoryRoute {
       : [];
 
   return {
+    id: apiRoute.id,
     slug: apiRoute.slug,
     title: apiRoute.title,
     culture: apiRoute.cultureTag as StoryRoute["culture"],
@@ -928,6 +929,10 @@ export type CommunityFeedPost = {
   user: { name: string; handle?: string; avatar?: string };
   image: string;
   media: CommunityPostMedia[];
+  citySlug?: string | null;
+  routeId?: string | null;
+  interpreterId?: string | null;
+  verifiedExperience?: boolean;
   location: string;
   route: string;
   createdAt: string;
@@ -958,6 +963,10 @@ interface ApiCommunityPost {
   tags?: string[];
   image: string | null;
   media?: { type: string; url: string; poster?: string; alt?: string }[] | null;
+  citySlug?: string | null;
+  routeId?: string | null;
+  interpreterId?: string | null;
+  verifiedExperience?: boolean;
   location: string;
   route: string;
   mood: string;
@@ -1047,6 +1056,10 @@ function mapCommunityPost(
     },
     image: api.image ?? "",
     media: mapCommunityMedia(api),
+    citySlug: api.citySlug ?? null,
+    routeId: api.routeId ?? null,
+    interpreterId: api.interpreterId ?? null,
+    verifiedExperience: api.verifiedExperience ?? false,
     location,
     route,
     createdAt: api.createdAt,

@@ -219,6 +219,7 @@ function mapRoute(apiRoute: ApiStoryRoute): StoryRoute {
         : SEED_IMAGES.routesHero ?? placeholderFor("hero");
 
   return {
+    id: apiRoute.id,
     slug: apiRoute.slug,
     title: apiRoute.title,
     culture: apiRoute.cultureTag as StoryRoute["culture"],

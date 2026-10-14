@@ -267,6 +267,27 @@ export const EMAIL_EVENTS: EmailEventDefinition[] = [
     ),
   },
   {
+    key: 'service_request_update',
+    label: '服务请求状态通知',
+    description: '新服务请求、匹配、报价与私人对话的通知；不包含私人消息正文。',
+    status: 'active',
+    variables: [
+      { key: 'title', label: '标题', example: 'Service request received' },
+      { key: 'requestReference', label: '请求编号', example: 'Your request reference' },
+      { key: 'serviceType', label: '服务类型', example: 'interpretation' },
+      { key: 'amount', label: '独立服务金额', example: 'USD 305.00' },
+      { key: 'policyNotice', label: '付款规则说明', example: 'Payment policy has not been configured. No deposit or payment is due through this request.' },
+      { key: 'siteName', label: '站点名称', example: 'Culvoy' },
+    ],
+    defaultSubject: '{{title}} — Culvoy',
+    defaultBodyHtml: shell(
+      noticeBody('Open your signed-in Profile to review this service request. Private messages are available only inside your account.', [
+        ['Request', '{{requestReference}}'], ['Service', '{{serviceType}}'],
+        ['Service amount', '{{amount}}'], ['Payment', '{{policyNotice}}'],
+      ]),
+    ),
+  },
+  {
     key: 'welcome',
     label: '欢迎邮件',
     description: '旅行者首次注册成功时发送的欢迎邮件。',

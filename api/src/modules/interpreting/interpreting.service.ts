@@ -341,6 +341,7 @@ export class InterpretingService {
   // ── Bookings: Public submit ──
 
   async submitBooking(dto: CreateBookingDto, idempotencyKey?: string) {
+    this.rejectServiceRequestDto(dto);
     const key = this.normalizeIdempotencyKey(idempotencyKey);
     if (key) {
       const existing = await this.bookingRepo.findOne({
@@ -384,6 +385,7 @@ export class InterpretingService {
   }
 
   async submitBookingWithDeposit(dto: CreateBookingDto, idempotencyKey?: string) {
+    this.rejectServiceRequestDto(dto);
     const key = this.normalizeIdempotencyKey(idempotencyKey);
     if (key) {
       const existing = await this.bookingRepo.findOne({
@@ -461,6 +463,12 @@ export class InterpretingService {
     };
   }
 
+  private rejectServiceRequestDto(dto: CreateBookingDto) {
+    if (['serviceType', 'packageId', 'userId', 'priceSnapshot', 'linkedRequestId'].some(key => key in dto)) {
+      throw new BadRequestException('Use authenticated service requests for new route and interpretation packages; payment policy is not configured');
+    }
+  }
+
   private normalizeIdempotencyKey(value?: string): string | undefined {
     const key = value?.trim();
     if (!key) return undefined;
@@ -481,6 +489,7 @@ export class InterpretingService {
   ) {
     const qb = this.bookingRepo
       .createQueryBuilder('b')
+      .where('b.serviceType = :legacyType', { legacyType: 'legacy_interpretation' })
       .orderBy('b.createdAt', 'DESC');
 
     if (status) {
@@ -507,6 +516,9 @@ export class InterpretingService {
   async findBookingByIdAdmin(id: string) {
     const booking = await this.bookingRepo.findOne({ where: { id } });
     if (!booking) throw new NotFoundException('Booking not found');
+    if (booking.serviceType && booking.serviceType !== 'legacy_interpretation') {
+      throw new BadRequestException('Use service request operations for this request');
+    }
     return booking;
   }
 

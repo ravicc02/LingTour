@@ -16,10 +16,11 @@ export function RelatedCommunityPosts({ citySlug, routeId, interpreterId, title 
   const [retry, setRetry] = useState(0);
   const [selected, setSelected] = useState<CommunityFeedPost | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const context = { citySlug, routeId, interpreterId, location };
+  const scope = { citySlug, routeId, interpreterId };
+  const composeContext = { ...scope, location };
   const hasAssociation = Boolean(citySlug || routeId || interpreterId);
-  const href = communityContextHref(context);
-  const composeHref = communityContextHref(context, true);
+  const href = communityContextHref(scope);
+  const composeHref = communityContextHref(composeContext, true);
   useEffect(() => {
     const sync = () => setLoggedIn(Boolean(readStoredUser()));
     sync(); window.addEventListener('culvoy-auth', sync);
@@ -29,7 +30,7 @@ export function RelatedCommunityPosts({ citySlug, routeId, interpreterId, title 
     let cancelled = false;
     setPosts([]); setSelected(null); setError(false); setLoading(hasAssociation);
     if (!hasAssociation) return;
-    fetchAssociatedCommunityPosts({ citySlug, routeId, interpreterId, location, limit: 4 }).then((result) => {
+    fetchAssociatedCommunityPosts({ citySlug, routeId, interpreterId, limit: 4 }).then((result) => {
       if (!cancelled) setPosts(result.data);
     }).catch(() => { if (!cancelled) setError(true); }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };

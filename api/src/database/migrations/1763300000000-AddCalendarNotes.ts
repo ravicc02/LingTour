@@ -23,8 +23,7 @@ export class AddCalendarNotes1763300000000 implements MigrationInterface {
     `);
   }
 
-  async down(queryRunner: QueryRunner): Promise<void> {
-    // Reverting this migration removes private notes; requires an explicit backup/approval.
-    await queryRunner.query('DROP TABLE calendar_notes');
+  async down(): Promise<void> {
+    throw new Error('Private calendar rollback requires an approved data-preserving recovery plan');
   }
 }

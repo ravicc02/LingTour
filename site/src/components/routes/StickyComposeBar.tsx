@@ -61,6 +61,7 @@ export function StickyComposeBar({
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState("");
   const [user, setUser] = useState<LocalUser | null>(null);
   const [syncedPosts, setSyncedPosts] = useState<CommunityFeedPost[]>([]);
   const isLoggedIn = Boolean(user);
@@ -79,7 +80,7 @@ export function StickyComposeBar({
 
   useEffect(() => {
     const selectRoutePosts = (posts: CommunityFeedPost[]) =>
-      routeId ? posts.filter((post) => post.routeId === routeId) : [];
+      routeId ? posts.filter((post) => post.routeId === routeId && post.status === "published") : [];
 
     setSyncedPosts(selectRoutePosts(readSyncedCommunityPosts()));
     return subscribeSyncedCommunityPosts((posts) =>
@@ -141,19 +142,8 @@ export function StickyComposeBar({
         },
       });
 
-      appendSyncedCommunityPost({
-        ...created,
-        date: new Date(created.createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
-        readTime: "1 min",
-        likes: 0,
-        saves: 0,
-        prompt: composeTarget
-          ? `Track: Stop ${composeTarget.index + 1} · ${composeTarget.name}`
-          : `Filed from ${routeCity}.`,
-      });
+      if (created.status === "published") appendSyncedCommunityPost(created);
+      setNotice("Post submitted for review. It will appear after approval.");
       setOpen(false);
       onClearTarget?.();
     } catch (err) {
@@ -179,7 +169,7 @@ export function StickyComposeBar({
         return post;
       },
     );
-    return mergeCommunityPosts<RouteCommunityPost>([...routePosts, ...initialPosts.filter((post) => Boolean(routeId) && post.routeId === routeId)]);
+    return mergeCommunityPosts<RouteCommunityPost>([...routePosts, ...initialPosts.filter((post) => Boolean(routeId) && post.routeId === routeId && post.status === "published")]);
   }, [initialPosts, syncedPosts, routeId]);
 
   const latestPost = posts[0];
@@ -252,6 +242,7 @@ export function StickyComposeBar({
           </div>
         </button>
 
+        {notice ? <p role="status" className="site-container border-t border-[var(--line)] py-3 text-sm text-[var(--river-deep)]">{notice}</p> : null}
         {error ? (
           <div className="border-t border-[var(--line)] bg-[var(--paper-deep)]/95">
             <div className="site-container py-2">

@@ -28,8 +28,6 @@ describe('TravelerBookingsService', () => {
       }),
     );
     const options = bookingRepo.findAndCount.mock.calls[0][0];
-    expect(options.where.serviceType).toBe('legacy_interpretation');
-    expect(options.where.userId.type).toBe('isNull');
     expect(options.where.contact.objectLiteralParameters).toEqual({
       travelerEmail: 'traveler@example.com',
     });

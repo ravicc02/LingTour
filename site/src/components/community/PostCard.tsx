@@ -15,8 +15,6 @@ type PostCardProps = {
   onOpen?: (post: CommunityFeedPost) => void;
   isLoggedIn?: boolean;
   onRequireLogin?: () => void;
-  href?: string;
-  updateUrl?: boolean;
   onEngagementChange?: (post: CommunityFeedPost) => void;
 };
 
@@ -27,8 +25,6 @@ export function PostCard({
   isLoggedIn = false,
   onRequireLogin,
   onEngagementChange,
-  href,
-  updateUrl = true,
 }: PostCardProps) {
   const [liked, setLiked] = useState(Boolean(post.liked));
   const [saved, setSaved] = useState(Boolean(post.saved));
@@ -118,17 +114,15 @@ export function PostCard({
       className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] scrapbook-shadow transition-[transform,box-shadow] duration-500 hover:-translate-y-0.5 ${variantClasses}`}
     >
       <a
-        href={href ?? `/community?post=${post.id}`}
+        href={`/community?post=${post.id}`}
         data-community-post-link={post.id}
         onClick={(event) => {
           event.preventDefault();
           onOpen?.(post);
           // Keep the URL shareable without a navigation round-trip; a cold
           // load of this URL resolves the id into the open dialog.
-          if (updateUrl && typeof window !== "undefined") {
-            const next = new URL(window.location.href);
-            next.searchParams.set('post', post.id);
-            window.history.replaceState({}, "", `${next.pathname}?${next.searchParams}`);
+          if (typeof window !== "undefined") {
+            window.history.replaceState({}, "", `/community?post=${post.id}`);
           }
         }}
         className="flex min-h-0 w-full flex-1 flex-col text-left"
@@ -236,8 +230,6 @@ export function PostCard({
               {post.title}
             </h2>
           ) : null}
-
-          {post.verifiedExperience ? <p className="mt-3 text-sm font-bold text-[var(--river-deep)]">Verified experience</p> : null}
 
           {hasText ? (
             <p

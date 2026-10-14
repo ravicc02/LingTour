@@ -1,15 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-beforeEach(() => {
-  vi.stubGlobal("matchMedia", vi.fn(() => ({
-    matches: false,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  })));
-});
-afterEach(() => vi.unstubAllGlobals());
+import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
@@ -40,8 +31,7 @@ describe("SiteHeader mobile navigation", () => {
 
     const dialog = screen.getByRole("dialog", { name: "Mobile navigation" });
     expect(dialog).toBeInTheDocument();
-    await waitFor(() => expect(within(dialog).getByRole("button", { name: "Close menu" })).toHaveFocus());
-    expect(within(dialog).getByRole("link", { name: "Home" })).toBeInTheDocument();
+    await waitFor(() => expect(within(dialog).getByRole("link", { name: "Home" })).toHaveFocus());
     expect(document.body.style.overflow).toBe("hidden");
 
     fireEvent.keyDown(document, { key: "Escape" });

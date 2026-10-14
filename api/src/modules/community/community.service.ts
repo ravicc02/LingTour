@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { clampPagination } from '../../common/pagination';
@@ -13,11 +13,6 @@ import { UpsertCommunityPostDto } from './dto/upsert-community-post.dto';
 import { UpsertCommunityBriefDto } from './dto/upsert-community-brief.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MailerService } from '../email/mailer.service';
-import { City } from '../cities/entities/city.entity';
-import { StoryRoute } from '../routes/entities/story-route.entity';
-import { InterpreterProfile } from '../interpreting/entities/interpreter-profile.entity';
-import { BookingSubmission } from '../interpreting/entities/booking-submission.entity';
-import { CommunityQueryDto } from './dto/community-query.dto';
 
 @Injectable()
 export class CommunityService {
@@ -37,7 +32,15 @@ export class CommunityService {
     private readonly mailerService: MailerService,
   ) {}
 
-  async getPublicPosts(query: CommunityQueryDto) {
+  async getPublicPosts(query: {
+    channel?: string;
+    route?: string;
+    location?: string;
+    tag?: string;
+    q?: string;
+    page?: number;
+    limit?: number;
+  }) {
     const { page, limit, skip } = clampPagination(query.page, query.limit);
     const qb = this.postRepo
       .createQueryBuilder('p')
@@ -45,9 +48,6 @@ export class CommunityService {
         status: 'published',
       });
 
-    for (const field of ['citySlug', 'routeId', 'interpreterId'] as const) {
-      if (query[field]) qb.andWhere(`p.${field} = :${field}`, { [field]: query[field] });
-    }
     if (query.channel) {
       qb.andWhere('p.channel = :channel', { channel: query.channel });
     }
@@ -63,20 +63,17 @@ export class CommunityService {
     if (query.q) {
       qb.andWhere(
         '(p.title::text ILIKE :q OR p.excerpt::text ILIKE :q OR p.route ILIKE :q OR p.location ILIKE :q OR p.tags::text ILIKE :q)',
-        { q: `%${query.q.replace(/[\\%_]/g, '\\$&')}%` },
+        { q: `%${query.q}%` },
       );
     }
 
-    const orderColumn = query.sort === 'loved' ? 'p.likes' : query.sort === 'saved' ? 'p.saves' : 'p.createdAt';
-    qb.orderBy(orderColumn, 'DESC');
-    if (orderColumn !== 'p.createdAt') qb.addOrderBy('p.createdAt', 'DESC');
     const [items, total] = await qb
-      .addOrderBy('p.id', 'DESC')
+      .orderBy('p.createdAt', 'DESC')
       .skip(skip)
       .take(limit)
       .getManyAndCount();
 
-    return { data: items.map((post) => this.publicPost(post)), total, page, pageSize: limit };
+    return { data: items, total, page, pageSize: limit };
   }
 
   async getPublicPostById(id: string) {
@@ -84,79 +81,7 @@ export class CommunityService {
       where: { id, status: 'published' },
     });
     if (!post) throw new NotFoundException('Post not found');
-    return this.publicPost(post);
-  }
-
-  /** Public responses never disclose private service evidence or moderation notes. */
-  publicPost(post: CommunityPost) {
-    const { verifiedBookingId, userEmail, userId, reviewedBy, rejectionReason, ...publicPost } = post;
-    void verifiedBookingId; void userEmail; void userId; void reviewedBy; void rejectionReason;
-    const user = post.user ?? {};
-    return { ...publicPost, user: {
-      name: typeof user.name === 'string' ? user.name : '',
-      ...(typeof user.handle === 'string' ? { handle: user.handle } : {}),
-      ...(typeof user.avatar === 'string' ? { avatar: user.avatar } : {}),
-    } };
-  }
-
-  async associationOptions() {
-    const [cities, routes, interpreters] = await Promise.all([
-      this.dataSource.getRepository(City).find({ where: { published: true }, order: { slug: 'ASC' } }),
-      this.dataSource.getRepository(StoryRoute).find({ where: { published: true }, order: { slug: 'ASC' } }),
-      this.dataSource.getRepository(InterpreterProfile).find({ where: { status: 'active' }, order: { sortOrder: 'ASC' } }),
-    ]);
-    return {
-      cities: cities.map(({ slug, name }) => ({ slug, name })),
-      routes: routes.map(({ id, slug, title }) => ({ id, slug, title })),
-      interpreters: interpreters.map(({ id, name }) => ({ id, name })),
-    };
-  }
-
-  private async validateAssociations(dto: Pick<UpsertCommunityPostDto, 'citySlug' | 'routeId' | 'interpreterId'>) {
-    if (dto.citySlug && !await this.dataSource.getRepository(City).existsBy({ slug: dto.citySlug, published: true })) {
-      throw new BadRequestException('Choose a published city');
-    }
-    if (dto.routeId && !await this.dataSource.getRepository(StoryRoute).existsBy({ id: dto.routeId, published: true })) {
-      throw new BadRequestException('Choose a published route');
-    }
-    if (dto.interpreterId && !await this.dataSource.getRepository(InterpreterProfile).existsBy({ id: dto.interpreterId, status: 'active' })) {
-      throw new BadRequestException('Choose an active interpreter');
-    }
-  }
-
-  async updateAssociations(id: string, dto: Pick<UpsertCommunityPostDto, 'citySlug' | 'routeId' | 'interpreterId'>) {
-    const post = await this.getAdminById(id);
-    await this.validateAssociations(dto);
-    for (const field of ['citySlug', 'routeId', 'interpreterId'] as const) {
-      if (dto[field] !== undefined) post[field] = dto[field] ?? null;
-    }
-    // Evidence must be reviewed again when its context changes.
-    post.verifiedExperience = false;
-    post.verifiedBookingId = null;
-    return this.postRepo.save(post);
-  }
-
-  async verifyExperience(id: string, bookingId?: string | null) {
-    const post = await this.getAdminById(id);
-    if (!bookingId) {
-      post.verifiedExperience = false;
-      post.verifiedBookingId = null;
-      return this.postRepo.save(post);
-    }
-    const booking = await this.dataSource.getRepository(BookingSubmission).findOne({ where: { id: bookingId } });
-    if (!booking || !post.userId || booking.userId !== post.userId ||
-      (booking.processStatus ? booking.processStatus !== 'completed' : booking.status !== 'completed')) {
-      throw new BadRequestException('A completed service owned by the post author is required');
-    }
-    if ((!post.citySlug && !post.routeId && !post.interpreterId) ||
-      (post.citySlug && post.citySlug !== booking.citySlug) ||
-      (post.routeId && post.routeId !== booking.routeId) ||
-      (post.interpreterId && post.interpreterId !== booking.assignedInterpreterId)) {
-      throw new BadRequestException('The service must match every selected post association');
-    }
-    post.verifiedExperience = true;
-    post.verifiedBookingId = booking.id;
-    return this.postRepo.save(post);
+    return post;
   }
 
   async listAdmin(query: {
@@ -201,7 +126,6 @@ export class CommunityService {
   }
 
   async create(dto: UpsertCommunityPostDto) {
-    await this.validateAssociations(dto);
     const post = this.postRepo.create({
       channel: dto.channel,
       status: dto.status ?? 'published',
@@ -213,11 +137,6 @@ export class CommunityService {
       tags: dto.tags ?? [],
       image: dto.image ?? null,
       media: dto.media ?? [],
-      citySlug: dto.citySlug ?? null,
-      routeId: dto.routeId ?? null,
-      interpreterId: dto.interpreterId ?? null,
-      verifiedExperience: false,
-      verifiedBookingId: null,
       location: dto.location ?? '',
       route: dto.route ?? '',
       mood: dto.mood ?? '',
@@ -245,15 +164,7 @@ export class CommunityService {
 
   async update(id: string, dto: UpsertCommunityPostDto) {
     const post = await this.getAdminById(id);
-    await this.validateAssociations(dto);
-    const associationChanged = (dto.userId !== undefined && dto.userId !== post.userId) || (['citySlug', 'routeId', 'interpreterId'] as const).some(
-      (field) => dto[field] !== undefined && (dto[field] ?? null) !== post[field],
-    );
-    // Explicit allowlist: verification/evidence cannot enter through generic update.
-    const { channel, status, user, userId, userEmail, title, excerpt, tags, image, media, location, route, mood, likes, saves, featured, citySlug, routeId, interpreterId } = dto;
-    const allowed = { channel, status, user, userId, userEmail, title, excerpt, tags, image, media, location, route, mood, likes, saves, featured, citySlug, routeId, interpreterId };
-    Object.assign(post, Object.fromEntries(Object.entries(allowed).filter(([, value]) => value !== undefined)));
-    if (associationChanged) { post.verifiedExperience = false; post.verifiedBookingId = null; }
+    Object.assign(post, dto);
     if (dto.status) post.status = dto.status;
     if (dto.userId !== undefined) post.userId = dto.userId;
     if (dto.userEmail !== undefined) post.userEmail = dto.userEmail;
@@ -270,7 +181,6 @@ export class CommunityService {
     reviewer?: { userId?: string; reason?: string },
   ) {
     const post = await this.getAdminById(id);
-    if (status === 'published') await this.validateAssociations(post);
     const previousStatus = post.status;
     post.status = status;
     post.reviewedAt = new Date();
@@ -428,7 +338,7 @@ export class CommunityService {
     );
 
     return saves.map((save) => ({
-      ...this.publicPost(save.post),
+      ...save.post,
       liked: likedIds.has(save.post.id),
       saved: true,
     }));

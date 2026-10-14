@@ -11,7 +11,7 @@ function Wrapper({ children }: { children: ReactNode }) {
 describe("LocaleProvider", () => {
   it("resolves a known copy key to its English string", () => {
     const { result } = renderHook(() => useLocale(), { wrapper: Wrapper });
-    expect(result.current.t("common.nav.routes")).toBe("Route Planning");
+    expect(result.current.t("common.nav.routes")).toBe("Routes");
   });
 
   it("returns a readable marker for an unknown key instead of throwing", () => {

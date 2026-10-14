@@ -1,48 +1,36 @@
 # Culvoy Current State
 
-## Feedback Development - 2026-10-14 (Local Source Committed; Acceptance Gated)
+## Feedback Development Rollback - 2026-10-14 (Current Local State)
 
-- The owner requested implementation of the confirmed feedback plan, categorized
-  local commits and a delivery report. Both repositories remain on
-  `feature/feedback-development-2026-10-14`, based on root `b711f98` and admin
-  `647147f`; neither main branch was moved. No push, deployment or production
-  mutation was performed.
-- Source categories are implemented and committed: stable identities/USD format,
-  private Profile Calendar, scoped community feedback, simplified discovery and
-  anonymous city PNG tickets, versioned public events, free/custom/interpretation
-  requests, staff assignment, quotes/private messages, professional English copy
-  and integration/moderation regressions. Root latest functional commit is
-  `995341d`; independent admin latest commit is `42a876b`. Full categorized SHAs
-  and feature limits are in [the delivery report](feedback-development-report-2026-10-14.md).
-- Final validation (2026-10-14 18:39-18:46 Asia/Shanghai): site 40 files / 191 tests,
-  API 36 suites / 287 tests, site/API TypeScript and production builds, admin
-  type-check/build (4674 modules), three real admin-adapter contract tests and
-  both diff checks passed. Site lint: 0 errors / 1082 existing warnings; admin
-  retains the existing vendor-chunk warning. Both admin tracked trees match
-  except the intentional independent-only `.vscode/extensions.json`.
-- Four new additive migrations (1763100000000/1763200000000/1763300000000/
-  1763400000000) are source only, not applied. All down paths refuse destructive
-  rollback; synchronize and automatic migrations remain disabled. Do not rebuild
-  the API against an unmigrated database expecting these features to work.
-  Target/backup/migration-state approval and real persistence/authorization E2E
-  remain prerequisites.
-- New paid checkout is disabled (`paymentPolicy=not_configured`): no guessed USD
-  deposit or planning fee, no old SGD deposit relabeling; historical orders and
-  shop currency remain unchanged. Final branding, fulfillment/capacity,
-  cancellation/refund/payment terms and private-data retention/erasure require
-  owner decisions. Existing account deletion anonymizes rather than erases
-  new note/request/message content; no unauthorized purge was performed.
-- Browser Docker preview calls repeatedly returned unavailable safety-classifier
-  service. No alternative server launcher, permission change or fake browser
-  proof was used. No real nine-width sweep, anonymous PNG download, authenticated
-  admin save/publish/refresh, new database flow or payment verification is claimed.
-- `docs/feedback-modification-plan-2026-10-08.md` is now tracked as the confirmed
-  requirement baseline. Original `docs/feback.md` remains byte-for-byte unchanged
-  and untracked. Existing worktrees, main branches and prior commits are intact.
-  No local containers were rebuilt/restarted; ignored launch configuration was
-  updated to Docker Compose only. No Feishu, migration or production writes.
+- The owner explicitly requested reversal of the entire feedback-development
+  batch. All site/API/admin implementation, copy, tests, dependency changes and
+  four unapplied migration source files were reversed. Root application/source
+  files match `b711f98`; the independent admin tracked tree matches `647147f`.
+  Prior optical alignment is retained. Only this status/recovery record differs
+  from the root baseline; the original feedback plan and source remain untracked.
+- Both repositories remain on `feature/feedback-development-2026-10-14` with new
+  reversal commits rather than erased history. Admin reversal is `c94dc64`.
+  The previous implementation commits and report remain recoverable in Git.
+  No main branch, tag, stash, worktree or prior unrelated work was removed.
+- Before reversal, complete Git bundles, exact rollback manifests/patches,
+  untracked input copies and the ignored launch configuration were backed up at
+  `E:/workspace/LingTour-branch-backups/feedback-rollback-20261014-230152/`.
+  Both Git bundles verified successfully. The original plan was restored to
+  `docs/feedback-modification-plan-2026-10-08.md` as an untracked file;
+  `docs/feback.md` remains unchanged. The development delivery report is removed
+  from the current tree but remains in history and the backup bundle.
+- The ignored preview configuration now only attaches to existing Docker URLs;
+  no host-side development command is restored. No containers, database,
+  production data or Feishu records were mutated. Because no feedback migration
+  was ever applied, no database rollback was necessary or performed.
+- Rollback verification passed: site TypeScript, 21 files / 111 tests and
+  production build; API TypeScript, 28 suites / 197 tests and Nest build; admin
+  type-check/build (4660 modules); both diff checks and baseline blob comparisons.
+  Site lint returned 0 errors / 1083 existing warnings; admin retains its existing
+  vendor-chunk warning. Browser attachment still returned unavailable safety
+  classifier; no runtime or nine-width browser acceptance is claimed.
 
-## Branch Consolidation - 2026-10-14 (Current Local State)
+## Branch Consolidation - 2026-10-14 (Historical Record)
 
 - On the owner's branch-cleanup request, both repositories were consolidated to
   local `main` only. The recent optical-alignment branches were fast-forwarded:
@@ -64,7 +52,7 @@
   copies of both untracked feedback documents are stored outside the repository:
   `E:/workspace/LingTour-branch-backups/20261014-173212/`.
   `docs/feback.md` and `docs/feedback-modification-plan-2026-10-08.md` remain
-  untracked and unchanged. This current-state update is uncommitted.
+  untracked and unchanged at that time. That record preceded feedback development.
 - Git HTTPS fetch/ls-remote could not connect to GitHub. Read-only GitHub API
   queries confirmed both remote repositories contain only `main`, with the SHAs
   above. No remote branch deletion, push or deployment was needed/performed.

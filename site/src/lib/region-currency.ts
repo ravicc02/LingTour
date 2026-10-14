@@ -1,5 +1,5 @@
 export type RegionCurrency = {
-  code: "CNY" | "SGD" | "USD";
+  code: "CNY" | "SGD";
   symbol: string;
   name: string;
 };
@@ -21,7 +21,6 @@ export function getCurrencyForRegion(region?: string | null): RegionCurrency {
 }
 
 export function currencySymbol(code?: string | null): string {
-  if (code === "USD") return "US$";
   if (code === "SGD") return "S$";
   if (code === "CNY" || !code) return "¥";
   return code;

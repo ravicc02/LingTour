@@ -10,9 +10,9 @@ import { translate } from "@/translations";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://culvoy.com"),
-  title: "Culvoy Guangdong | Culture, Route Planning & Interpretation",
+  title: "Culvoy Guangdong — Story Routes, Culture & Local Interpreters",
   description:
-    "Explore Guangdong culture, book a free fixed route, or request custom route planning and professional interpretation.",
+    "Story routes through Guangdong's three cultures — a crater lake in Zhanjiang, gongfu tea in Chaozhou, morning dim sum in Guangzhou — with a local interpreter at your side.",
   // culvoy.com and the legacy lingfengtranstour.cn family serve the same copy
   // during the domain migration; without this the engines see duplicate content.
   // Detail pages override it with their own path.
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     url: "/",
     title: "Culvoy Guangdong",
     description:
-      "Explore Guangdong culture, book a free fixed route, or request custom route planning and professional interpretation.",
+      "Story routes through Guangdong's three cultures — a crater lake in Zhanjiang, gongfu tea in Chaozhou, morning dim sum in Guangzhou — with a local interpreter at your side.",
   },
   twitter: {
     card: "summary_large_image",
@@ -53,7 +53,7 @@ const organizationJsonLd = {
   logo: "https://culvoy.com/opengraph-image.png",
   email: "hello@culvoy.com",
   description:
-    "Explore Guangdong culture, book a free fixed route, or request custom route planning and professional interpretation.",
+    "Story routes through Guangdong's three cultures — a crater lake in Zhanjiang, gongfu tea in Chaozhou, morning dim sum in Guangzhou — with a local interpreter at your side.",
   areaServed: {
     "@type": "Place",
     name: "Guangdong, China",

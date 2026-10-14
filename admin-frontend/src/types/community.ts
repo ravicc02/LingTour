@@ -24,11 +24,6 @@ export interface CommunityPost {
   title: string
   excerpt: string
   content: string
-  citySlug: string | null
-  routeId: string | null
-  interpreterId: string | null
-  verifiedExperience: boolean
-  verifiedBookingId: string | null
   location: string
   route: string
   date: string

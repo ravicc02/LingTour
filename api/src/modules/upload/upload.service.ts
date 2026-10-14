@@ -312,41 +312,25 @@ export class UploadService {
    * Delete a file from the uploads directory and its media_files record.
    */
   async deleteFile(filename: string): Promise<boolean> {
-    const filePath = resolveStoredUploadPath(this.uploadDir, filename);
-    // Keep the lock through unlink: a concurrent publication cannot acquire a
-    // reference between the check and deletion. The rollout table may not yet
-    // exist, but any unexpected DB failure fails closed (never unlinks).
-    return this.dataSource.transaction(async manager => {
-      const [schema] = await manager.query("SELECT to_regclass('event_publications') AS publications");
-      if (schema?.publications) {
-        await manager.query('LOCK TABLE event_publications IN SHARE MODE');
-        const url = buildPublicUploadUrl(filename);
-        const references = await manager.query(
-          `SELECT id FROM event_publications WHERE position($1 IN snapshot::text) > 0 LIMIT 1`,
-          [url],
+    try {
+      const filePath = resolveStoredUploadPath(this.uploadDir, filename);
+      await unlink(filePath);
+
+      // Also remove the tracking record
+      try {
+        await this.dataSource.query(
+          `DELETE FROM media_files WHERE filename = $1`,
+          [filename],
         );
-        // Retain stopped/withdrawn evidence as well as currently visible media.
-        if (references.length) {
-          throw new BadRequestException('该文件被活动发布历史引用，不能删除。请保留历史图片、视频和封面。');
-        }
-      }
-      try {
-        await unlink(filePath);
-      } catch {
-        return false;
-      }
-      // Preserve the old tracking cleanup behavior; use a savepoint so a
-      // registry failure does not abort the retention transaction.
-      await manager.query('SAVEPOINT media_tracking_cleanup');
-      try {
-        await manager.query('DELETE FROM media_files WHERE filename = $1', [filename]);
       } catch (err: unknown) {
-        await manager.query('ROLLBACK TO SAVEPOINT media_tracking_cleanup');
         const message = err instanceof Error ? err.message : String(err);
         this.logger.warn(`Failed to remove media_files record: ${message}`);
       }
+
       return true;
-    });
+    } catch {
+      return false;
+    }
   }
 
   /**

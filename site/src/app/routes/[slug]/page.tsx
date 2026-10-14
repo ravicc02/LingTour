@@ -1,7 +1,6 @@
 import { cache, Suspense } from "react";
 import type { Metadata } from "next";
 import { fetchRouteBySlugServer, fetchRoutesServer } from "@/lib/server-data";
-import { fetchScopedRoutePosts } from "@/lib/community-server-api";
 
 const SEEDED_ROUTE_SLUGS = ["southern-sea-table"];
 const getRoute = cache(fetchRouteBySlugServer);
@@ -58,11 +57,10 @@ export default async function RouteDetailPage({
 }) {
   const { slug } = await params;
   const initialRoute = await getRoute(slug);
-  const initialPosts = await fetchScopedRoutePosts(initialRoute?.id);
   const { RouteDetailClient } = await import("./RouteDetailClient");
   return (
     <Suspense fallback={null}>
-      <RouteDetailClient slug={slug} initialRoute={initialRoute} initialPosts={initialPosts} />
+      <RouteDetailClient slug={slug} initialRoute={initialRoute} />
     </Suspense>
   );
 }

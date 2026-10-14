@@ -1,6 +1,6 @@
 export const routes = {
   en: {
-    "routes.page.title": "Route Planning",
+    "routes.page.title": "Story Routes",
     "routes.page.subtitle": "Routes are written as stories, not checklists. Each one follows a cultural thread through the places that define it.",
     "routes.page.viewFull": "View full journey",
     "routes.page.duration": "duration",
@@ -46,10 +46,10 @@ export const routes = {
     "routes.progress.stop": "Stop",
     "routes.progress.of": "of",
 
-    "routes.atlas.eyebrow": "Guangdong Routes",
+    "routes.atlas.eyebrow": "Story Routes / Selection",
     "routes.atlas.titlePrimary": "Guangdong",
-    "routes.atlas.titleItalic": "Route Planning.",
-    "routes.atlas.lede": "Book a fixed route for free, or request a separately quoted custom plan.",
+    "routes.atlas.titleItalic": "Story Routes.",
+    "routes.atlas.lede": "Each route is written the way you would actually walk it: an 08:00 start, a market in the middle, a slow last hour before dinner.",
     "routes.atlas.archiveBadge": "Archive · Story routes",
     "routes.atlas.dispatchInfo": "Dispatch info",
     "routes.atlas.waypoints": "Waypoints:",

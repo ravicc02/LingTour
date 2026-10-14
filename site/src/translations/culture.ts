@@ -32,16 +32,16 @@ export const culture = {
     "culture.progress.food": "Food",
     "culture.progress.route": "Route",
 
-    "culture.atlas.eyebrow": "Cultural Information",
+    "culture.atlas.eyebrow": "City Culture · The Atlas",
     "culture.atlas.titlePrimary": "Guangdong",
     "culture.atlas.titleItalic": "City Culture.",
-    "culture.atlas.lede": "Explore Guangdong's cities through their food, crafts, languages and local traditions.",
+    "culture.atlas.lede": "Guangdong does not hold still between cities. Chaozhou pours tea into thimble cups, Guangzhou does its loudest talking over morning dim sum, and the Hakka hills keep a language of their own.",
     "culture.atlas.archiveLabel": "Archive No.",
     "culture.atlas.archiveCode": "GD-020-0755",
     "culture.atlas.empty.title": "No city records",
     "culture.atlas.empty.body": "No city records on file yet.",
-    "culture.atlas.openArchive": "Know more",
-    "culture.filter.searchLabel": "Search cities",
+    "culture.atlas.openArchive": "Open archive",
+    "culture.filter.searchLabel": "Search city archives",
     "culture.filter.searchPlaceholder": "City, region, craft, or food...",
     "culture.filter.count": "{visible}/{total} cities",
     "culture.filter.open": "Filters",
@@ -52,9 +52,9 @@ export const culture = {
     "culture.filter.emptyTitle": "No matches in this region.",
     "culture.filter.emptyBody": "Try another cultural thread or clear the current filters.",
 
-    "culture.cta.eyebrow": "Route Planning",
-    "culture.cta.title": "Find a route for your visit.",
-    "culture.cta.button": "Route Planning",
+    "culture.cta.eyebrow": "Start with a thread",
+    "culture.cta.title": "Pick a thread and follow it through the city.",
+    "culture.cta.button": "Browse routes",
   }
 
 };

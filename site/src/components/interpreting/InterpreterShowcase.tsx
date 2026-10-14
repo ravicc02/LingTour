@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { placeholderFor } from "@/lib/placeholders";
 import { Reveal } from "@/components/ui/Reveal";
-import { RelatedCommunityPosts } from "@/components/community/RelatedCommunityPosts";
 
 export type InterpreterProfile = {
   id: string;
@@ -19,7 +18,7 @@ export type InterpreterProfile = {
 
 type Props = {
   profiles: InterpreterProfile[];
-  onSelectGuide: (profile: InterpreterProfile) => void;
+  onSelectGuide: (needsText: string) => void;
 };
 
 export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
@@ -27,7 +26,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
 
   const handleSelect = (profile: InterpreterProfile) => {
     setSelectedProfileId(profile.id);
-    onSelectGuide(profile);
+    onSelectGuide(profile.needsPrefill);
     const el = document.getElementById("interpreting-booking");
     if (el) {
       const reduceMotion = window.matchMedia(
@@ -44,7 +43,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
     <section className="site-container py-beat">
       <div className="mb-8 opacity-60">
         <Reveal>
-          <h2 className="font-[family:var(--font-display)] text-2xl leading-[1.05] tracking-[-0.02em] text-[var(--river-deep)] sm:text-3xl md:text-4xl">
+          <h2 className="whitespace-nowrap font-[family:var(--font-display)] text-2xl leading-[1.05] tracking-[-0.02em] text-[var(--river-deep)] sm:text-3xl md:text-4xl">
             {"Meet the interpreters"}
           </h2>
         </Reveal>
@@ -83,9 +82,11 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--river-deep)]/80 via-transparent to-transparent opacity-60" />
 
-                  {profile.level ? <div className="absolute top-4 left-4 z-10">
-                    <span className="px-3 py-1 bg-[var(--river-deep)] text-sm text-white">{profile.level}</span>
-                  </div> : null}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
+                      {profile.level ?? profile.levelZh}
+                    </span>
+                  </div>
 
                   <div className="absolute bottom-6 left-6 right-6 z-10">
                     <p className="mb-1 line-clamp-2 text-[11px] font-bold uppercase leading-snug tracking-[0.16em] text-[var(--gold)] handwritten sm:text-[12px] sm:tracking-[0.2em]">
@@ -103,7 +104,12 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
                       <p className="text-xs leading-relaxed text-[var(--muted)] italic mb-2">
                         {profile.languages}
                       </p>
-                      <p className="text-sm leading-6 text-[var(--muted)]">Preference only. Assignment is confirmed after review.</p>
+                      <div className="flex items-center gap-2">
+                        <div aria-hidden="true" className="w-1 h-1 rounded-full bg-[var(--cinnabar)] animate-pulse" />
+                        <p className="text-[12px] font-bold uppercase tracking-widest text-[var(--cinnabar)]">
+                          Ready to match
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -117,15 +123,16 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
 
                   <button
                     type="button"
-                    aria-pressed={isSelected}
                     onClick={() => handleSelect(profile)}
                     className={[
                       "btn-primary mt-auto w-full py-4 text-[12px] flex items-center justify-between group/btn",
                       isSelected ? "bg-[var(--cinnabar)]" : ""
                     ].join(" ")}
                   >
-                    <span>{isSelected ? "Preferred interpreter" : "Add preference"}</span>
-                    <span aria-hidden="true">-&gt;</span>
+                    <span>{"Add to request"}</span>
+                    <svg className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </button>
                 </div>
               </article>
@@ -133,7 +140,6 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
           );
         })}
       </div>
-      {selectedProfileId ? <RelatedCommunityPosts interpreterId={selectedProfileId} title="Interpreter experiences" /> : null}
     </section>
   );
 }

@@ -10,8 +10,6 @@ import { placeholderFor } from "@/lib/placeholders";
 import { SEED_IMAGES } from "@/lib/seed-images";
 import type { StoryRoute } from "@/data/routes";
 import { ArchiveFilterBar } from "@/components/ui/ArchiveFilterBar";
-import { useSearchParams } from "next/navigation";
-import { BookingSection } from "@/components/interpreting/BookingSection";
 import { PastoralPageMotion } from "@/components/ui/PastoralPageMotion";
 
 function uniqueValues(values: string[]) {
@@ -28,9 +26,6 @@ export default function RoutesPageClient({
   initialRoutes,
 }: RoutesPageClientProps) {
   const { t } = useLocale();
-  const query = useSearchParams();
-  const citySlug = query.get("citySlug") || "";
-  const requestType = query.get("type") === "custom_route" ? "custom_route" : "free_route";
   const [search, setSearch] = useState("");
   const [culture, setCulture] = useState("");
   const [duration, setDuration] = useState("");
@@ -66,7 +61,6 @@ export default function RoutesPageClient({
       .join(" ")
       .toLowerCase();
     return (
-      (!citySlug || route.citySlugs.includes(citySlug)) &&
       (!deferredSearch || searchable.includes(deferredSearch)) &&
       (!culture || route.culture === culture) &&
       (!duration || route.duration === duration) &&
@@ -101,7 +95,6 @@ export default function RoutesPageClient({
                 <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
                   {t("routes.atlas.lede")}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-3"><a href="#free-routes" className="btn-primary inline-flex min-h-11 items-center">Free Routes</a><Link href={`/routes/?type=custom_route${citySlug ? `&citySlug=${encodeURIComponent(citySlug)}` : ""}#route-request`} className="btn-outline inline-flex min-h-11 items-center">Custom Routes</Link></div>
               </Reveal>
             </div>
 
@@ -176,10 +169,7 @@ export default function RoutesPageClient({
         </div>
       </section>
 
-      <section id="free-routes" className="site-container scroll-mt-24 py-10 sm:py-12 lg:py-20">
-        <h2 className="mb-4 font-[family:var(--font-display)] text-3xl sm:text-4xl">Free Routes</h2>
-        <p className="mb-6 max-w-2xl text-base leading-7 text-[var(--muted)]">Fixed-route booking has a USD 0.00 route fee. Interpretation is optional and separately priced; third-party travel costs are not included.</p>
-        {citySlug ? <p className="mb-6 text-sm text-[var(--muted)]">Showing routes for {citySlug}. <Link href="/routes/#free-routes" className="inline-flex min-h-11 items-center underline">All cities</Link></p> : null}
+      <section className="site-container py-10 sm:py-12 lg:py-20">
         {storyRoutes.length > 0 ? (
           <ArchiveFilterBar
             searchValue={search}
@@ -298,7 +288,6 @@ export default function RoutesPageClient({
         )}
       </section>
 
-      <BookingSection serviceType={requestType} anchorId="route-request" />
       <section className="pb-20 lg:pb-32">
         <div className="site-container">
           <div className="relative overflow-hidden bg-[var(--river-deep)] bg-grain px-6 py-16 text-white scrapbook-shadow sm:px-8 sm:py-20 lg:px-20 lg:py-28">

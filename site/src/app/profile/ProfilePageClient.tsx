@@ -6,8 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
 import { PastoralPageMotion } from "@/components/ui/PastoralPageMotion";
 import { Price } from "@/components/ui/Price";
-import { ProfileCalendar } from "@/components/profile/ProfileCalendar";
-import { ServiceRequestDashboard } from "@/components/account/ServiceRequestDashboard";
 import {
   clearStoredAuth,
   confirmCurrentUserEmailChange,
@@ -31,12 +29,11 @@ import type { StoreProduct } from "@/data/store";
 import { countryName, countryOptions, normalizeCountryCode } from "@/lib/country-list";
 import { useLocale } from "@/lib/locale-context";
 
-type ProfileTab = "notes" | "calendar" | "routes" | "collection" | "bookings" | "settings";
+type ProfileTab = "notes" | "routes" | "collection" | "bookings" | "settings";
 type FavoriteItem = { id: string; type: string; title: string };
 
 const PROFILE_TABS: Array<{ key: ProfileTab; labelKey: string }> = [
   { key: "notes", labelKey: "account.profile.tabs.notes" },
-  { key: "calendar", labelKey: "account.profile.tabs.calendar" },
   { key: "routes", labelKey: "account.profile.tabs.routes" },
   { key: "collection", labelKey: "account.profile.tabs.collection" },
   { key: "bookings", labelKey: "account.profile.tabs.bookings" },
@@ -486,8 +483,6 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
           tabIndex={0}
           className="min-h-0 bg-transparent focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[var(--gold)]"
         >
-        {activeTab === "calendar" ? <ProfileCalendar key={user.id} userId={user.id} /> : null}
-
         {activeTab === "notes" ? (
           savedNotes.length ? (
             <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -562,8 +557,6 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
             <EmptyArchive title={t("account.profile.collectionEmpty")} body={t("account.profile.collectionEmptyBody")} href="/shop" cta={t("account.profile.collectionCta")} />
           )
         ) : null}
-
-        {activeTab === "bookings" ? <ServiceRequestDashboard key={user.id} userId={user.id} /> : null}
 
         {activeTab === "bookings" ? (
           !bookingsReady ? (

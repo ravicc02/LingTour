@@ -38,8 +38,6 @@ import {
   isAllowedLiveUpload,
   readUploadHead,
 } from '../upload/upload-policy';
-import { CommunityQueryDto } from './dto/community-query.dto';
-import { CommunityAssociationsDto, VerifyCommunityExperienceDto } from './dto/community-associations.dto';
 import { UpsertCommunityPostDto } from './dto/upsert-community-post.dto';
 import { UpdateCommunityStatusDto } from './dto/update-community-status.dto';
 import { UpsertCommunityBriefDto } from './dto/upsert-community-brief.dto';
@@ -120,18 +118,24 @@ export class CommunityController {
   @ApiQuery({ name: 'q', required: false })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'citySlug', required: false })
-  @ApiQuery({ name: 'routeId', required: false })
-  @ApiQuery({ name: 'interpreterId', required: false })
-  @ApiQuery({ name: 'sort', required: false, enum: ['latest', 'loved', 'saved'] })
-  async getPublicPosts(@Query() query: CommunityQueryDto) {
-    return this.communityService.getPublicPosts(query);
-  }
-
-  @Public()
-  @Get('public/community/associations')
-  async getAssociationOptions() {
-    return this.communityService.associationOptions();
+  async getPublicPosts(
+    @Query('channel') channel?: string,
+    @Query('route') route?: string,
+    @Query('location') location?: string,
+    @Query('tag') tag?: string,
+    @Query('q') q?: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return this.communityService.getPublicPosts({
+      channel,
+      route,
+      location,
+      tag,
+      q,
+      page: +page,
+      limit: +limit,
+    });
   }
 
   @Public()
@@ -146,7 +150,7 @@ export class CommunityController {
     @Body() dto: UpsertCommunityPostDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const post = await this.communityService.create({
+    return this.communityService.create({
       ...dto,
       userId: this.requireUserId(req),
       userEmail: req.user?.email ?? dto.userEmail ?? '',
@@ -158,7 +162,6 @@ export class CommunityController {
       saves: 0,
       featured: false,
     });
-    return this.communityService.publicPost(post);
   }
 
   @Post('public/community/upload')
@@ -265,13 +268,6 @@ export class CommunityController {
   }
 
   @Roles('admin', 'editor')
-  @Get('admin/community/associations')
-  @ApiBearerAuth()
-  async getAdminAssociationOptions() {
-    return this.communityService.associationOptions();
-  }
-
-  @Roles('admin', 'editor')
   @Get('admin/community/posts')
   @ApiBearerAuth()
   @ApiQuery({ name: 'status', required: false, enum: COMMUNITY_POST_STATUSES })
@@ -322,30 +318,6 @@ export class CommunityController {
     @Body() dto: UpsertCommunityPostDto,
   ) {
     return this.communityService.update(id, dto);
-  }
-
-  @Roles('admin', 'editor')
-  @Patch('admin/community/posts/:id/associations')
-  @ApiBearerAuth()
-  @UseInterceptors(AuditLogInterceptor)
-  @AuditAction('update', 'community_post')
-  async updateAssociations(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: CommunityAssociationsDto,
-  ) {
-    return this.communityService.updateAssociations(id, dto);
-  }
-
-  @Roles('admin', 'editor')
-  @Patch('admin/community/posts/:id/experience')
-  @ApiBearerAuth()
-  @UseInterceptors(AuditLogInterceptor)
-  @AuditAction('review', 'community_post')
-  async verifyExperience(
-    @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: VerifyCommunityExperienceDto,
-  ) {
-    return this.communityService.verifyExperience(id, dto.bookingId);
   }
 
   @Roles('admin', 'editor')

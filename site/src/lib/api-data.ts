@@ -185,10 +185,6 @@ interface ApiEvent {
   citySlug: string;
   date: string;
   endDate?: string | null;
-  media?: MediaAsset[];
-  slogan?: string;
-  extraInfo?: string;
-  displayOrder?: number;
   tags: string[];
   image: string | null;
   status: string;
@@ -264,7 +260,6 @@ function mapRoute(apiRoute: ApiStoryRoute): StoryRoute {
       : [];
 
   return {
-    id: apiRoute.id,
     slug: apiRoute.slug,
     title: apiRoute.title,
     culture: apiRoute.cultureTag as StoryRoute["culture"],
@@ -417,11 +412,6 @@ export type EventData = {
   slug: string;
   title: string;
   date: string;
-  endDate?: string | null;
-  media?: MediaAsset[];
-  slogan?: string;
-  extraInfo?: string;
-  displayOrder?: number;
   city: string;
   citySlug: string;
   tags: string[];
@@ -444,11 +434,6 @@ function mapEvent(apiEvent: ApiEvent): EventData {
     slug: apiEvent.slug,
     title: apiEvent.title,
     date: apiEvent.date,
-    endDate: apiEvent.endDate ?? null,
-    media: apiEvent.media ?? [],
-    slogan: apiEvent.slogan ?? "",
-    extraInfo: apiEvent.extraInfo ?? "",
-    displayOrder: apiEvent.displayOrder ?? 0,
     city: apiEvent.city,
     citySlug: apiEvent.citySlug,
     tags: apiEvent.tags ?? [],
@@ -943,10 +928,6 @@ export type CommunityFeedPost = {
   user: { name: string; handle?: string; avatar?: string };
   image: string;
   media: CommunityPostMedia[];
-  citySlug?: string | null;
-  routeId?: string | null;
-  interpreterId?: string | null;
-  verifiedExperience?: boolean;
   location: string;
   route: string;
   createdAt: string;
@@ -977,10 +958,6 @@ interface ApiCommunityPost {
   tags?: string[];
   image: string | null;
   media?: { type: string; url: string; poster?: string; alt?: string }[] | null;
-  citySlug?: string | null;
-  routeId?: string | null;
-  interpreterId?: string | null;
-  verifiedExperience?: boolean;
   location: string;
   route: string;
   mood: string;
@@ -1070,10 +1047,6 @@ function mapCommunityPost(
     },
     image: api.image ?? "",
     media: mapCommunityMedia(api),
-    citySlug: api.citySlug ?? null,
-    routeId: api.routeId ?? null,
-    interpreterId: api.interpreterId ?? null,
-    verifiedExperience: api.verifiedExperience ?? false,
     location,
     route,
     createdAt: api.createdAt,

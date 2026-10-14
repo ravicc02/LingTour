@@ -87,7 +87,7 @@ export const checkout = {
     "checkout.success.statusRefunded": "Refunded",
     "checkout.success.total": "Total",
     "checkout.success.continueBrowsing": "Continue browsing",
-    "checkout.success.returnToInterpreting": "Return to interpretation",
+    "checkout.success.returnToInterpreting": "Return to interpreting",
     "checkout.success.visitCommunity": "Visit community",
     "checkout.success.checkAgain": "Check again",
     "checkout.success.checkingAgain": "Checking",

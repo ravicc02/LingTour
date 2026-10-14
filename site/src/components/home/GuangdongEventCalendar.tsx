@@ -1,171 +1,348 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/lib/locale-context";
 import type { EventData } from "@/lib/api-data";
 import type { StoryRoute } from "@/data/routes";
 import { Reveal } from "@/components/ui/Reveal";
-import { MediaFrame } from "@/components/ui/MediaFrame";
-import { MarkdownRenderer } from "@/components/culture/MarkdownRenderer";
-import { resolveMediaGallery } from "@/types/media";
-import { fetchCalendarMonth, type CalendarEvent } from "@/lib/calendar-api";
-import { calendarDays, dateKey, dateParts, millisecondsToShanghaiMidnight, overlapsDate, shanghaiDate, shiftMonth } from "@/lib/calendar-dates";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const control = "min-h-11 min-w-11 border border-[var(--line)] px-4 text-sm text-[var(--river-deep)] hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--river-deep)]";
+const DAY_NAMES_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTH_NAMES_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-type PreviewEvent = EventData & Partial<Pick<CalendarEvent, "endDate" | "media" | "slogan" | "extraInfo" | "displayOrder">>;
-type Props = { events?: EventData[]; routes?: StoryRoute[]; previewEvent?: PreviewEvent | null };
-
-function CalendarEventContent({ event, routes }: { event: CalendarEvent; routes: StoryRoute[] }) {
-  const media = resolveMediaGallery(event.media, [event.image]);
-  const [mediaIndex, setMediaIndex] = useState(0);
-  const asset = media[mediaIndex];
-  const relatedRoutes = routes.filter(route => event.relatedRouteSlugs.includes(route.slug));
-  return (
-    <article className="min-w-0 border-t border-[var(--line)] pt-6">
-      {asset ? <div className="aspect-[4/3] overflow-hidden border-[8px] border-white">
-        <MediaFrame key={asset.url} asset={asset} fallbackSrc={event.image || ""} alt={asset.alt || event.title} mode="interactive" controls />
-      </div> : null}
-      {media.length > 1 ? <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label={`Media for ${event.title}`}>
-        {media.map((item, index) => <button type="button" key={`${item.type}:${item.url}`} aria-pressed={mediaIndex === index}
-          aria-label={`${item.type === "video" ? "Video" : "Image"} ${index + 1} for ${event.title}`} className={control}
-          onClick={() => setMediaIndex(index)}>{item.type === "video" ? "Video" : "Image"} {index + 1}</button>)}
-      </div> : null}
-      <div className="mt-5 space-y-3">
-        {event.city ? <p className="text-sm text-[var(--muted)]">{event.city}</p> : null}
-        <h4 className="break-words font-[family:var(--font-display)] text-2xl leading-tight text-[var(--river-deep)] sm:text-3xl">{event.title}</h4>
-        {event.slogan ? <p className="text-base italic leading-relaxed text-[var(--river-deep)]">{event.slogan}</p> : null}
-        {event.summary ? <MarkdownRenderer content={event.summary} /> : null}
-        {event.description || event.extraInfo || relatedRoutes.length ? <details className="border-t border-[var(--line)] pt-2">
-          <summary className="min-h-11 cursor-pointer py-3 font-bold text-[var(--cinnabar)] focus-visible:outline-2 focus-visible:outline-offset-4">Know more</summary>
-          <div className="space-y-5 pb-4">
-            {event.description ? <MarkdownRenderer content={event.description} /> : null}
-            {event.extraInfo ? <div><h5 className="mb-2 font-bold text-[var(--river-deep)]">Additional information</h5><MarkdownRenderer content={event.extraInfo} /></div> : null}
-            {relatedRoutes.length ? <ul className="space-y-2">{relatedRoutes.map(route => <li key={route.slug}><Link className="inline-flex min-h-11 items-center underline underline-offset-4" href={`/routes/${route.slug}`}>{route.title}</Link></li>)}</ul> : null}
-          </div>
-        </details> : null}
-      </div>
-    </article>
-  );
+function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
 }
 
-export function GuangdongEventCalendar({ routes = [], previewEvent = null }: Props) {
+function firstDayOfMonth(year: number, month: number): number {
+  return new Date(year, month, 1).getDay();
+}
+
+function dateKey(year: number, month: number, day: number): string {
+  const m = String(month + 1).padStart(2, "0");
+  const d = String(day).padStart(2, "0");
+  return `${year}-${m}-${d}`;
+}
+
+type Props = {
+  events?: EventData[];
+  routes?: StoryRoute[];
+};
+
+export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
   const { t } = useLocale();
-  // SSR and hydration render the same shell. Local date is initialized only on
-  // mount, never from a limited event feed or the server's timezone/clock.
-  const [today, setToday] = useState<string | null>(null);
-  const [view, setView] = useState<{ year: number; month: number } | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const followingToday = useRef(true);
-  const [result, setResult] = useState<{ month: string; events: CalendarEvent[] } | null>(null);
-  const [loadState, setLoadState] = useState<{ month: string; status: "loading" | "success" | "error" }>({ month: "", status: "loading" });
-  const [refresh, setRefresh] = useState(0);
-  const monthId = view ? `${view.year}-${view.month}` : "";
+  const dayNames = DAY_NAMES_EN;
+  const monthNames = MONTH_NAMES_EN;
+
+  const eventsByDate = useMemo(() => {
+    const map: Record<string, EventData[]> = {};
+    for (const event of events) {
+      if (!map[event.date]) map[event.date] = [];
+      map[event.date].push(event);
+    }
+    return map;
+  }, [events]);
+
+  const initialDate =
+    events.length > 0 ? new Date(`${events[0].date}T00:00:00`) : new Date();
+  const [year, setYear] = useState(initialDate.getFullYear());
+  const [month, setMonth] = useState(initialDate.getMonth());
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    events[0]?.date ?? null,
+  );
 
   useEffect(() => {
-    if (!previewEvent?.date || !/^\d{4}-\d{2}-\d{2}$/.test(previewEvent.date)) return;
-    followingToday.current = false;
-    setView(dateParts(previewEvent.date));
-    setSelectedDate(previewEvent.date);
-  }, [previewEvent?.date]);
+    if (!events.length) return;
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    const sync = () => {
-      const nextToday = shanghaiDate();
-      setToday(previous => previous === nextToday ? previous : nextToday);
-      if (followingToday.current) {
-        setSelectedDate(nextToday);
-        const nextView = dateParts(nextToday);
-        setView(previous => previous?.year === nextView.year && previous.month === nextView.month ? previous : nextView);
-      }
-      clearTimeout(timer);
-      timer = setTimeout(sync, millisecondsToShanghaiMidnight() + 25);
-    };
-    const resume = () => { if (!document.hidden) { sync(); setRefresh(value => value + 1); } };
-    sync();
-    window.addEventListener("focus", resume);
-    document.addEventListener("visibilitychange", resume);
-    return () => { clearTimeout(timer); window.removeEventListener("focus", resume); document.removeEventListener("visibilitychange", resume); };
-  }, []);
+    const eventDates = new Set(events.map((event) => event.date));
+    const nextSelectedDate =
+      selectedDate && eventDates.has(selectedDate) ? selectedDate : events[0].date;
 
-  useEffect(() => {
-    if (!view) return;
-    const controller = new AbortController();
-    let cancelled = false;
-    setLoadState({ month: monthId, status: "loading" });
-    fetchCalendarMonth(view.year, view.month, controller.signal).then(events => {
-      if (cancelled) return;
-      setResult({ month: monthId, events });
-      setLoadState({ month: monthId, status: "success" });
-    }).catch(() => { if (!cancelled) setLoadState({ month: monthId, status: "error" }); });
-    return () => { cancelled = true; controller.abort(); };
-  }, [view, monthId, refresh, today]);
+    if (!nextSelectedDate) return;
 
-  const publishedEvents = result?.month === monthId && loadState.status === "success" ? result.events : [];
-  const events: CalendarEvent[] = previewEvent ? [{ ...previewEvent,
-    eventId: previewEvent.id, publicationId: null, version: 0, source: "legacy", publishedAt: null,
-    eventDate: previewEvent.date, eventEndDate: previewEvent.endDate || null,
-    endDate: previewEvent.endDate || null, media: previewEvent.media ?? [],
-    slogan: previewEvent.slogan ?? "", extraInfo: previewEvent.extraInfo ?? "", displayOrder: previewEvent.displayOrder ?? 0,
-  }] : publishedEvents;
-  const activeEvents = selectedDate ? events.filter(event => overlapsDate(event, selectedDate)) : [];
-  const status = previewEvent ? "success" : loadState.month === monthId ? loadState.status : "loading";
-  const dateLabel = selectedDate ? new Intl.DateTimeFormat("en", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${selectedDate}T00:00:00Z`)) : "";
+    const nextDate = new Date(`${nextSelectedDate}T00:00:00`);
+    setSelectedDate(nextSelectedDate);
+    setYear(nextDate.getFullYear());
+    setMonth(nextDate.getMonth());
+  }, [events, selectedDate]);
 
-  function changeMonth(offset: number) {
-    if (!view) return;
-    followingToday.current = false;
-    const next = shiftMonth(view.year, view.month, offset);
-    setView(next);
-    setSelectedDate(dateKey(next.year, next.month, 1));
-  }
-  function goToday() {
-    followingToday.current = true;
-    const date = shanghaiDate();
-    setToday(date); setView(dateParts(date)); setSelectedDate(date); setRefresh(value => value + 1);
+  const activeEvents = selectedDate ? (eventsByDate[selectedDate] ?? []) : [];
+  const activeEvent = activeEvents[0] ?? null;
+
+  const relatedRoute = useMemo(() => {
+    if (!activeEvent?.relatedRouteSlugs.length) return null;
+    return (
+      routes.find((route) => route.slug === activeEvent.relatedRouteSlugs[0]) ??
+      null
+    );
+  }, [activeEvent, routes]);
+
+  function prevMonth() {
+    if (month === 0) {
+      setMonth(11);
+      setYear((value) => value - 1);
+      return;
+    }
+    setMonth((value) => value - 1);
   }
 
-  return <section className="site-container py-16 sm:py-20 lg:py-40" aria-label="Guangdong event calendar">
-    <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-20">
-      <div className="min-w-0">
-        <Reveal><h2 className="mb-8 font-[family:var(--font-display)] text-4xl leading-[0.94] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl md:text-7xl">{t("home.calendar.title")}</h2></Reveal>
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-6">
-          <h3 className="font-[family:var(--font-display)] text-2xl leading-tight text-[var(--river-deep)] sm:text-3xl" aria-live="polite">{view ? `${MONTHS[view.month]} ${view.year}` : "Calendar"}</h3>
-          <div className="flex gap-2"><button type="button" disabled={!view} className={control} aria-label="Previous month" onClick={() => changeMonth(-1)}>‹</button>
-            <button type="button" className={control} onClick={goToday}>Today</button>
-            <button type="button" disabled={!view} className={control} aria-label="Next month" onClick={() => changeMonth(1)}>›</button></div>
+  function nextMonth() {
+    if (month === 11) {
+      setMonth(0);
+      setYear((value) => value + 1);
+      return;
+    }
+    setMonth((value) => value + 1);
+  }
+
+  const totalDays = daysInMonth(year, month);
+  const startDow = firstDayOfMonth(year, month);
+  const today = new Date();
+  const todayStr = dateKey(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+
+  const weeks: Array<Array<number | null>> = [];
+  let currentWeek: Array<number | null> = [];
+
+  for (let i = 0; i < startDow; i += 1) currentWeek.push(null);
+  for (let day = 1; day <= totalDays; day += 1) {
+    currentWeek.push(day);
+    if (currentWeek.length === 7) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+  if (currentWeek.length > 0) {
+    while (currentWeek.length < 7) currentWeek.push(null);
+    weeks.push(currentWeek);
+  }
+
+  return (
+    <section className="site-container py-16 sm:py-20 lg:py-40">
+      <div className="grid items-start gap-10 lg:grid-cols-[1fr_420px] lg:gap-20">
+        <div className="flex flex-col">
+          <Reveal>
+            <div className="mb-12 flex flex-wrap items-center justify-between gap-6 sm:mb-16">
+              <h2 className="font-[family:var(--font-display)] text-4xl leading-[0.94] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl md:text-7xl">
+                {t("home.calendar.title")}
+              </h2>
+              <div className="flex shrink-0 gap-4">
+                <button
+                  onClick={prevMonth}
+                  aria-label="Previous month"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--line)] transition-all hover:bg-[var(--river-deep)] hover:text-white"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M15 19l-7-7 7-7"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={nextMonth}
+                  aria-label="Next month"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--line)] transition-all hover:bg-[var(--river-deep)] hover:text-white"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M9 5l7 7-7 7"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="mb-8 border-b border-[var(--line)] pb-6 sm:mb-10 sm:pb-8">
+            <h3 className="font-[family:var(--font-display)] text-[2.2rem] italic leading-none text-[var(--river-deep)] sm:text-4xl">
+              {monthNames[month]}{" "}
+              <span className="ml-2 not-italic text-[var(--gold)]">{year}</span>
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+            {dayNames.map((name) => (
+              <div
+                key={name}
+                className="py-4 text-center text-[12px] font-bold uppercase tracking-widest text-[var(--muted)] opacity-40"
+              >
+                {name}
+              </div>
+            ))}
+            {weeks.flat().map((day, index) => {
+              if (day === null)
+                return (
+                  <div key={`empty-${index}`} className="aspect-square min-h-11" />
+                );
+
+              const key = dateKey(year, month, day);
+              const hasEvent = Boolean(eventsByDate[key]?.length);
+              const isSelected = key === selectedDate;
+              const isToday = key === todayStr;
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => setSelectedDate(key)}
+                  className={`group relative flex aspect-square min-h-11 flex-col items-center justify-center transition-all duration-500 ${
+                    isSelected
+                      ? "text-[var(--cinnabar)]"
+                      : "text-[var(--river-deep)] hover:bg-white/40"
+                  }`}
+                >
+                  <span
+                    className={`font-[family:var(--font-display)] text-2xl transition-all md:text-3xl ${
+                      isSelected
+                        ? "scale-125 font-bold"
+                        : "opacity-30 group-hover:opacity-60"
+                    }`}
+                  >
+                    {day}
+                  </span>
+
+                  {isToday ? (
+                    <div className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--cinnabar)]" />
+                  ) : null}
+                  {hasEvent ? (
+                    <div
+                      aria-hidden="true"
+                      className={`mt-1 h-1 w-1 rounded-full ${isSelected ? "animate-pulse bg-[var(--cinnabar)]" : "bg-[var(--gold)]"}`}
+                    />
+                  ) : null}
+                  {isSelected ? (
+                    <div className="scrapbook-shadow absolute inset-0 -z-10 rotate-3 border-2 border-[var(--cinnabar)]/20" />
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 space-y-6 sm:mt-16">
+            {activeEvents.length > 0 ? (
+              activeEvents.map((event) => (
+                <div
+                  key={event.id}
+                  className="relative border-l border-[var(--gold)]/30 pl-8"
+                >
+                  <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-[var(--gold)]" />
+                  <h4 className="mb-3 font-[family:var(--font-display)] text-xl text-[var(--river-deep)] sm:text-2xl">
+                    {event.title}
+                  </h4>
+                  <p className="handwritten max-w-lg text-sm leading-relaxed text-[var(--muted)]">
+                    {event.summary || t("home.calendar.eventFallbackEn")}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <div className="relative border-l border-[var(--line)]/60 pl-8">
+                <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-[var(--line)]" />
+                <p className="handwritten text-sm text-[var(--muted)]">
+                  {t("home.calendar.noEvents")}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        {view ? <div className="overflow-x-auto"><div className="grid min-w-[308px] grid-cols-7 gap-0 sm:gap-1" role="group" aria-label={`${MONTHS[view.month]} ${view.year} dates`}>
-          {DAYS.map(name => <div key={name} className="py-3 text-center text-xs font-bold text-[var(--muted)]">{name}</div>)}
-          {calendarDays(view.year, view.month).map((day, index) => {
-            if (day === null) return <div key={`blank-${index}`} aria-hidden="true" />;
-            const key = dateKey(view.year, view.month, day);
-            const count = events.filter(event => overlapsDate(event, key)).length;
-            const selected = key === selectedDate;
-            return <button type="button" key={key} aria-pressed={selected} aria-current={key === today ? "date" : undefined}
-              aria-label={`${MONTHS[view.month]} ${day}, ${view.year}${count ? `, ${count} event${count === 1 ? "" : "s"}` : ""}`}
-              onClick={() => { followingToday.current = false; setSelectedDate(key); }}
-              className={`relative flex min-h-11 flex-col items-center justify-center py-3 font-[family:var(--font-display)] text-xl focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--river-deep)] sm:aspect-square sm:text-3xl ${selected ? "bg-[var(--river-deep)] text-white" : "text-[var(--river-deep)] hover:bg-white/60"}`}>
-              {day}{count ? <span aria-hidden="true" className={`mt-1 h-1 w-1 rounded-full ${selected ? "bg-white" : "bg-[var(--cinnabar)]"}`} /> : null}
-              {key === today ? <span aria-hidden="true" className={`absolute bottom-1 h-px w-4 ${selected ? "bg-white" : "bg-[var(--river-deep)]"}`} /> : null}
-            </button>;
-          })}
-        </div><p className="mt-2 text-xs text-[var(--muted)] min-[360px]:hidden">Swipe to see all dates.</p></div> : <p role="status" className="py-12 text-[var(--muted)]">Opening calendar…</p>}
-        {previewEvent ? <p className="mt-5 text-sm font-bold text-[var(--cinnabar)]">Unsaved preview. Not published.</p> : null}
-        <p className="mt-5 text-sm text-[var(--muted)]">Dates in Guangdong (Asia/Shanghai).</p>
+
+        <div>
+          {relatedRoute ? (
+            <Reveal delay={200}>
+              <Link
+                href={`/routes/${relatedRoute.slug}`}
+                className="group relative block"
+              >
+                    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-4 border border-[var(--line)] bg-white p-3 scrapbook-shadow transition-all duration-700 group-hover:scale-[1.02] lg:block lg:-rotate-2 lg:p-6 lg:group-hover:rotate-0">
+                  <div className="relative aspect-square overflow-hidden lg:mb-8 lg:aspect-[3/4]">
+                    <img
+                      src={relatedRoute.image}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-1000 group-hover:scale-110"
+                    />
+                    <div className="absolute left-1/2 top-[-0.5rem] z-20 h-8 w-24 -translate-x-1/2 -rotate-3 bg-[var(--paper)]/60 backdrop-blur-sm" />
+                  </div>
+
+                  <div className="min-w-0 space-y-3 lg:space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="border border-[var(--gold)] px-3 py-1 text-[11px] font-bold uppercase text-[var(--gold)]">
+                        {t("home.calendar.verifiedRoute")}
+                      </span>
+                      <span className="text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                        {relatedRoute.duration}
+                      </span>
+                    </div>
+                    <h4 className="font-[family:var(--font-display)] text-xl leading-tight text-[var(--river-deep)] lg:text-3xl">
+                      {relatedRoute.title}
+                    </h4>
+                    <p className="hidden line-clamp-2 text-sm leading-relaxed text-[var(--muted)] lg:block">
+                      {relatedRoute.summary}
+                    </p>
+                    <div className="flex items-center justify-between border-t border-[var(--line)] pt-3 text-[var(--cinnabar)] lg:pt-6">
+                      <span className="text-[12px] font-bold uppercase tracking-widest">
+                        {t("home.calendar.exploreRoute")}
+                      </span>
+                      <svg
+                        className="h-5 w-5 transition-transform group-hover:translate-x-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+              </Link>
+            </Reveal>
+          ) : (
+            <div className="flex aspect-[4/3] items-center justify-center border-2 border-dashed border-[var(--line)] p-8 text-center sm:aspect-[3/4] sm:rotate-1 sm:p-12">
+              <p className="handwritten text-sm text-[var(--muted)] opacity-40">
+                {t("home.calendar.selectDate")}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="min-w-0" aria-busy={status === "loading"}>
-        <h3 className="mb-5 font-[family:var(--font-display)] text-2xl text-[var(--river-deep)]">{dateLabel || "Events"}</h3>
-        <p role="status" aria-live="polite" className="sr-only">{status === "success" ? `${activeEvents.length} events for ${dateLabel}` : status === "loading" ? "Loading events" : "Events unavailable"}</p>
-        {status === "loading" ? <div className="min-h-52 border-t border-[var(--line)] pt-6 text-[var(--muted)]">Loading events…</div> :
-          status === "error" ? <div className="space-y-4 border-t border-[var(--line)] pt-6"><p role="alert">Events could not be loaded.</p><button type="button" className={control} onClick={() => setRefresh(value => value + 1)}>Try again</button></div> :
-          activeEvents.length ? <div className="space-y-8">{activeEvents.map(event => <CalendarEventContent key={`${selectedDate}:${event.id}`} event={event} routes={routes} />)}</div> :
-            <div className="min-h-52 border-t border-[var(--line)] pt-6"><p className="text-[var(--muted)]">No events for this date.</p></div>}
-      </div>
-    </div>
-  </section>;
+    </section>
+  );
 }

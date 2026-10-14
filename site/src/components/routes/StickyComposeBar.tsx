@@ -5,8 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { FieldKit } from "@/components/community/FieldKit";
 import { readStoredUser, type LocalUser } from "@/lib/auth-client";
 import { AUTH_PROMPTS } from "@/lib/auth-prompts";
-import { createAssociatedCommunityPost, communityContextHref } from '@/lib/community-api';
 import {
+  createCommunityPost,
   type CommunityFeedPost,
   type CommunityPostMedia,
   type RouteCommunityPost,
@@ -21,8 +21,6 @@ import {
 type RouteStopTarget = { index: number; time: string; name: string };
 
 type Props = {
-  routeId?: string;
-  routeCitySlug?: string;
   routeSlug: string;
   routeTitle: string;
   routeCity: string;
@@ -48,8 +46,6 @@ function formatRelativeTime(iso: string): string {
 }
 
 export function StickyComposeBar({
-  routeId,
-  routeCitySlug,
   routeSlug,
   routeTitle,
   routeCity,
@@ -61,11 +57,10 @@ export function StickyComposeBar({
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState("");
   const [user, setUser] = useState<LocalUser | null>(null);
   const [syncedPosts, setSyncedPosts] = useState<CommunityFeedPost[]>([]);
   const isLoggedIn = Boolean(user);
-  const loginPath = `/login?next=${encodeURIComponent(communityContextHref({ routeId, citySlug: routeCitySlug, route: routeSlug, location: composeTarget?.name }, true))}`;
+  const loginPath = `/login?next=${encodeURIComponent(`/routes/${routeSlug}`)}`;
 
   useEffect(() => {
     const sync = () => setUser(readStoredUser());
@@ -79,14 +74,20 @@ export function StickyComposeBar({
   }, []);
 
   useEffect(() => {
+    const routeTargets = [routeSlug, routeTitle]
+      .filter(Boolean)
+      .map((value) => value.toLowerCase().trim());
+
     const selectRoutePosts = (posts: CommunityFeedPost[]) =>
-      routeId ? posts.filter((post) => post.routeId === routeId && post.status === "published") : [];
+      posts.filter((post) =>
+        routeTargets.includes(post.route.toLowerCase().trim()),
+      );
 
     setSyncedPosts(selectRoutePosts(readSyncedCommunityPosts()));
     return subscribeSyncedCommunityPosts((posts) =>
       setSyncedPosts(selectRoutePosts(posts)),
     );
-  }, [routeId]);
+  }, [routeSlug, routeTitle]);
 
   useEffect(() => {
     if (composeTarget && isLoggedIn) {
@@ -117,22 +118,22 @@ export function StickyComposeBar({
       setError(message);
       throw new Error(message);
     }
-    if (!body && !draft.media?.length) {
+    if (!body) {
       const message = "Add a title or note before posting on this route.";
       setError(message);
       throw new Error(message);
     }
 
-    if (!routeId) throw new Error('This route is unavailable for posting.');
     setSubmitting(true);
     setError(null);
 
     try {
-      const created = await createAssociatedCommunityPost({
-        title, note, channel: draft.channel, media: draft.media,
-        routeId, citySlug: routeCitySlug, route: routeSlug,
-        location: composeTarget?.name ?? routeCity,
-        mood: composeTarget ? `Stop ${composeTarget.index + 1}` : '',
+      const created = await createCommunityPost({
+        body,
+        routeSlug,
+        routeTitle,
+        routeCity,
+        stop: composeTarget,
         user: {
           id: user.id,
           email: user.email,
@@ -142,8 +143,19 @@ export function StickyComposeBar({
         },
       });
 
-      if (created.status === "published") appendSyncedCommunityPost(created);
-      setNotice("Post submitted for review. It will appear after approval.");
+      appendSyncedCommunityPost({
+        ...created,
+        date: new Date(created.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+        readTime: "1 min",
+        likes: 0,
+        saves: 0,
+        prompt: composeTarget
+          ? `Track: Stop ${composeTarget.index + 1} · ${composeTarget.name}`
+          : `Filed from ${routeCity}.`,
+      });
       setOpen(false);
       onClearTarget?.();
     } catch (err) {
@@ -169,8 +181,8 @@ export function StickyComposeBar({
         return post;
       },
     );
-    return mergeCommunityPosts<RouteCommunityPost>([...routePosts, ...initialPosts.filter((post) => Boolean(routeId) && post.routeId === routeId && post.status === "published")]);
-  }, [initialPosts, syncedPosts, routeId]);
+    return mergeCommunityPosts<RouteCommunityPost>([...routePosts, ...initialPosts]);
+  }, [initialPosts, syncedPosts]);
 
   const latestPost = posts[0];
 
@@ -242,7 +254,6 @@ export function StickyComposeBar({
           </div>
         </button>
 
-        {notice ? <p role="status" className="site-container border-t border-[var(--line)] py-3 text-sm text-[var(--river-deep)]">{notice}</p> : null}
         {error ? (
           <div className="border-t border-[var(--line)] bg-[var(--paper-deep)]/95">
             <div className="site-container py-2">

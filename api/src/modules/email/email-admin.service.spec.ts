@@ -311,7 +311,6 @@ describe('EmailAdminService', () => {
         'order_refunded',
         'order_shipped',
         'booking_confirmed',
-        'service_request_update',
         'welcome',
         'community_post_reviewed',
       ]);

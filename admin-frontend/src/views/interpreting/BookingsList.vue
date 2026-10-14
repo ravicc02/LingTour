@@ -11,8 +11,6 @@ import { formatDateTime } from '@/utils/format'
 import { useListPage } from '@/composables/useListPage'
 import { useIsMobile } from '@/composables/useIsMobile'
 import { ListToolbar } from '@/components/list'
-import ServiceRequestsPanel from './ServiceRequestsPanel.vue'
-const activeTab = ref('requests')
 
 // ─── 列表数据 (useListPage) ─────────────
 const {
@@ -152,13 +150,9 @@ function getBookingStatusLabel(status: string): string {
 <template>
   <div>
     <div class="page-header">
-      <h2>服务请求与历史预约</h2>
+      <h2>口译预约管理</h2>
     </div>
-    <el-tabs v-model="activeTab">
-      <el-tab-pane label="服务请求" name="requests"><ServiceRequestsPanel v-if="activeTab === 'requests'" /></el-tab-pane>
-      <el-tab-pane label="历史口译预约" name="legacy" />
-    </el-tabs>
-    <template v-if="activeTab === 'legacy'">
+
     <ListToolbar
       v-model="filters.keyword"
       search-placeholder="搜索预约人/联系方式"
@@ -366,7 +360,6 @@ function getBookingStatusLabel(status: string): string {
         </div>
       </template>
     </el-drawer>
-    </template>
   </div>
 </template>
 

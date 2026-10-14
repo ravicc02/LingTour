@@ -5,7 +5,7 @@ import { requireTraveler, toServerLocalUser } from "@/lib/server-session";
 
 export const metadata: Metadata = {
   title: "Traveler Profile | Culvoy Guangdong",
-  description: "Your saved posts, routes, collection, service requests, private calendar and traveler settings.",
+  description: "Your Culvoy field notes, saved routes, collection, bookings, and traveler settings.",
 };
 
 export default async function ProfilePage({

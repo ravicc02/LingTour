@@ -31,11 +31,14 @@ export function SiteFooter() {
           <div>
             <p className="font-[family:var(--font-display)] text-4xl lg:text-5xl tracking-tight">Culvoy</p>
           </div>
+          <p className="max-w-md text-lg leading-relaxed text-white/50 handwritten">
+            {t("common.site.tagline")}
+          </p>
         </div>
 
         <div className="flex flex-col gap-8">
-          <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--gold-light)]">{t("common.footer.column.explore")}</p>
-          <div className="grid grid-cols-1 gap-x-8 text-sm font-medium text-white/80">
+          <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--gold-light)]">{t("common.nav.routes")}</p>
+          <div className="grid grid-cols-2 gap-x-8 text-sm font-medium text-white/70">
             {siteNavigation.slice(1).map((item) => (
               <Link
                 key={item.href}

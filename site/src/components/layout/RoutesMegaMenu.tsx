@@ -25,8 +25,7 @@ const initialFeatures = getMapFeatures();
 
 export function RoutesMegaMenu({ active }: { active: boolean }) {
   const { t } = useLocale();
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const toggleRef = useRef<HTMLButtonElement | null>(null);
+    const rootRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
   const [routes, setRoutes] = useState<StoryRoute[]>([]);
@@ -68,7 +67,6 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
       if (event.key !== "Escape") return;
       event.preventDefault();
       setIsOpen(false);
-      toggleRef.current?.focus();
     };
     const handlePointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) {
@@ -120,7 +118,7 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
     >
       <Link
         href="/routes"
-        className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-2 py-3 text-sm transition xl:px-3 ${
+        className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
           active
             ? "text-[var(--cinnabar)]"
             : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -134,10 +132,8 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
       >
         {t("common.nav.routes")}
       </Link>
-      <button ref={toggleRef} type="button" className="inline-flex min-h-11 min-w-11 items-center justify-center text-[var(--river-deep)]" aria-label={isOpen ? t("common.nav.routesMega.close") : t("common.nav.routesMega.open")} aria-expanded={isOpen} aria-controls="site-route-regions" onClick={() => { setIsOpen((open) => !open); loadMenuData(); }}><span aria-hidden="true">⌄</span></button>
       {isOpen ? (
         <div
-          id="site-route-regions"
           aria-busy={!routesReady}
           className="fixed inset-x-0 top-[var(--site-header-height)] z-40 max-h-[calc(100dvh-var(--site-header-height))] overflow-y-auto overscroll-contain border-y border-black/5 bg-[var(--paper-deep)] bg-grain shadow-panel backdrop-blur-xl"
         >

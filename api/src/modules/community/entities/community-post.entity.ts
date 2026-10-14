@@ -83,25 +83,6 @@ export class CommunityPost {
   @Column({ type: 'jsonb', default: [] })
   media: CommunityPostMediaItem[];
 
-  @Index()
-  @Column({ type: 'varchar', length: 100, name: 'city_slug', nullable: true })
-  citySlug: string | null;
-
-  @Index()
-  @Column({ type: 'uuid', name: 'route_id', nullable: true })
-  routeId: string | null;
-
-  @Index()
-  @Column({ type: 'uuid', name: 'interpreter_id', nullable: true })
-  interpreterId: string | null;
-
-  @Column({ type: 'boolean', name: 'verified_experience', default: false })
-  verifiedExperience: boolean;
-
-  /** Private evidence reference, never accepted on a public submission. */
-  @Column({ type: 'uuid', name: 'verified_booking_id', nullable: true })
-  verifiedBookingId: string | null;
-
   @Column({ type: 'varchar', length: 200, default: '' })
   location: string;
 

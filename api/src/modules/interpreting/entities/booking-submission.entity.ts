@@ -7,10 +7,7 @@ import {
   Index,
 } from 'typeorm';
 
-import type { PriceSnapshot, ProcessStatus, RequestPaymentStatus, RequestRequirements, ServicePackage, ServiceType } from '../service-packages';
-
 @Entity('booking_submissions')
-@Index(['userId', 'requestIdempotencyKey'], { unique: true })
 export class BookingSubmission {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -55,49 +52,6 @@ export class BookingSubmission {
     nullable: true,
   })
   assignedInterpreterName: string | null;
-
-  @Column({ type: 'varchar', length: 30, name: 'service_type', default: 'legacy_interpretation' })
-  serviceType: ServiceType | 'legacy_interpretation';
-
-  @Index()
-  @Column({ type: 'uuid', name: 'user_id', nullable: true })
-  userId: string | null;
-
-  @Column({ type: 'varchar', length: 100, name: 'city_slug', nullable: true })
-  citySlug: string | null;
-
-  @Column({ type: 'uuid', name: 'route_id', nullable: true })
-  routeId: string | null;
-
-  @Column({ type: 'uuid', name: 'linked_request_id', nullable: true })
-  linkedRequestId: string | null;
-
-  @Column({ type: 'uuid', name: 'preferred_interpreter_id', nullable: true })
-  preferredInterpreterId: string | null;
-
-  @Column({ type: 'jsonb', nullable: true })
-  requirements: RequestRequirements | null;
-
-  @Column({ type: 'jsonb', name: 'package_snapshot', nullable: true })
-  packageSnapshot: ServicePackage | null;
-
-  @Column({ type: 'jsonb', name: 'price_snapshot', nullable: true })
-  priceSnapshot: PriceSnapshot | null;
-
-  @Column({ type: 'uuid', name: 'assigned_planner_id', nullable: true })
-  assignedPlannerId: string | null;
-
-  @Column({ type: 'varchar', length: 30, name: 'process_status', nullable: true })
-  processStatus: ProcessStatus | null;
-
-  @Column({ type: 'varchar', length: 30, name: 'request_payment_status', nullable: true })
-  requestPaymentStatus: RequestPaymentStatus | null;
-
-  @Column({ type: 'varchar', length: 80, name: 'request_idempotency_key', nullable: true })
-  requestIdempotencyKey: string | null;
-
-  @Column({ type: 'varchar', length: 64, name: 'request_input_hash', nullable: true })
-  requestInputHash: string | null;
 
   @Index()
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })

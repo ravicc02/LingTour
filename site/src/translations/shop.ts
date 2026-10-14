@@ -1,9 +1,9 @@
 export const shop = {
   en: {
     "shop.page.title": "Shop",
-    "shop.page.subtitle": "Guangdong products selected for their materials, craftsmanship and place of origin.",
-    "shop.image.pending": "Photograph unavailable",
-    "shop.image.catalogueNote": "Product photography has not been added yet.",
+    "shop.page.subtitle": "Route-linked objects selected for craft value, provenance, and story.",
+    "shop.image.pending": "Image pending cataloguing",
+    "shop.image.catalogueNote": "The object record is ready; photography is still being filed.",
     "shop.page.viewAll": "All products",
     "shop.page.collections": "Collections",
     "shop.page.sortBy": "Sort by",
@@ -21,7 +21,7 @@ export const shop = {
     "shop.detail.collectionFallback": "Culvoy Goods",
     "shop.detail.routesCta": "Related routes",
     "shop.detail.citiesCta": "Related cities",
-    "shop.detail.noteCta": "Write a post",
+    "shop.detail.noteCta": "Add field note",
 
     "shop.checkout.title": "Checkout",
     "shop.checkout.submit": "Create order",
@@ -31,7 +31,7 @@ export const shop = {
 
     "shop.atlas.titlePrimary": "Lingnan",
     "shop.atlas.titleItalic": "Objects.",
-    "shop.atlas.lede": "Products from Guangdong's craft traditions. Browse materials, product details and the places behind each collection.",
+    "shop.atlas.lede": "A bowl pressed from Leizhou volcanic clay, teacups off a Chaozhou workshop shelf — objects that were in use here long before they were in a shop.",
     "shop.atlas.collectionsTitle": "Collections by Place",
     "shop.atlas.featuredTitle": "Featured Objects",
     "shop.atlas.viewAll": "View all",
@@ -43,7 +43,7 @@ export const shop = {
     "shop.atlas.empty.products.body":
       "No objects on the shelf yet.",
 
-    "shop.cta.title": "Explore the collection.",
+    "shop.cta.title": "A gift that names its place.",
     "shop.cta.button": "Browse all products",
   }
 

@@ -20,6 +20,7 @@ export const account = {
     "account.profile.tabs.collection": "Collection",
     "account.profile.tabs.bookings": "Bookings",
     "account.profile.tabs.settings": "Settings",
+    "account.profile.tabs.calendar": "Calendar",
     "account.profile.tabLabel": "Traveler profile sections",
     "account.profile.bioFallback": "A traveler profile waiting for its first field note.",
     "account.profile.locationUnset": "Location not yet filed",

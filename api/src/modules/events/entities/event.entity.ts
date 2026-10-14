@@ -1,4 +1,5 @@
-﻿import {
+﻿import type { MediaAsset } from '../../../common/types/media';
+import {
   Column,
   CreateDateColumn,
   Entity,
@@ -47,6 +48,18 @@ export class EventEntity {
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   image: string | null;
+
+  @Column({ type: 'jsonb', default: [] })
+  media: MediaAsset[];
+
+  @Column({ type: 'text', default: '' })
+  slogan: string;
+
+  @Column({ type: 'text', name: 'extra_info', default: '' })
+  extraInfo: string;
+
+  @Column({ type: 'integer', name: 'display_order', default: 0 })
+  displayOrder: number;
 
   @Index()
   @Column({ type: 'varchar', length: 30, default: 'draft' })

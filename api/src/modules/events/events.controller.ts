@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
   Put,
   Query,
+  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -15,7 +17,8 @@ import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { EventsService } from './events.service';
+import { EventsService, type EventActor } from './events.service';
+import { PublishEventDto, EventPublicationActionDto } from './dto/event-publication.dto';
 import type { EventStatus } from './entities/event.entity';
 import {
   AuditInterceptor as AuditLogInterceptor,
@@ -46,6 +49,21 @@ export class EventsController {
       page: +page,
       limit: +limit,
     });
+  }
+
+  @Public()
+  @Get('public/events/calendar')
+  @Header('Cache-Control', 'no-store')
+  @ApiQuery({ name: 'startDate', required: true })
+  @ApiQuery({ name: 'endDate', required: true })
+  async calendar(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('city') city?: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 100,
+  ) {
+    return this.service.listCalendar({ startDate, endDate, city, page: +page, limit: +limit });
   }
 
   @Public()
@@ -112,6 +130,38 @@ export class EventsController {
     @Body('status') status: EventStatus,
   ) {
     return this.service.updateStatus(id, status);
+  }
+
+  @Roles('admin', 'editor')
+  @Get('admin/events/:id/publications')
+  async publications(@Param('id') id: string) {
+    return this.service.publications(id);
+  }
+
+  @Roles('admin', 'editor')
+  @Post('admin/events/:id/publications')
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditAction('publish', 'event_publication')
+  async publish(@Param('id') id: string, @Body() dto: PublishEventDto, @Req() request: { user?: EventActor }) {
+    return this.service.publish(id, dto, request.user ?? {});
+  }
+
+  @Roles('admin', 'editor')
+  @Post('admin/events/:id/publications/:publicationId/stop-future')
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditAction('stop_future', 'event_publication')
+  async stopFuture(@Param('id') id: string, @Param('publicationId') publicationId: string,
+    @Body() dto: EventPublicationActionDto, @Req() request: { user?: EventActor }) {
+    return this.service.publicationAction(id, publicationId, 'stop_future', dto.reason, request.user ?? {});
+  }
+
+  @Roles('admin')
+  @Post('admin/events/:id/publications/:publicationId/withdraw')
+  @UseInterceptors(AuditLogInterceptor)
+  @AuditAction('withdraw_history', 'event_publication')
+  async withdraw(@Param('id') id: string, @Param('publicationId') publicationId: string,
+    @Body() dto: EventPublicationActionDto, @Req() request: { user?: EventActor }) {
+    return this.service.publicationAction(id, publicationId, 'withdraw_history', dto.reason, request.user ?? {});
   }
 
   @Roles('admin', 'editor')

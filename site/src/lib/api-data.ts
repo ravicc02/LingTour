@@ -185,6 +185,10 @@ interface ApiEvent {
   citySlug: string;
   date: string;
   endDate?: string | null;
+  media?: MediaAsset[];
+  slogan?: string;
+  extraInfo?: string;
+  displayOrder?: number;
   tags: string[];
   image: string | null;
   status: string;
@@ -413,6 +417,11 @@ export type EventData = {
   slug: string;
   title: string;
   date: string;
+  endDate?: string | null;
+  media?: MediaAsset[];
+  slogan?: string;
+  extraInfo?: string;
+  displayOrder?: number;
   city: string;
   citySlug: string;
   tags: string[];
@@ -435,6 +444,11 @@ function mapEvent(apiEvent: ApiEvent): EventData {
     slug: apiEvent.slug,
     title: apiEvent.title,
     date: apiEvent.date,
+    endDate: apiEvent.endDate ?? null,
+    media: apiEvent.media ?? [],
+    slogan: apiEvent.slogan ?? "",
+    extraInfo: apiEvent.extraInfo ?? "",
+    displayOrder: apiEvent.displayOrder ?? 0,
     city: apiEvent.city,
     citySlug: apiEvent.citySlug,
     tags: apiEvent.tags ?? [],

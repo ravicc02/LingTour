@@ -202,6 +202,10 @@ interface ApiEvent {
   citySlug: string;
   date: string;
   endDate?: string | null;
+  media?: MediaAsset[];
+  slogan?: string;
+  extraInfo?: string;
+  displayOrder?: number;
   tags: string[];
   image: string | null;
   status: string;
@@ -314,6 +318,11 @@ function mapEvent(raw: ApiEvent): EventData {
     slug: raw.slug,
     title: raw.title,
     date: raw.date,
+    endDate: raw.endDate ?? null,
+    media: raw.media ?? [],
+    slogan: raw.slogan ?? "",
+    extraInfo: raw.extraInfo ?? "",
+    displayOrder: raw.displayOrder ?? 0,
     city: raw.city,
     citySlug: raw.citySlug,
     tags: raw.tags ?? [],

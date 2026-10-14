@@ -58,6 +58,17 @@ describe('PublicContentCacheInterceptor', () => {
     expect(res.headers.get('Cache-Control')).toBe('no-store');
   });
 
+  it('never caches calendar snapshots across midnight or withdrawal', async () => {
+    const cache = { get: jest.fn(), set: jest.fn(), invalidateAll: jest.fn() };
+    const interceptor = new PublicContentCacheInterceptor(cache as never);
+    const { context, res } = contextFor('/api/v1/public/events/calendar');
+    const handler = { handle: jest.fn(() => of({ data: [] })) };
+    await lastValueFrom(interceptor.intercept(context, handler));
+    expect(cache.get).not.toHaveBeenCalled();
+    expect(cache.set).not.toHaveBeenCalled();
+    expect(res.headers.get('Cache-Control')).toBe('no-store');
+  });
+
   it('does not cache booking requests or invalidate for them', async () => {
     const cache = {
       get: jest.fn(),

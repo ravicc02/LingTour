@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { citiesApi } from '@/api/cities'
-import { eventsApi } from '@/api/events'
+import { eventsApi, type CalendarEventForm, type EventPublication, type PublicationAction } from '@/api/events'
+import { useAuthStore } from '@/store/auth'
+import type { MediaAsset } from '@/types/media'
+import MediaAssetInput from '@/components/media/MediaAssetInput.vue'
 import { routesApi } from '@/api/routes'
-import type { EventFormData } from '@/types/event'
 import { EventStatusMap } from '@/types/event'
 import { readContentValue } from '@/types/common'
 import { extractErrorMessage } from '@/utils/errors'
@@ -29,6 +31,66 @@ const cityOptions = ref<Array<{ slug: string; name: string; adcode: number }>>([
 const routeOptions = ref<Array<{ slug: string; title: string }>>([])
 const newTag = ref('')
 const activeWorkspace = ref('summary')
+const publications = ref<EventPublication[]>([])
+const publicationActions = ref<PublicationAction[]>([])
+const publicationBusy = ref(false)
+const publicationError = ref('')
+const todayShanghai = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
+const publicationRange = reactive({ startDate: todayShanghai(), endDate: todayShanghai() })
+const canWithdraw = computed(() => (useAuthStore().currentUser?.role || '').split(',').includes('admin'))
+
+async function loadPublications() {
+  const res = await eventsApi.getPublications(route.params.id as string)
+  publications.value = res.data.data.publications
+  publicationActions.value = res.data.data.actions
+}
+
+async function handlePublish() {
+  publicationError.value = ''
+  if (isDirty.value) { publicationError.value = '请先保存当前编辑内容，再发布快照。'; return }
+  if (!publicationRange.startDate || !publicationRange.endDate || publicationRange.startDate < todayShanghai() || publicationRange.endDate < publicationRange.startDate) {
+    publicationError.value = '展示范围必须从今天或未来开始，结束日期不能早于开始日期。'; return
+  }
+  try {
+    await ElMessageBox.confirm('发布已保存内容为不可变版本。新版本从指定开始日期接替旧版本；过去日期保留原快照。', '发布活动版本', { confirmButtonText: '确认发布', cancelButtonText: '取消' })
+  } catch { return }
+  publicationBusy.value = true
+  try {
+    await eventsApi.publish(route.params.id as string, publicationRange)
+    await loadPublications()
+    ElMessage.success('发布成功，历史快照已保留')
+  } catch (error) { publicationError.value = extractErrorMessage(error, '发布失败') }
+  finally { publicationBusy.value = false }
+}
+
+async function handlePublicationAction(publication: EventPublication, withdraw: boolean) {
+  let reason: string
+  try {
+    const result = await ElMessageBox.prompt(withdraw ? '撤回后该版本的全部日期（包含历史）不再公开。快照和媒体仍保留。请输入原因。' : '从广东时间明天开始停止展示，今天和过去日期不受影响。请输入原因。', withdraw ? '撤回历史（管理员）' : '停止未来展示', {
+      confirmButtonText: withdraw ? '确认撤回历史' : '确认停止未来', cancelButtonText: '取消', inputValidator: value => Boolean(value?.trim()) || '必须填写操作原因',
+    })
+    reason = result.value.trim()
+  } catch { return }
+  publicationBusy.value = true
+  publicationError.value = ''
+  try {
+    if (withdraw) await eventsApi.withdrawHistory(route.params.id as string, publication.id, reason)
+    else await eventsApi.stopFuture(route.params.id as string, publication.id, reason)
+    await loadPublications()
+    ElMessage.success(withdraw ? '历史版本已撤回，审计记录已保存' : '已停止未来展示，历史日期保留')
+  } catch (error) { publicationError.value = extractErrorMessage(error, '操作失败') }
+  finally { publicationBusy.value = false }
+}
+
+function updateMedia(index: number, value: MediaAsset | null) {
+  if (value) form.media[index] = value
+}
+function moveMedia(index: number, offset: number) {
+  const target = index + offset
+  if (target < 0 || target >= form.media.length) return
+  const [asset] = form.media.splice(index, 1)
+  if (asset) form.media.splice(target, 0, asset)
+}
 
 const rules = {
   slug: [
@@ -39,7 +101,7 @@ const rules = {
   date: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
 }
 
-const form = reactive<EventFormData>({
+const form = reactive<CalendarEventForm>({
   slug: '',
   title: '',
   date: '',
@@ -52,10 +114,14 @@ const form = reactive<EventFormData>({
   description: '',
   relatedRouteSlugs: [],
   image: '',
+  media: [],
+  slogan: '',
+  extraInfo: '',
+  displayOrder: 0,
   status: 'draft',
 })
 
-const { isDirty, resetDirty, disableDirtyCheck } = useDirtyForm({ form })
+const { isDirty, resetDirty } = useDirtyForm({ form, initializeOnMount: false })
 
 const statusOptions = computed(() =>
   Object.entries(EventStatusMap).map(([value, label]) => ({ value, label })),
@@ -118,6 +184,10 @@ function fillFromApi(data: any) {
     description: readContentValue(data.description),
     relatedRouteSlugs: Array.isArray(data.relatedRouteSlugs) ? [...data.relatedRouteSlugs] : [],
     image: data.image || '',
+    media: Array.isArray(data.media) ? data.media.map((asset: MediaAsset) => ({ ...asset })) : [],
+    slogan: data.slogan || '',
+    extraInfo: data.extraInfo || '',
+    displayOrder: data.displayOrder || 0,
     status: data.status || 'draft',
   })
 }
@@ -144,6 +214,9 @@ onMounted(async () => {
     if (isEdit.value) {
       const res = await eventsApi.getEvent(route.params.id as string)
       fillFromApi(res.data.data)
+      try { await loadPublications() } catch (error) { publicationError.value = extractErrorMessage(error, '发布版本加载失败，请确认数据库迁移已完成') }
+      publicationRange.startDate = form.date > todayShanghai() ? form.date : todayShanghai()
+      publicationRange.endDate = (form.endDate || form.date) >= publicationRange.startDate ? (form.endDate || form.date) : publicationRange.startDate
     }
 
     resetDirty()
@@ -176,13 +249,19 @@ async function handleSave() {
   try {
     if (isEdit.value) {
       await eventsApi.updateEvent(route.params.id as string, form)
-      ElMessage.success('活动已更新')
+      const saved = await eventsApi.getEvent(route.params.id as string)
+      fillFromApi(saved.data.data)
+      resetDirty()
+      ElMessage.success('编辑内容已保存；公开快照不会改变，请按需发布新版本')
     } else {
-      await eventsApi.createEvent(form)
-      ElMessage.success('活动已创建')
+      const created = await eventsApi.createEvent(form)
+      resetDirty()
+      ElMessage.success('活动已创建，请在编辑页发布日历版本')
+      await router.replace(`/admin/events/${created.data.data.id}/edit`)
+      fillFromApi(created.data.data)
+      resetDirty()
+      await loadPublications()
     }
-    disableDirtyCheck()
-    router.push('/admin/events')
   } catch (error: any) {
     ElMessage.error(extractErrorMessage(error, '保存失败'))
   } finally {
@@ -211,6 +290,8 @@ async function handleSave() {
           <el-form-item label="活动名称" prop="title">
             <ContentInput v-model="form.title" />
           </el-form-item>
+          <el-form-item label="Slogan（英文，可选）"><el-input v-model="form.slogan" maxlength="240" show-word-limit /></el-form-item>
+          <el-form-item label="展示排序（越小越靠前）"><el-input-number v-model="form.displayOrder" :min="-10000" :max="10000" /></el-form-item>
           <el-row :gutter="16">
             <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="开始日期" prop="date">
@@ -223,7 +304,7 @@ async function handleSave() {
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="8">
-              <el-form-item label="活动状态">
+              <el-form-item label="活动进度（不等于日历发布状态）">
                 <el-select v-model="form.status" style="width: 100%">
                   <el-option v-for="opt in statusOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
@@ -295,6 +376,21 @@ async function handleSave() {
           <el-form-item label="活动封面">
             <ImageUpload v-model="form.image" module="events" />
           </el-form-item>
+          <el-form-item label="活动媒体（图片 / 视频，最多 12 条）">
+            <div class="media-list">
+              <div v-for="(asset, index) in form.media" :key="index" class="media-item">
+                <MediaAssetInput :model-value="asset" :legacy-image="form.image" module="events" @update:model-value="updateMedia(index, $event)" />
+                <el-input v-model="asset.alt" placeholder="英文替代文字" aria-label="媒体英文替代文字" />
+                <div class="publication-controls">
+                  <el-button :disabled="index === 0" @click="moveMedia(index, -1)">上移</el-button>
+                  <el-button :disabled="index === form.media.length - 1" @click="moveMedia(index, 1)">下移</el-button>
+                  <el-button type="danger" plain @click="form.media.splice(index, 1)">移出当前编辑</el-button>
+                </div>
+              </div>
+              <el-button :disabled="form.media.length >= 12" @click="form.media.push({ type: 'image', url: '' })">添加媒体</el-button>
+              <p class="publication-help">保留旧单图作为兼容封面。移出当前编辑不会删除历史资源。视频必须有图片封面；文件类型由服务端验证。</p>
+            </div>
+          </el-form-item>
           <el-form-item label="活动标签">
             <div class="tag-list">
               <el-tag v-for="(tag, index) in form.tags" :key="tag" closable @close="removeTag(index)">
@@ -328,6 +424,7 @@ async function handleSave() {
             <el-form-item label="详情内容">
               <ContentMarkdownEditor v-model="form.description" :rows="10" />
             </el-form-item>
+            <el-form-item label="补充信息（英文，可选）"><ContentMarkdownEditor v-model="form.extraInfo" :rows="6" /></el-form-item>
           </div>
         </EditorWorkspace>
       </el-form>
@@ -355,6 +452,36 @@ async function handleSave() {
               <strong>{{ form.tags.length }}</strong>
             </div>
           </div>
+        </el-card>
+
+        <el-card shadow="never" class="aside-card">
+          <template #header>日历发布版本</template>
+          <p class="publication-help">保存只更新编辑内容，不覆盖已发布快照。首次发布前，旧活动仅在今天和未来按原状态展示，不补造历史。</p>
+          <div v-if="isEdit" class="publication-stack">
+            <el-form label-position="top">
+              <el-form-item label="展示开始（广东时间）"><el-date-picker v-model="publicationRange.startDate" type="date" value-format="YYYY-MM-DD" style="width:100%" /></el-form-item>
+              <el-form-item label="展示结束"><el-date-picker v-model="publicationRange.endDate" type="date" value-format="YYYY-MM-DD" style="width:100%" /></el-form-item>
+            </el-form>
+            <p v-if="isDirty" class="publication-help">有未保存修改，请先保存。</p>
+            <el-button type="primary" :loading="publicationBusy" :disabled="isDirty || loading" @click="handlePublish">发布新版本</el-button>
+            <el-alert v-if="publicationError" :title="publicationError" type="error" :closable="false" role="alert" />
+            <div v-for="publication in publications" :key="publication.id" class="publication-record">
+              <strong>版本 {{ publication.version }} {{ publication.withdrawnAt ? '（已撤回历史）' : publication.stopFrom ? '（已停止 / 接替）' : '（已发布）' }}</strong>
+              <p>{{ publication.startDate }} 至 {{ publication.endDate }}</p>
+              <p v-if="publication.stopFrom">停止自 {{ publication.stopFrom }}（该日起不展示）</p>
+              <p>发布于 {{ new Date(publication.publishedAt).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }) }}</p>
+              <div class="publication-controls">
+                <el-button :disabled="publicationBusy || !!publication.withdrawnAt" @click="handlePublicationAction(publication, false)">停止未来展示</el-button>
+                <el-button v-if="canWithdraw" type="danger" plain :disabled="publicationBusy || !!publication.withdrawnAt" @click="handlePublicationAction(publication, true)">撤回历史</el-button>
+              </div>
+              <details><summary>查看不可变快照</summary><pre class="snapshot-content">{{ JSON.stringify(publication.snapshot, null, 2) }}</pre></details>
+            </div>
+            <p v-if="!publications.length">尚未发布版本，不存在可回看的历史快照。</p>
+            <details v-if="publicationActions.length"><summary>操作留痕（{{ publicationActions.length }} 条）</summary>
+              <ul class="publication-stack"><li v-for="action in publicationActions" :key="action.id">{{ action.action === 'publish' ? '发布' : action.action === 'supersede' ? '新版本接替' : action.action === 'stop_future' ? '停止未来' : '撤回历史' }}：{{ action.reason }}<br>{{ new Date(action.createdAt).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }) }} / 操作人 {{ action.actorId }}</li></ul>
+            </details>
+          </div>
+          <p v-else>先保存活动，再发布日历版本。</p>
         </el-card>
 
         <el-card shadow="never" class="aside-card">
@@ -439,17 +566,25 @@ async function handleSave() {
   gap: 12px;
 }
 
+.publication-stack, .media-list { display: grid; gap: 16px; width: 100%; }
+.publication-help { color: var(--lt-text-secondary); font-size: 14px; line-height: 1.7; }
+.publication-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.publication-controls :deep(.el-button) { margin-left: 0; min-height: 44px; }
+.publication-record, .media-item { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--lt-border-light); }
+.snapshot-content { max-height: 320px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+summary { cursor: pointer; min-height: 44px; padding: 12px 0; }
+
 .route-count {
-  color: #606266;
+  color: var(--lt-text-secondary);
   font-size: 13px;
 }
 
 .done {
-  color: #67c23a;
+  color: var(--el-color-success);
 }
 
 .pending {
-  color: #e6a23c;
+  color: var(--el-color-warning);
 }
 
 @media (max-width: 1023px) {

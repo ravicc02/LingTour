@@ -5,6 +5,7 @@ import { useMemo, useRef } from "react";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import type { StoryRoute } from "@/data/routes";
 import { gsap, motionEase, useGSAP } from "@/lib/motion";
+import { isUuid } from "@/lib/service-requests";
 
 type Props = { route: StoryRoute };
 
@@ -83,13 +84,13 @@ export function RouteBrief({ route }: Props) {
             ) : null}
 
             <div data-route-brief-actions className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-10">
-              <Link
-                href="/interpreting/#interpreting-booking"
+              {isUuid(route.id) && route.citySlugs[0] ? <Link
+                href={`/routes/?type=free_route&routeId=${encodeURIComponent(route.id)}&citySlug=${encodeURIComponent(route.citySlugs[0])}#route-request`}
                 className="group inline-flex min-h-12 items-center justify-center gap-3 bg-[var(--cinnabar)] px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[var(--river-deep)] active:scale-[0.98]"
               >
-                <span>Book this route</span>
+                <span>Book free route</span>
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">-&gt;</span>
-              </Link>
+              </Link> : <p className="text-sm text-[var(--muted)]">Booking unavailable for this route.</p>}
               <Link
                 href="#itinerary"
                 className="inline-flex min-h-11 items-center text-sm font-semibold text-[var(--river-deep)] underline decoration-[var(--line)] underline-offset-4 transition-colors hover:decoration-[var(--river-deep)] active:opacity-70"

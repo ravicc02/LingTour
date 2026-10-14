@@ -7,6 +7,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { PastoralPageMotion } from "@/components/ui/PastoralPageMotion";
 import { Price } from "@/components/ui/Price";
 import { ProfileCalendar } from "@/components/profile/ProfileCalendar";
+import { ServiceRequestDashboard } from "@/components/account/ServiceRequestDashboard";
 import {
   clearStoredAuth,
   confirmCurrentUserEmailChange,
@@ -561,6 +562,8 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
             <EmptyArchive title={t("account.profile.collectionEmpty")} body={t("account.profile.collectionEmptyBody")} href="/shop" cta={t("account.profile.collectionCta")} />
           )
         ) : null}
+
+        {activeTab === "bookings" ? <ServiceRequestDashboard key={user.id} userId={user.id} /> : null}
 
         {activeTab === "bookings" ? (
           !bookingsReady ? (

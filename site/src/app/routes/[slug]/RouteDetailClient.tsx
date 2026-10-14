@@ -2,7 +2,9 @@
 
 import { useRef, useState } from "react";
 import { notFound } from "next/navigation";
-import { fetchRouteBySlug, fetchRouteCommunityPosts } from "@/lib/api-data";
+import { fetchRouteBySlug, type RouteCommunityPost } from "@/lib/api-data";
+import { fetchScopedRoutePosts } from "@/lib/community-api";
+import { RelatedCommunityPosts } from "@/components/community/RelatedCommunityPosts";
 import { usePreviewBridge } from "@/lib/preview";
 import { ErrorState, LoadingSpinner, useApiQuery } from "@/lib/use-api-query";
 import { RouteMap } from "@/components/routes/RouteMap";
@@ -14,9 +16,11 @@ import type { StoryRoute } from "@/data/routes";
 export function RouteDetailClient({
   slug,
   initialRoute,
+  initialPosts,
 }: {
   slug: string;
   initialRoute: StoryRoute | null;
+  initialPosts?: RouteCommunityPost[];
 }) {
   const { previewData, previewEnabled } = usePreviewBridge<StoryRoute>("route");
   const [composeTarget, setComposeTarget] = useState<RouteStopTarget | null>(null);
@@ -36,13 +40,11 @@ export function RouteDetailClient({
 
   const { data: liveCommunityPosts } = useApiQuery(
     () =>
-      activeRoute
-        ? fetchRouteCommunityPosts({
-            routeSlug: activeRoute.slug,
-            routeTitle: activeRoute.title,
-          })
+      activeRoute?.id && !previewEnabled
+        ? fetchScopedRoutePosts(activeRoute.id)
         : Promise.resolve([]),
-    [activeRoute?.slug, activeRoute?.title],
+    [activeRoute?.id, previewEnabled],
+    { initialData: initialPosts ?? null, revalidateOnMount: true, keepPreviousData: false },
   );
 
   if (previewEnabled && !activeRoute) return <LoadingSpinner text="Loading preview..." />;
@@ -77,6 +79,11 @@ export function RouteDetailClient({
             setComposeTarget({ index, time: stop.time, name: stop.stop })
           }
         />
+        {activeRoute.id && !previewEnabled ? (
+          <div className="site-container pb-28 pt-10">
+            <RelatedCommunityPosts routeId={activeRoute.id} title="Route posts" location={activeRoute.city} />
+          </div>
+        ) : null}
       </div>
 
       {/* Section C - Sticky Compose Bar: pinned to viewport bottom. Kept as a
@@ -85,6 +92,8 @@ export function RouteDetailClient({
           to full viewport height. */}
       <StickyComposeBar
         routeSlug={activeRoute.slug}
+        routeId={previewEnabled ? undefined : activeRoute.id}
+        routeCitySlug={activeRoute.citySlugs[0]}
         routeTitle={activeRoute.title}
         routeCity={activeRoute.city}
         initialPosts={liveCommunityPosts ?? []}

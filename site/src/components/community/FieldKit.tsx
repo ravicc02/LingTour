@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { AUTH_PROMPTS } from "@/lib/auth-prompts";
 import { useLocale } from "@/lib/locale-context";
@@ -43,6 +43,7 @@ type FieldKitProps<TChannel extends string> = {
   };
   channels: readonly ["All", ...TChannel[]];
   compact?: boolean;
+  children?: ReactNode;
 };
 
 export function FieldKit<TChannel extends string>({
@@ -55,6 +56,7 @@ export function FieldKit<TChannel extends string>({
   initialDraft,
   channels,
   compact = false,
+  children,
 }: FieldKitProps<TChannel>) {
   const { t } = useLocale();
   const [title, setTitle] = useState("");
@@ -332,6 +334,7 @@ export function FieldKit<TChannel extends string>({
             ) : null}
 
             <div className={compact ? "grid gap-5" : "space-y-8"}>
+              {children}
               <div>
                 <label className="mb-2 block text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   Category
@@ -361,10 +364,11 @@ export function FieldKit<TChannel extends string>({
               </div>
 
               <div>
-                <label className="mb-2 block text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                <label htmlFor="field-kit-note-title" className="mb-2 block text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   Note title
                 </label>
                 <input
+                  id="field-kit-note-title"
                   type="text"
                   value={title}
                   disabled={locked}
@@ -377,10 +381,11 @@ export function FieldKit<TChannel extends string>({
               </div>
 
               <div>
-                <label className="mb-2 block text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                <label htmlFor="field-kit-observation" className="mb-2 block text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   Observation Detail
                 </label>
                 <textarea
+                  id="field-kit-observation"
                   rows={compact ? 4 : 5}
                   value={note}
                   disabled={locked}
@@ -434,7 +439,7 @@ export function FieldKit<TChannel extends string>({
                         }
                         disabled={locked || submitting}
                         aria-label={`Remove media ${index + 1}`}
-                        className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--night)]/60 text-xs text-white transition-colors hover:bg-[var(--cinnabar)]"
+                        className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full bg-[var(--night)]/60 text-xs text-white transition-colors hover:bg-[var(--cinnabar)]"
                       >
                         ×
                       </button>
@@ -458,7 +463,8 @@ export function FieldKit<TChannel extends string>({
                         </span>
                         <input
                           type="file"
-                          className="hidden"
+                          className="sr-only"
+                          aria-label="Add photos and live moments"
                           accept={COMMUNITY_MEDIA_ACCEPT}
                           multiple
                           disabled={locked || mediaUploading}
@@ -497,7 +503,7 @@ export function FieldKit<TChannel extends string>({
                   {submitting ? "POSTING..." : mediaUploading ? "UPLOADING MEDIA..." : "POST NOTE"}
                 </button>
                 <p className="mt-4 text-center text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                  Publish as a text note, a photo set, or with live moments
+                  New posts are reviewed before publication.
                 </p>
               </div>
             </div>

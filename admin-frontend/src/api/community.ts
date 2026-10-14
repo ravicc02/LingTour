@@ -19,6 +19,11 @@ function normalizePost(raw: any): CommunityPost {
     title: readContentValue(raw.title),
     excerpt: readContentValue(raw.excerpt),
     content: readContentValue(raw.content ?? raw.excerpt),
+    citySlug: raw.citySlug ?? null,
+    routeId: raw.routeId ?? null,
+    interpreterId: raw.interpreterId ?? null,
+    verifiedExperience: raw.verifiedExperience === true,
+    verifiedBookingId: raw.verifiedBookingId ?? null,
     location: raw.location || '',
     route: raw.route || '',
     date: (raw.createdAt && typeof raw.createdAt === 'string') ? new Date(raw.createdAt).toLocaleDateString('zh-CN') : '',
@@ -57,6 +62,18 @@ export const communityApi = {
   async getPost(id: string) {
     const res = await api.get<ApiResponse<CommunityPost>>(`/community/posts/${id}`)
     return normalizeDetailResponse(res)
+  },
+
+  associationOptions() {
+    return api.get<ApiResponse<{ cities: { slug: string; name: string }[]; routes: { id: string; title: string }[]; interpreters: { id: string; name: string }[] }>>('/community/associations')
+  },
+
+  updateAssociations(id: string, fields: { citySlug: string | null; routeId: string | null; interpreterId: string | null }) {
+    return api.patch<ApiResponse<CommunityPost>>(`/community/posts/${id}/associations`, fields)
+  },
+
+  verifyExperience(id: string, bookingId: string | null) {
+    return api.patch<ApiResponse<CommunityPost>>(`/community/posts/${id}/experience`, { bookingId })
   },
 
   /** 审核帖子状态（通过/隐藏），可附带拒绝原因 */

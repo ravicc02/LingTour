@@ -12,6 +12,7 @@ import { MarkdownRenderer } from "@/components/culture/MarkdownRenderer";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import { RelatedCitiesHub } from "@/components/culture/RelatedCitiesHub";
 import { RelatedRouteHub } from "@/components/culture/RelatedRouteHub";
+import { RelatedCommunityPosts } from "@/components/community/RelatedCommunityPosts";
 import type { StoryRoute } from "@/data/routes";
 import type { CityCulture } from "@/data/culture";
 
@@ -114,7 +115,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
                   </time>
                 ) : null}
                 {activeCity.tags.length > 0 ? <span>{activeCity.tags.join(" / ")}</span> : null}
-                <Link href={`/community?compose=1&location=${encodeURIComponent(activeCity.name)}&channel=Culture%20Desk&title=${encodeURIComponent(activeCity.name)}&note=${encodeURIComponent(`City note from ${activeCity.name}: `)}`} className="inline-flex min-h-11 items-center text-[var(--river-deep)] underline decoration-[var(--cinnabar)]/55 underline-offset-4">
+                <Link href={`/community?compose=1&citySlug=${encodeURIComponent(activeCity.slug)}&location=${encodeURIComponent(activeCity.name)}&channel=Culture%20Desk&title=${encodeURIComponent(activeCity.name)}&note=${encodeURIComponent(`City note from ${activeCity.name}: `)}`} className="inline-flex min-h-11 items-center text-[var(--river-deep)] underline decoration-[var(--cinnabar)]/55 underline-offset-4">
                   Post city note
                 </Link>
               </div>
@@ -137,6 +138,12 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
         </div>
         {relatedRoutes.length ? <RelatedRouteHub routes={relatedRoutes} cityAdcode={activeCity.adcode} cityName={activeCity.name} cities={cities ?? []} /> : <RelatedCitiesHub allCities={cities ?? []} currentCity={activeCity} />}
       </section>
+
+      {!previewOnly && !previewEnabled ? (
+        <div className="site-container py-10 sm:py-14">
+          <RelatedCommunityPosts citySlug={activeCity.slug} title={`${activeCity.name} posts`} location={activeCity.name} />
+        </div>
+      ) : null}
 
       {previous || next ? (
         <nav aria-label="City archives" className="site-container flex flex-wrap justify-between gap-6 border-t border-[var(--line)] py-8">

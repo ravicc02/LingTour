@@ -13,12 +13,47 @@ const router = useRouter()
 
 const loading = ref(false)
 const post = ref<CommunityPost | null>(null)
+const associations = ref({ citySlug: null as string | null, routeId: null as string | null, interpreterId: null as string | null })
+const associationOptions = ref<{ cities: { slug: string; name: string }[]; routes: { id: string; title: string }[]; interpreters: { id: string; name: string }[] }>({ cities: [], routes: [], interpreters: [] })
+const savingAssociations = ref(false)
+const bookingId = ref('')
+const verifying = ref(false)
+const associationError = ref('')
+
+async function saveAssociations() {
+  if (!post.value || savingAssociations.value) return
+  savingAssociations.value = true
+  associationError.value = ''
+  try {
+    await communityApi.updateAssociations(post.value.id, { citySlug: associations.value.citySlug || null, routeId: associations.value.routeId || null, interpreterId: associations.value.interpreterId || null })
+    await fetchPost()
+    ElMessage.success('关联已保存；真实体验标记需重新核验')
+  } catch (error: any) {
+    associationError.value = error?.response?.data?.message || '关联保存失败'
+  } finally { savingAssociations.value = false }
+}
+
+async function verifyExperience(clear = false) {
+  if (!post.value || verifying.value) return
+  verifying.value = true
+  associationError.value = ''
+  try {
+    await communityApi.verifyExperience(post.value.id, clear ? null : bookingId.value.trim())
+    await fetchPost()
+    ElMessage.success(clear ? '已取消真实体验标记' : '有效服务记录核验通过')
+  } catch (error: any) {
+    associationError.value = error?.response?.data?.message || '核验失败'
+  } finally { verifying.value = false }
+}
 
 async function fetchPost() {
   loading.value = true
   try {
     const res = await communityApi.getPost(route.params.id as string)
-    post.value = res.data.data
+    const loaded = res.data.data
+    post.value = loaded
+    associations.value = { citySlug: loaded.citySlug, routeId: loaded.routeId, interpreterId: loaded.interpreterId }
+    bookingId.value = loaded.verifiedBookingId || ''
   } catch {
     ElMessage.error('帖子不存在')
     router.push('/admin/community')
@@ -99,7 +134,11 @@ function handleBack() {
   router.push('/admin/community')
 }
 
-onMounted(() => { fetchPost() })
+onMounted(async () => {
+  fetchPost()
+  try { associationOptions.value = (await communityApi.associationOptions()).data.data }
+  catch { associationError.value = '可关联内容加载失败，请刷新重试' }
+})
 </script>
 
 <template>
@@ -199,6 +238,43 @@ onMounted(() => { fetchPost() })
         </div>
       </el-card>
 
+      <el-card shadow="never" class="action-card">
+        <template #header><span class="card-title">内容关联与真实体验</span></template>
+        <el-form label-position="top">
+          <el-form-item label="关联城市">
+            <el-select v-model="associations.citySlug" clearable filterable placeholder="选择已发布城市" style="width: 100%">
+              <el-option v-if="associations.citySlug && !associationOptions.cities.some(item => item.slug === associations.citySlug)" :value="associations.citySlug" :label="associations.citySlug + '（当前不可公开选择）'" />
+              <el-option v-for="item in associationOptions.cities" :key="item.slug" :value="item.slug" :label="item.name" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="关联路线">
+            <el-select v-model="associations.routeId" clearable filterable placeholder="选择已发布路线" style="width: 100%">
+              <el-option v-if="associations.routeId && !associationOptions.routes.some(item => item.id === associations.routeId)" :value="associations.routeId" label="当前关联路线（不可公开选择）" />
+              <el-option v-for="item in associationOptions.routes" :key="item.id" :value="item.id" :label="item.title" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="关联译员">
+            <el-select v-model="associations.interpreterId" clearable filterable placeholder="选择在职译员" style="width: 100%">
+              <el-option v-if="associations.interpreterId && !associationOptions.interpreters.some(item => item.id === associations.interpreterId)" :value="associations.interpreterId" label="当前关联译员（不可公开选择）" />
+              <el-option v-for="item in associationOptions.interpreters" :key="item.id" :value="item.id" :label="item.name" />
+            </el-select>
+          </el-form-item>
+          <p class="association-help">旧地点说明仍保留，系统不会根据自由文本猜测关联。修改关联后需重新核验真实体验。</p>
+          <el-button type="primary" :loading="savingAssociations" @click="saveAssociations">保存关联</el-button>
+          <el-divider />
+          <el-tag :type="post.verifiedExperience ? 'success' : 'info'">{{ post.verifiedExperience ? '已核验真实体验' : '尚未核验' }}</el-tag>
+          <el-form-item label="有效服务记录 ID" style="margin-top: 16px">
+            <el-input v-model="bookingId" placeholder="填写该作者已完成的预约 ID" />
+          </el-form-item>
+          <p class="association-help">后端核对预约已完成、作者账户一致，以及每项已选关联一致。私人服务记录 ID 不对公众展示。</p>
+          <div class="action-buttons">
+            <el-button type="primary" :disabled="!bookingId.trim()" :loading="verifying" @click="verifyExperience()">核验服务记录</el-button>
+            <el-button v-if="post.verifiedExperience" :loading="verifying" @click="verifyExperience(true)">取消标记</el-button>
+          </div>
+          <p v-if="associationError" role="alert" class="association-error">{{ associationError }}</p>
+        </el-form>
+      </el-card>
+
       <!-- 审核操作区 -->
       <el-card shadow="never" class="action-card">
         <template #header>
@@ -262,14 +338,14 @@ onMounted(() => { fetchPost() })
 .post-media-item { position: relative; }
 .post-media-image { width: 100%; max-height: 400px; border-radius: 8px; }
 .post-media-image :deep(img) { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
-.post-media-video { width: 100%; max-height: 400px; border-radius: 8px; background: #000; }
+.post-media-video { width: 100%; max-height: 400px; border-radius: 8px; background: var(--lt-text-primary); }
 .post-media-badge { position: absolute; left: 8px; top: 8px; }
 .post-media-error {
   display: flex; align-items: center; justify-content: center;
-  height: 200px; color: #909399; font-size: 13px;
-  background: #f5f7fa; border-radius: 8px;
+  height: 200px; color: var(--lt-text-secondary); font-size: 13px;
+  background: var(--lt-bg-page); border-radius: 8px;
 }
-.post-title { font-size: 22px; margin: 0 0 16px; color: #303133; line-height: 1.4; }
+.post-title { font-size: 22px; margin: 0 0 16px; color: var(--lt-text-primary); line-height: 1.4; }
 
 .post-meta {
   display: flex;
@@ -280,40 +356,42 @@ onMounted(() => { fetchPost() })
   gap: 12px;
 }
 .post-user { display: flex; align-items: center; gap: 10px; }
-.post-user-name { font-size: 14px; font-weight: 500; color: #303133; }
-.post-user-handle { font-size: 12px; color: #909399; }
+.post-user-name { font-size: 14px; font-weight: 500; color: var(--lt-text-primary); }
+.post-user-handle { font-size: 12px; color: var(--lt-text-secondary); }
 .post-info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.post-meta-item { font-size: 13px; color: #606266; }
+.post-meta-item { font-size: 13px; color: var(--lt-text-secondary); }
 
 .post-tags { margin-bottom: 16px; }
 .post-excerpt {
   padding: 12px 16px;
-  background: #f5f7fa;
-  border-left: 3px solid var(--lt-primary, #236554);
+  background: var(--lt-bg-page);
+  border: 1px solid var(--lt-border);
   margin-bottom: 20px;
   border-radius: 0 4px 4px 0;
-  color: #606266;
+  color: var(--lt-text-secondary);
   font-size: 14px;
 }
 .post-content {
   white-space: pre-wrap;
   line-height: 1.8;
   font-size: 14px;
-  color: #303133;
+  color: var(--lt-text-primary);
 }
 .post-interactions {
   display: flex;
   gap: 32px;
   font-size: 14px;
-  color: #606266;
+  color: var(--lt-text-secondary);
 }
 .interaction-item { display: flex; align-items: center; gap: 4px; }
 
 .action-card { margin-bottom: 20px; }
 .card-title { font-weight: 600; font-size: 15px; }
-.action-buttons { display: flex; gap: 10px; }
+.action-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.association-help { margin: 12px 0; color: var(--lt-text-secondary); line-height: 1.7; }
+.association-error { margin-top: 12px; color: var(--el-color-danger); }
 .review-trail {
   margin-top: 14px; display: flex; flex-wrap: wrap; gap: 16px;
-  font-size: 12px; color: #909399;
+  font-size: 12px; color: var(--lt-text-secondary);
 }
 </style>

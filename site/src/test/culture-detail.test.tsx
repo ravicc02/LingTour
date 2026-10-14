@@ -22,6 +22,9 @@ vi.mock("@/lib/use-api-query", () => ({
 vi.mock("@/lib/api-data", () => ({ fetchCityBySlug: vi.fn(), fetchCities: vi.fn(), fetchRoutes: vi.fn() }));
 vi.mock("@/components/culture/RelatedCitiesHub", () => ({ RelatedCitiesHub: () => null }));
 vi.mock("@/components/culture/RelatedRouteHub", () => ({ RelatedRouteHub: () => null }));
+vi.mock("@/components/community/RelatedCommunityPosts", () => ({
+  RelatedCommunityPosts: ({ citySlug }: { citySlug: string }) => <div data-testid="city-posts" data-city={citySlug} />,
+}));
 vi.mock("@/components/ui/MediaFrame", () => ({ MediaFrame: ({ alt }: { alt: string }) => <div role="img" aria-label={alt} /> }));
 
 const city: CityCulture = {
@@ -61,6 +64,13 @@ describe("Culture detail publication and preview boundaries", () => {
     expect(screen.getByRole("link", { name: "Next: Next City" })).toHaveClass("ml-auto");
   });
 
+  it("links city posting and related posts to the exact city slug", () => {
+    render(<CultureDetailClient slug={city.slug} initialCity={city} initialCityCultures={[city]} initialRoutes={[]} />);
+    const href = screen.getByRole("link", { name: "Post city note" }).getAttribute("href")!;
+    expect(new URL(href, "http://localhost").searchParams.get("citySlug")).toBe(city.slug);
+    expect(screen.getByTestId("city-posts")).toHaveAttribute("data-city", city.slug);
+  });
+
   it("waits for the trusted draft payload in the explicit preview shell", () => {
     render(<CultureDetailClient previewOnly slug="preview-city" initialCity={null} initialCityCultures={[]} initialRoutes={[]} />);
     expect(screen.getByText("Loading preview...")).toBeInTheDocument();
@@ -75,5 +85,6 @@ describe("Culture detail publication and preview boundaries", () => {
     expect(screen.getByRole("heading", { name: "Unsaved draft" })).toBeInTheDocument();
     expect(screen.getByText("Underlined").tagName).toBe("U");
     expect(screen.queryByRole("heading", { name: "Published article" })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("city-posts")).not.toBeInTheDocument();
   });
 });

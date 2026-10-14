@@ -10,6 +10,8 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
+  Matches,
   MaxLength,
   Min,
   ValidateNested,
@@ -99,9 +101,26 @@ export class UpsertCommunityPostDto {
   @Type(() => CommunityPostMediaItemDto)
   media?: CommunityPostMediaItem[];
 
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+  @MaxLength(100)
+  citySlug?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsUUID()
+  routeId?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsUUID()
+  interpreterId?: string | null;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   location?: string;
 
   @ApiPropertyOptional()

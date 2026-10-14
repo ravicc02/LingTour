@@ -1,25 +1,46 @@
 # Culvoy Current State
 
-## Feedback Development - 2026-10-14 (In Progress)
+## Feedback Development - 2026-10-14 (Local Source Committed; Acceptance Gated)
 
 - The owner requested implementation of the confirmed feedback plan, categorized
-  local commits and a delivery report. Both repositories are now on
-  `feature/feedback-development-2026-10-14`, branched from root `b711f98` and
-  independent admin `647147f`. Existing main branches and all previous commits
-  remain intact; no push or deployment is authorized by this request.
-- Work categories: public event calendar/publication history; stable community
-  associations; free-route/custom/interpretation requests and fixed USD packages;
-  homepage/navigation/map/anonymous city tickets; private Profile calendar;
-  owner/assigned-staff request conversations. Business-policy gaps remain gated.
-- New migrations will be authored but not applied. No database, production
-  content, payment or Feishu mutations are authorized. Existing untracked
-  feedback source/plan and the earlier branch-consolidation update are preserved
-  and included in the documentation category rather than business commits.
-- Live implementation, verification, blockers and categorized SHAs are recorded
-  in [the delivery report](feedback-development-report-2026-10-14.md).
-- Browser Docker preview attempt returned an unavailable safety-classifier
-  service on 2026-10-14. No permission change or alternative server launcher was
-  used to bypass it; later validation must report actual results only.
+  local commits and a delivery report. Both repositories remain on
+  `feature/feedback-development-2026-10-14`, based on root `b711f98` and admin
+  `647147f`; neither main branch was moved. No push, deployment or production
+  mutation was performed.
+- Source categories are implemented and committed: stable identities/USD format,
+  private Profile Calendar, scoped community feedback, simplified discovery and
+  anonymous city PNG tickets, versioned public events, free/custom/interpretation
+  requests, staff assignment, quotes/private messages, professional English copy
+  and integration/moderation regressions. Root latest functional commit is
+  `995341d`; independent admin latest commit is `42a876b`. Full categorized SHAs
+  and feature limits are in [the delivery report](feedback-development-report-2026-10-14.md).
+- Final validation (2026-10-14 18:39-18:46 Asia/Shanghai): site 40 files / 191 tests,
+  API 36 suites / 287 tests, site/API TypeScript and production builds, admin
+  type-check/build (4674 modules), three real admin-adapter contract tests and
+  both diff checks passed. Site lint: 0 errors / 1082 existing warnings; admin
+  retains the existing vendor-chunk warning. Both admin tracked trees match
+  except the intentional independent-only `.vscode/extensions.json`.
+- Four new additive migrations (1763100000000/1763200000000/1763300000000/
+  1763400000000) are source only, not applied. All down paths refuse destructive
+  rollback; synchronize and automatic migrations remain disabled. Do not rebuild
+  the API against an unmigrated database expecting these features to work.
+  Target/backup/migration-state approval and real persistence/authorization E2E
+  remain prerequisites.
+- New paid checkout is disabled (`paymentPolicy=not_configured`): no guessed USD
+  deposit or planning fee, no old SGD deposit relabeling; historical orders and
+  shop currency remain unchanged. Final branding, fulfillment/capacity,
+  cancellation/refund/payment terms and private-data retention/erasure require
+  owner decisions. Existing account deletion anonymizes rather than erases
+  new note/request/message content; no unauthorized purge was performed.
+- Browser Docker preview calls repeatedly returned unavailable safety-classifier
+  service. No alternative server launcher, permission change or fake browser
+  proof was used. No real nine-width sweep, anonymous PNG download, authenticated
+  admin save/publish/refresh, new database flow or payment verification is claimed.
+- `docs/feedback-modification-plan-2026-10-08.md` is now tracked as the confirmed
+  requirement baseline. Original `docs/feback.md` remains byte-for-byte unchanged
+  and untracked. Existing worktrees, main branches and prior commits are intact.
+  No local containers were rebuilt/restarted; ignored launch configuration was
+  updated to Docker Compose only. No Feishu, migration or production writes.
 
 ## Branch Consolidation - 2026-10-14 (Current Local State)
 

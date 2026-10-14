@@ -1,5 +1,17 @@
 # Culvoy UI Overhaul 2026
 
+## 2026-10-14 Business Extension
+
+The original visual-only scope below remains historical context for the UI
+foundation. The owner's feedback implementation request now authorizes additive
+free-route requests, USD interpretation packages, private request conversations,
+Profile calendar notes, versioned public events, scoped community feedback and an
+anonymous city-ticket generator. Existing URLs and commerce remain preserved.
+See [the confirmed feedback plan](feedback-modification-plan-2026-10-08.md) and
+[implementation report](feedback-development-report-2026-10-14.md). Unconfirmed
+pricing/deposit policy is not inferred; production migrations and deployment
+remain separately authorized actions.
+
 ## Scope
 
 This is a visual and interaction overhaul, not an information-architecture rewrite.

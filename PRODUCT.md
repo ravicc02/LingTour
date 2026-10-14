@@ -40,6 +40,34 @@ Culvoy Guangdong 连接广东在地文化、故事驱动路线、口译服务和
 4. **Controlled Contrast** — 朱砂红（cinnabar）和金色（gold）作为点缀色，严格控制在 ≤10% 的视觉面积。深河色（river-deep）承载主要信息层级。
 5. **Editorial Authority** — 排版应有杂志/出版物的权威感，Georgia 衬线标题 + Trebuchet MS 正文，拉开层次而非堆砌粗体。
 
+## Feedback Development Scope (2026-10-14)
+
+The confirmed 2026-10-08 feedback adds business functionality beyond the earlier
+visual-only overhaul. Cultural Information, Route Planning and Interpretation
+are the three primary discovery paths, retaining their existing URLs.
+
+- Fixed-route booking has no route fee or mandatory deposit. Interpretation is
+  an optional, separately priced service; third-party travel costs are not
+  represented as included.
+- Custom-route planning is paid and begins with a structured request and a quote.
+  Interpretation packages use fixed USD prices: 4/5/7 hours at 305/375/525 for
+  fixed routes and 400/500/700 for custom routes. Historical orders retain their
+  original currency and amount. Deposit, payment timing, refund and planning-fee
+  policy must be confirmed before enabling new paid checkout.
+- The public calendar defaults to today in Asia/Shanghai, supports multiple
+  published media items and preserves publication versions. Private calendar
+  notes belong only to the authenticated traveler in Profile.
+- Community filtering uses stable city, route and interpreter associations.
+  Request conversations are private to the owner and authorized assigned staff.
+- Anonymous visitors may generate a city souvenir PNG ticket in the former home
+  interpretation section. Tickets do not certify attendance or provide admission.
+  The homepage shop remains available.
+
+Implementation and categorized verification are recorded in
+[`docs/feedback-development-report-2026-10-14.md`](docs/feedback-development-report-2026-10-14.md).
+Local development authorization does not authorize production migrations,
+content writes, pushing or deployment.
+
 ## Accessibility & Inclusion
 
 - 目标 WCAG 2.1 AA 级别

@@ -1,5 +1,59 @@
 # Culvoy Current State
 
+## Feedback Development - 2026-10-14 (In Progress)
+
+- The owner requested implementation of the confirmed feedback plan, categorized
+  local commits and a delivery report. Both repositories are now on
+  `feature/feedback-development-2026-10-14`, branched from root `b711f98` and
+  independent admin `647147f`. Existing main branches and all previous commits
+  remain intact; no push or deployment is authorized by this request.
+- Work categories: public event calendar/publication history; stable community
+  associations; free-route/custom/interpretation requests and fixed USD packages;
+  homepage/navigation/map/anonymous city tickets; private Profile calendar;
+  owner/assigned-staff request conversations. Business-policy gaps remain gated.
+- New migrations will be authored but not applied. No database, production
+  content, payment or Feishu mutations are authorized. Existing untracked
+  feedback source/plan and the earlier branch-consolidation update are preserved
+  and included in the documentation category rather than business commits.
+- Live implementation, verification, blockers and categorized SHAs are recorded
+  in [the delivery report](feedback-development-report-2026-10-14.md).
+- Browser Docker preview attempt returned an unavailable safety-classifier
+  service on 2026-10-14. No permission change or alternative server launcher was
+  used to bypass it; later validation must report actual results only.
+
+## Branch Consolidation - 2026-10-14 (Current Local State)
+
+- On the owner's branch-cleanup request, both repositories were consolidated to
+  local `main` only. The recent optical-alignment branches were fast-forwarded:
+  root `main` is `b711f98` (9 commits ahead of remote `main@cf302a6`), and
+  independent admin `main` is `647147f` (1 commit ahead of `main@02f8805`).
+  The paired admin tracked trees match except the intentional admin-only
+  `.vscode/extensions.json`.
+- Deleted root branches: `claude/suspicious-golick-3a6e38`,
+  `claude/unruffled-dhawan-2e6884`, and `claude/heuristic-ritchie-84e6bd`.
+  Deleted admin branch: `fix/optical-alignment-2026-10-14`. The two old branches
+  were already ancestors of `main`; the two recent branches were deleted only
+  after integration. No unique commits were discarded and no force deletion
+  was used. Age classification used tip commit time, with a seven-day cutoff
+  on 2026-10-07; `main` was always protected.
+- All three registered secondary root worktrees remain intact at their original
+  commits, now detached. No worktree directory, session, tag, stash, upload,
+  environment file or production data was deleted.
+- Verified complete Git bundles, reference/status manifests and byte-checked
+  copies of both untracked feedback documents are stored outside the repository:
+  `E:/workspace/LingTour-branch-backups/20261014-173212/`.
+  `docs/feback.md` and `docs/feedback-modification-plan-2026-10-08.md` remain
+  untracked and unchanged. This current-state update is uncommitted.
+- Git HTTPS fetch/ls-remote could not connect to GitHub. Read-only GitHub API
+  queries confirmed both remote repositories contain only `main`, with the SHAs
+  above. No remote branch deletion, push or deployment was needed/performed.
+- After integration, site regression tests passed (21 files / 111 tests), admin
+  type-check and production build passed (existing large-chunk warning), and
+  both `git diff --check` checks passed. The prior source-branch type/lint/build
+  evidence remains recorded below. Browser optical acceptance remains blocked
+  as recorded in the optical-alignment evidence; it is not claimed by this
+  Git-maintenance task. No migration, production write or Feishu write occurred.
+
 ## Optical Alignment - 2026-10-14 (Committed Locally, Not Integrated)
 
 - Worktree branch `claude/heuristic-ritchie-84e6bd`, base `f7a96d9`. The original

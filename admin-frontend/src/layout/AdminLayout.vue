@@ -535,7 +535,7 @@ watch(() => route.fullPath, closeMobileMenu)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 clamp(14px, 2vw, 28px);
+  padding: 0 var(--admin-shell-gutter);
   height: 72px;
   transition:
     background-color 0.3s,
@@ -612,8 +612,8 @@ watch(() => route.fullPath, closeMobileMenu)
 
 .user-avatar {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: var(--admin-header-control-size);
+  height: var(--admin-header-control-size);
   align-items: center;
   justify-content: center;
   border: 1px solid var(--lt-border-light);
@@ -627,7 +627,7 @@ watch(() => route.fullPath, closeMobileMenu)
   min-width: 0;
   min-height: calc(100dvh - 72px);
   overflow-y: auto;
-  padding: clamp(18px, 2.2vw, 32px);
+  padding: var(--admin-shell-gutter);
   transition: background-color 0.3s;
 }
 
@@ -639,7 +639,7 @@ watch(() => route.fullPath, closeMobileMenu)
 
 .header-search-button {
   display: inline-flex;
-  min-height: 38px;
+  min-height: var(--admin-header-control-size);
   align-items: center;
   gap: 8px;
   padding: 0 10px 0 12px;
@@ -679,8 +679,8 @@ watch(() => route.fullPath, closeMobileMenu)
 
 .header-icon-button {
   display: inline-flex;
-  width: 40px;
-  height: 40px;
+  width: var(--admin-header-control-size);
+  height: var(--admin-header-control-size);
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
@@ -825,7 +825,6 @@ watch(() => route.fullPath, closeMobileMenu)
 
   .admin-header {
     height: 64px;
-    padding-inline: 12px;
   }
 
   .admin-main {
@@ -842,8 +841,8 @@ watch(() => route.fullPath, closeMobileMenu)
   }
 
   .header-search-button {
-    width: 36px;
-    min-height: 36px;
+    width: var(--admin-header-control-size);
+    min-height: var(--admin-header-control-size);
     justify-content: center;
     padding: 0;
   }
@@ -857,12 +856,6 @@ watch(() => route.fullPath, closeMobileMenu)
   .editor-locale-switch :deep(.el-segmented) {
     --el-segmented-item-selected-bg-color: var(--lt-bg-card);
     padding: 2px;
-  }
-
-  .header-icon-button,
-  .user-avatar {
-    width: 36px;
-    height: 36px;
   }
 
   .brand-copy {

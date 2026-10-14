@@ -295,7 +295,7 @@ export default function InterpretingPageClient({
         .map((profile) => profile.id)
         .join("|")}`}
     >
-      <section className="relative overflow-hidden pb-16 pt-14 sm:pb-20 sm:pt-16 lg:min-h-[calc(100dvh-4.5rem)] lg:pb-20 lg:pt-20">
+      <section className="relative overflow-hidden pb-16 pt-14 sm:pb-20 sm:pt-16 lg:min-h-[calc(100dvh-var(--site-header-height))] lg:pb-20 lg:pt-20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(185,138,70,0.1),transparent_40%)]" />
 
         <div className="site-container relative w-full">
@@ -437,8 +437,8 @@ export default function InterpretingPageClient({
 
             <div>
               <div className="space-y-4">
-                <div className="hidden grid-cols-[1.2fr_repeat(3,1fr)] border-b border-[var(--line)] px-5 pb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] md:grid">
-                  <div className="p-4">{"Service"}</div>
+                <div className="hidden grid-cols-[1.2fr_repeat(3,1fr)] items-center border-b border-[var(--line)] pb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] md:grid">
+                  <div className="p-5 sm:p-6">{"Service"}</div>
                   <div className="text-center">
                     {t("interpreting.levels.junior")}
                   </div>
@@ -449,10 +449,10 @@ export default function InterpretingPageClient({
                     {t("interpreting.levels.senior")}
                   </div>
                 </div>
-                {matrix.map((row, rowIndex) => (
+                {matrix.map((row) => (
                   <div
                     key={row.service}
-                    className={`group grid grid-cols-1 border border-[var(--line)] bg-white/88 text-sm text-[var(--muted)] scrapbook-shadow transition-transform duration-500 hover:-translate-y-1.5 md:grid-cols-[1.2fr_repeat(3,1fr)] ${rowIndex === 1 ? "md:translate-x-3" : rowIndex === 2 ? "md:-translate-x-2" : ""}`}
+                    className="group grid grid-cols-1 border border-[var(--line)] bg-white/88 text-sm text-[var(--muted)] scrapbook-shadow transition-transform duration-500 hover:-translate-y-1.5 md:grid-cols-[1.2fr_repeat(3,1fr)]"
                   >
                     <div className="flex items-center gap-4 p-5 sm:p-6">
                       <span className="grid h-11 w-11 shrink-0 place-items-center border border-[var(--gold)]/35 bg-[var(--paper)] text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--gold)] transition-colors group-hover:bg-[var(--gold)] group-hover:text-white">

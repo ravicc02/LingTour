@@ -263,6 +263,26 @@
   min-height: 44px;
 }
 
+@layer components {
+  :where(.btn-primary, .btn-primary-compact, .btn-gold, .btn-outline, .btn-paper, .btn-paper-compact, .btn-ghost-dark, .btn-icon-dark) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+}
+
+.btn-icon-dark {
+  min-width: 44px;
+}
+
+:where(.lt-action, .btn-primary, .btn-primary-compact, .btn-gold, .btn-outline, .btn-paper, .btn-paper-compact, .btn-ghost-dark, .btn-icon-dark) > svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

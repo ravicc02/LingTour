@@ -1,5 +1,37 @@
 # Culvoy Current State
 
+## Optical Alignment - 2026-10-14 (Committed Locally, Not Integrated)
+
+- Worktree branch `claude/heuristic-ritchie-84e6bd`, base `f7a96d9`. The original
+  root checkout remains `main`, eight commits ahead of `origin/main`, with the
+  same two untracked feedback documents. The original independent admin remains
+  clean at `02f8805`. Neither original checkout was edited.
+- Source inventory covered all public and admin UI families. Preservation-mode
+  corrections address shell gutters, navigation/menu bounds, control geometry,
+  table/editor alignment, card footer height chains, booking calendar tracks,
+  rate columns and checkout/profile baselines. Brand/copy/routes/data contracts
+  and authored rotations/motion remain unchanged. See
+  [the scope and evidence record](optical-alignment-2026-10-14.md).
+- Final site TypeScript, ESLint (0 errors; 1083 existing warnings), 21 test files /
+  111 tests, and Next.js production build passed. Build reads the production
+  public API; no production writes were performed.
+- Final admin `vue-tsc -b` + Vite build passed (4,660 modules; existing large
+  vendor-chunk warning). `git diff --check` passed. After the owner's commit
+  request, the matching 30 admin files were committed first in the independent
+  repository as `647147f` on `fix/optical-alignment-2026-10-14`, using a separate
+  index so its `main` checkout remains unchanged. The root optical-alignment
+  commit on `claude/heuristic-ritchie-84e6bd` includes the same admin file blobs,
+  the site corrections/tests, and the evidence record. Neither branch has been
+  integrated into `main` or pushed.
+- **Browser acceptance is blocked.** Repeated `preview_start` attempts returned
+  an unavailable safety-classifier service. No alternative server tool or
+  permission-mode change was used. No nine-width browser sweep, screenshot,
+  authenticated admin flow, or pixel-level optical sign-off is claimed.
+- Ignored Docker preview configuration targets isolated ports 3100/5273 and has
+  not started. Existing services remain untouched. Local commits were explicitly
+  requested; no push, migration, deployment, account/payment action or Feishu
+  write was performed.
+
 ## Browser Comment Fixes - 2026-10-07 (Uncommitted)
 
 - Root branch remains `main`, six local commits ahead of `origin/main`; the

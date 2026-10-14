@@ -184,7 +184,7 @@ export function PostCard({
           </div>
         ) : (
           <div className="relative overflow-hidden px-6 pb-2 pt-8 sm:px-7">
-            <div className="max-w-[13rem] pl-4">
+            <div className="max-w-[13rem]">
               <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{post.channel}</p>
             </div>
           </div>
@@ -256,7 +256,7 @@ export function PostCard({
         </div>
       </a>
 
-      <div className="flex items-center justify-between border-t border-[var(--line)] px-5 py-2 text-[var(--river-deep)]">
+      <div className={`flex items-center justify-between border-t border-[var(--line)] py-2 text-[var(--river-deep)] ${variant === "text" ? "px-4 sm:px-5" : "px-5"}`}>
         <button
           type="button"
           onClick={handleLike}

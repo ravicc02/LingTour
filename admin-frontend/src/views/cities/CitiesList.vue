@@ -210,15 +210,17 @@ function regionColor(region: string) {
 
         <el-table-column label="操作" width="245" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button link size="small" :disabled="Boolean(changingId) && changingId !== row.id" :loading="changingId === row.id" @click="togglePublished(row)">
-              {{ row.published ? '撤回发布' : '发布' }}
-            </el-button>
-            <el-button type="primary" link :icon="Edit" size="small" @click="handleEdit(row.id)">
-              编辑
-            </el-button>
-            <el-button type="danger" link :icon="Delete" size="small" @click="handleDelete(row.id, displayCityName(row))">
-              删除
-            </el-button>
+            <div class="admin-table-actions">
+              <el-button link size="small" :disabled="Boolean(changingId) && changingId !== row.id" :loading="changingId === row.id" @click="togglePublished(row)">
+                {{ row.published ? '撤回发布' : '发布' }}
+              </el-button>
+              <el-button type="primary" link :icon="Edit" size="small" @click="handleEdit(row.id)">
+                编辑
+              </el-button>
+              <el-button type="danger" link :icon="Delete" size="small" @click="handleDelete(row.id, displayCityName(row))">
+                删除
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

@@ -118,7 +118,7 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
     >
       <Link
         href="/routes"
-        className={`px-3 py-3 text-sm transition ${
+        className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
           active
             ? "text-[var(--cinnabar)]"
             : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -135,9 +135,9 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
       {isOpen ? (
         <div
           aria-busy={!routesReady}
-          className="fixed left-0 top-[4.6rem] z-40 max-h-[calc(100dvh-4.6rem)] w-screen overflow-y-auto overscroll-contain border-y border-black/5 bg-[var(--paper-deep)] bg-grain shadow-panel backdrop-blur-xl"
+          className="fixed inset-x-0 top-[var(--site-header-height)] z-40 max-h-[calc(100dvh-var(--site-header-height))] overflow-y-auto overscroll-contain border-y border-black/5 bg-[var(--paper-deep)] bg-grain shadow-panel backdrop-blur-xl"
         >
-          <div className="mx-auto max-w-[82rem] px-6 py-8 lg:px-10 lg:py-12">
+          <div className="site-container py-8 lg:py-12">
             <div className="mb-8 flex items-center justify-between gap-8 border-b border-black/5 pb-7 lg:mb-12 lg:pb-10">
               <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--cinnabar)]">
                 {t("common.nav.routesMega.eyebrow")}

@@ -301,8 +301,8 @@ export function CheckoutClient() {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100dvh-4.95rem)] bg-[var(--paper-deep)] bg-grain">
-        <div className="flex min-h-[calc(100dvh-4.95rem)] items-center justify-center">
+      <div className="min-h-[calc(100dvh-var(--site-header-height))] bg-[var(--paper-deep)] bg-grain">
+        <div className="flex min-h-[calc(100dvh-var(--site-header-height))] items-center justify-center">
           <p className="text-base text-[var(--muted)]">
             {t("checkout.empty.loading")}
           </p>
@@ -313,8 +313,8 @@ export function CheckoutClient() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[calc(100dvh-4.95rem)] bg-[var(--paper-deep)] bg-grain">
-        <div className="site-container flex min-h-[calc(100dvh-4.95rem)] flex-col items-center justify-center gap-6 py-12 text-center">
+      <div className="min-h-[calc(100dvh-var(--site-header-height))] bg-[var(--paper-deep)] bg-grain">
+        <div className="site-container flex min-h-[calc(100dvh-var(--site-header-height))] flex-col items-center justify-center gap-6 py-12 text-center">
           <h1 className="font-[family:var(--font-display)] text-3xl text-[var(--river-deep)] sm:text-4xl">
             {error
               ? t("checkout.empty.productUnavailableTitle")
@@ -702,17 +702,17 @@ export function CheckoutClient() {
                     {formatStorePrice(totals.handling, displayCurrency)}
                   </span>
                 </div>
-                <div className="flex items-end justify-between border-t border-[var(--line)] pt-5">
-                  <div>
+                <div className="border-t border-[var(--line)] pt-5">
+                  <div className="flex items-baseline justify-between gap-4">
                     <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)]">
                       {t("checkout.summary.orderTotal")}
                     </p>
-                    <p className="mt-2 text-sm text-[var(--muted)]">
-                      {t("checkout.summary.operationsNote")}
+                    <p className="shrink-0 font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
+                      {formatStorePrice(totals.total, displayCurrency)}
                     </p>
                   </div>
-                  <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
-                    {formatStorePrice(totals.total, displayCurrency)}
+                  <p className="mt-2 text-sm text-[var(--muted)]">
+                    {t("checkout.summary.operationsNote")}
                   </p>
                 </div>
               </div>

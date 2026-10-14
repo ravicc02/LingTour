@@ -77,6 +77,10 @@ function handleBack() {
   gap: 12px;
 }
 
+.header-actions > .el-button + .el-button {
+  margin-left: 0;
+}
+
 .title-wrap {
   flex-wrap: wrap;
 }
@@ -85,7 +89,7 @@ function handleBack() {
   margin: 0;
   font-size: 24px;
   line-height: 1.1;
-  color: #18212f;
+  color: var(--lt-text-primary);
 }
 
 .dirty-pill {
@@ -100,7 +104,7 @@ function handleBack() {
   font-weight: 600;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1023px) {
   .editor-page-header {
     flex-direction: column;
     align-items: stretch;

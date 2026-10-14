@@ -219,43 +219,45 @@ function getCoverType(post: CommunityPost): 'image' | 'live' | null {
         </el-table-column>
         <el-table-column label="操作" width="310" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="handleViewDetail(row)">详情</el-button>
-            <template v-if="row.status === 'pending_review'">
-              <el-button type="success" link size="small" @click="handleReview(row, 'published')">
-                通过
+            <div class="admin-table-actions">
+              <el-button type="primary" link size="small" @click="handleViewDetail(row)">详情</el-button>
+              <template v-if="row.status === 'pending_review'">
+                <el-button type="success" link size="small" @click="handleReview(row, 'published')">
+                  通过
+                </el-button>
+                <el-button type="warning" link size="small" @click="handleReview(row, 'hidden')">
+                  隐藏
+                </el-button>
+              </template>
+              <template v-if="row.status === 'published'">
+                <el-button type="warning" link size="small" @click="handleReview(row, 'hidden')">
+                  隐藏
+                </el-button>
+              </template>
+              <template v-if="row.status === 'hidden'">
+                <el-button type="success" link size="small" @click="handleReview(row, 'published')">
+                  恢复
+                </el-button>
+              </template>
+              <el-button
+                :type="row.featured ? 'info' : 'warning'"
+                link
+                size="small"
+                @click="handleToggleFeatured(row)"
+              >
+                {{ row.featured ? '取消精选' : '精选' }}
               </el-button>
-              <el-button type="warning" link size="small" @click="handleReview(row, 'hidden')">
-                隐藏
+              <el-button
+                v-if="row.status !== 'pending_review'"
+                type="primary"
+                link
+                size="small"
+                @click="handleResendReviewEmail(row)"
+              >
+                重发邮件
               </el-button>
-            </template>
-            <template v-if="row.status === 'published'">
-              <el-button type="warning" link size="small" @click="handleReview(row, 'hidden')">
-                隐藏
-              </el-button>
-            </template>
-            <template v-if="row.status === 'hidden'">
-              <el-button type="success" link size="small" @click="handleReview(row, 'published')">
-                恢复
-              </el-button>
-            </template>
-            <el-button
-              :type="row.featured ? 'info' : 'warning'"
-              link
-              size="small"
-              @click="handleToggleFeatured(row)"
-            >
-              {{ row.featured ? '取消精选' : '精选' }}
-            </el-button>
-            <el-button
-              v-if="row.status !== 'pending_review'"
-              type="primary"
-              link
-              size="small"
-              @click="handleResendReviewEmail(row)"
-            >
-              重发邮件
-            </el-button>
-            <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+              <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

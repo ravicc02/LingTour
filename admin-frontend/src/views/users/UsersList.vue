@@ -121,8 +121,10 @@ async function handleRevokeStaffAccess(user: ManagedUser) {
 <template>
   <div class="users-page">
     <div class="page-header">
-      <h2>用户管理</h2>
-      <span class="page-desc">管理系统注册用户，查看用户详情，进行封禁/解封操作；也可为某个用户授予或移除后台权限，该账号将同时保留旅行者身份</span>
+      <div class="page-heading-copy">
+        <h2>用户管理</h2>
+        <span class="page-desc">管理系统注册用户，查看用户详情，进行封禁/解封操作；也可为某个用户授予或移除后台权限，该账号将同时保留旅行者身份</span>
+      </div>
     </div>
 
     <!-- 筛选栏 -->
@@ -188,40 +190,42 @@ async function handleRevokeStaffAccess(user: ManagedUser) {
         </el-table-column>
         <el-table-column label="操作" width="260" align="center" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button size="small" type="primary" link @click="handleViewDetail(row)">
-              详情
-            </el-button>
-            <template v-if="isAdmin">
-              <el-dropdown
-                v-if="staffRoleOf(row)"
-                trigger="click"
-                @command="() => handleRevokeStaffAccess(row)"
-              >
-                <el-button size="small" type="warning" link>后台权限</el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item>移除后台权限</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-              <el-dropdown v-else trigger="click" @command="(cmd: 'admin' | 'editor') => handleGrantStaffAccess(row, cmd)">
-                <el-button size="small" type="warning" link>授予后台权限</el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="admin">授予管理员</el-dropdown-item>
-                    <el-dropdown-item command="editor">授予内容编辑</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-            </template>
-            <template v-if="row.status === 'active'">
-              <el-button size="small" type="danger" link @click="handleBan(row)">封禁</el-button>
-            </template>
-            <template v-else>
-              <el-button size="small" type="success" link @click="handleUnban(row)">
-                解封
+            <div class="admin-table-actions">
+              <el-button size="small" type="primary" link @click="handleViewDetail(row)">
+                详情
               </el-button>
-            </template>
+              <template v-if="isAdmin">
+                <el-dropdown
+                  v-if="staffRoleOf(row)"
+                  trigger="click"
+                  @command="() => handleRevokeStaffAccess(row)"
+                >
+                  <el-button size="small" type="warning" link>后台权限</el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item>移除后台权限</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+                <el-dropdown v-else trigger="click" @command="(cmd: 'admin' | 'editor') => handleGrantStaffAccess(row, cmd)">
+                  <el-button size="small" type="warning" link>授予后台权限</el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item command="admin">授予管理员</el-dropdown-item>
+                      <el-dropdown-item command="editor">授予内容编辑</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </template>
+              <template v-if="row.status === 'active'">
+                <el-button size="small" type="danger" link @click="handleBan(row)">封禁</el-button>
+              </template>
+              <template v-else>
+                <el-button size="small" type="success" link @click="handleUnban(row)">
+                  解封
+                </el-button>
+              </template>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -246,6 +250,10 @@ async function handleRevokeStaffAccess(user: ManagedUser) {
 <style scoped>
 .users-page {
   padding: 0;
+}
+
+.users-page :deep(.admin-table-actions) {
+  justify-content: center;
 }
 
 .page-desc {

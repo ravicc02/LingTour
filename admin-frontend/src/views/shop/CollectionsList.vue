@@ -91,8 +91,10 @@ function handleEdit(id: string) {
         </el-table-column>
         <el-table-column label="操作" width="200" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
-            <el-button type="danger" link size="small" @click="handleDeleteCollection(row)">删除</el-button>
+            <div class="admin-table-actions">
+              <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
+              <el-button type="danger" link size="small" @click="handleDeleteCollection(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

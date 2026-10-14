@@ -543,7 +543,7 @@ export default function CommunityPage() {
         </div>
       </section>
 
-      <section data-community-toolbar className="sticky top-[4.6rem] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)]/92 bg-grain py-3 backdrop-blur-xl sm:py-4">
+      <section data-community-toolbar className="sticky top-[var(--site-header-height)] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)]/92 bg-grain py-3 backdrop-blur-xl sm:py-4">
         <div className="site-container grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div
             role="group"
@@ -573,7 +573,7 @@ export default function CommunityPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={t("community.search.placeholder")}
-                className="h-11 w-full border-b border-[var(--line)] bg-transparent pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-[var(--muted)] focus:border-[var(--river-deep)]"
+                className="h-[54px] w-full border-b border-[var(--line)] bg-transparent pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-[var(--muted)] focus:border-[var(--river-deep)]"
               />
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -633,7 +633,7 @@ export default function CommunityPage() {
                 if (item.type === "dispatch") {
                   return (
                     <div key={item.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40}>
+                      <Reveal delay={index * 40} className="h-full">
                         <DispatchCard
                           stampCount={stampCount}
                           onDispatch={openFieldKit}
@@ -648,7 +648,7 @@ export default function CommunityPage() {
                 if (item.type === "brief") {
                   return (
                     <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40}>
+                      <Reveal delay={index * 40} className="h-full">
                         <BriefCard
                           brief={item.data}
                           index={index}
@@ -665,7 +665,7 @@ export default function CommunityPage() {
                 if (item.type === "post") {
                   return (
                     <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40}>
+                      <Reveal delay={index * 40} className="h-full">
                         <PostCard
                           post={item.data}
                           index={index}

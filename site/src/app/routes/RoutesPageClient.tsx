@@ -246,7 +246,7 @@ export default function RoutesPageClient({
                 const cardImage = route.image || placeholderFor("hero");
                 return (
                   <div key={route.slug} className="h-full min-w-0 w-[82vw] max-w-[24rem] shrink-0 snap-start md:h-auto md:w-auto md:max-w-none md:shrink md:snap-none">
-                    <Link href={`/routes/${route.slug}`} className="group block" data-pastoral-card>
+                    <Link href={`/routes/${route.slug}`} className="group block h-full" data-pastoral-card>
                       <article className={`flex h-full flex-col transition-transform duration-500 motion-reduce:transform-none hover:-translate-y-1.5 ${index % 2 === 0 ? "sm:rotate-[0.7deg]" : "sm:-rotate-[0.7deg]"}`}>
                         <div className="relative aspect-[16/10] overflow-hidden border-[0.55rem] border-white bg-white scrapbook-shadow sm:border-[0.85rem]">
                           <div

@@ -252,32 +252,34 @@ const cityOptions = computed(() => {
         </el-table-column>
         <el-table-column label="操作" width="240" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
-            <template v-if="row.status === 'draft'">
-              <el-button type="success" link size="small" @click="handleStatusChange(row, 'upcoming')">
-                发布
-              </el-button>
-            </template>
-            <template v-if="row.status === 'upcoming'">
-              <el-button type="success" link size="small" @click="handleStatusChange(row, 'ongoing')">
-                开始
-              </el-button>
-            </template>
-            <template v-if="row.status === 'ongoing'">
-              <el-button type="info" link size="small" @click="handleStatusChange(row, 'past')">
-                结束
-              </el-button>
-            </template>
-            <template v-if="row.status === 'past' || row.status === 'upcoming'">
-              <el-button type="warning" link size="small" @click="handleStatusChange(row, 'draft')">
-                撤回草稿
-              </el-button>
-            </template>
-            <el-popconfirm title="确定删除该活动？" @confirm="handleDelete(row.id, row.title)">
-              <template #reference>
-                <el-button type="danger" link size="small">删除</el-button>
+            <div class="admin-table-actions">
+              <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
+              <template v-if="row.status === 'draft'">
+                <el-button type="success" link size="small" @click="handleStatusChange(row, 'upcoming')">
+                  发布
+                </el-button>
               </template>
-            </el-popconfirm>
+              <template v-if="row.status === 'upcoming'">
+                <el-button type="success" link size="small" @click="handleStatusChange(row, 'ongoing')">
+                  开始
+                </el-button>
+              </template>
+              <template v-if="row.status === 'ongoing'">
+                <el-button type="info" link size="small" @click="handleStatusChange(row, 'past')">
+                  结束
+                </el-button>
+              </template>
+              <template v-if="row.status === 'past' || row.status === 'upcoming'">
+                <el-button type="warning" link size="small" @click="handleStatusChange(row, 'draft')">
+                  撤回草稿
+                </el-button>
+              </template>
+              <el-popconfirm title="确定删除该活动？" @confirm="handleDelete(row.id, row.title)">
+                <template #reference>
+                  <el-button type="danger" link size="small">删除</el-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
       </el-table>

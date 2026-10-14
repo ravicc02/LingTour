@@ -111,7 +111,7 @@ export function ArchiveFilterBar({
         <div id={filterPanelId} className="mt-5 space-y-5 border-t border-[var(--line)] pt-5">
           {groups.map((group) => (
             <div key={group.label} className="flex flex-col gap-3 sm:flex-row sm:items-start">
-              <p className="w-24 shrink-0 pt-2.5 font-[family:var(--font-body)] text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--river-deep)]">
+              <p className="shrink-0 font-[family:var(--font-body)] sm:flex sm:min-h-11 sm:w-24 sm:items-center text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--river-deep)]">
                 {group.label}
               </p>
               <div className="scrollbar-hide flex min-w-0 gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">

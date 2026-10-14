@@ -9,7 +9,7 @@ type DispatchCardProps = {
 
 export function DispatchCard({ stampCount, onDispatch, isLoggedIn, onLogin }: DispatchCardProps) {
   return (
-    <div className="group w-full bg-[var(--night)] p-6 sm:p-8 scrapbook-shadow text-white rotate-1 transition-transform hover:rotate-0">
+    <div className="group flex h-full w-full flex-col bg-[var(--night)] p-6 sm:p-8 scrapbook-shadow text-white rotate-1 transition-transform hover:rotate-0">
       <div className="flex items-center justify-between border-b border-white/15 pb-4 mb-6">
         <p className="font-mono text-[12px] uppercase tracking-[0.3em] text-[var(--gold-light)]">
           Field notes
@@ -31,7 +31,7 @@ export function DispatchCard({ stampCount, onDispatch, isLoggedIn, onLogin }: Di
         the next traveller will thank you.
       </p>
 
-      <div className="mt-8 flex flex-col gap-4">
+      <div className="mt-auto flex flex-col gap-4 pt-8">
         {isLoggedIn ? (
           <button
             type="button"

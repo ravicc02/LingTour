@@ -153,10 +153,12 @@ async function handleMoveDown(index: number) {
         </el-table-column>
         <el-table-column label="操作" width="240" :fixed="isMobile ? false : 'right'">
           <template #default="{ row, $index }">
-            <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
-            <el-button type="primary" link size="small" @click="handleMoveUp($index)" :disabled="$index === 0">上移</el-button>
-            <el-button type="primary" link size="small" @click="handleMoveDown($index)" :disabled="$index === list.length - 1">下移</el-button>
-            <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+            <div class="admin-table-actions">
+              <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
+              <el-button type="primary" link size="small" @click="handleMoveUp($index)" :disabled="$index === 0">上移</el-button>
+              <el-button type="primary" link size="small" @click="handleMoveDown($index)" :disabled="$index === list.length - 1">下移</el-button>
+              <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

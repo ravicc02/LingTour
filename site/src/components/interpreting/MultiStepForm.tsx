@@ -37,7 +37,7 @@ const serviceModes = [
 ];
 
 const inputClass =
-  "rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base leading-6 text-[var(--ink)] outline-none transition focus:border-[var(--gold)] focus:bg-[var(--paper)] md:text-[15px]";
+  "min-h-[54px] rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base leading-6 text-[var(--ink)] outline-none transition focus:border-[var(--gold)] focus:bg-[var(--paper)] md:text-[15px]";
 
 function MultiStepFormInner({
   prefillNeeds,
@@ -318,7 +318,7 @@ function MultiStepFormInner({
                   aria-expanded={showCalendar}
                   aria-controls="interpreting-service-calendar"
                   ref={calendarTriggerRef}
-                  className="flex w-full items-center justify-between rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base text-[var(--ink)] outline-none transition hover:border-[var(--gold)] hover:bg-[var(--paper)] md:text-sm"
+                  className={`${inputClass} flex w-full items-center justify-between hover:border-[var(--gold)] hover:bg-[var(--paper)]`}
                 >
                   <span className={form.date ? "text-[var(--ink)]" : "text-[var(--muted)]"}>
                     {form.date ? formatDate(form.date) : t("interpreting.flow.chooseDate")}
@@ -354,7 +354,7 @@ function MultiStepFormInner({
                       </button>
                     </div>
 
-                    <div className="mb-1 grid grid-cols-7">
+                    <div className="mb-1 grid grid-cols-7 gap-0.5">
                       {weekdays.map((d) => (
                         <p key={d} className="text-center text-[12px] uppercase tracking-[0.12em] text-[var(--muted)]">{d}</p>
                       ))}
@@ -374,7 +374,7 @@ function MultiStepFormInner({
                             aria-label={formatDate(dateStr)}
                             aria-pressed={isSelected}
                             onClick={() => handleCalendarSelect(day)}
-                            className={`grid h-10 w-10 place-items-center rounded-full text-xs transition ${
+                            className={`grid min-h-11 w-full min-w-0 place-items-center rounded-full text-xs transition ${
                               isSelected
                                 ? "bg-[var(--cinnabar)] text-white"
                                 : isToday

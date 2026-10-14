@@ -146,7 +146,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
             </Link>
           ) : null}
           {next ? (
-            <Link href={`/culture/${next.slug}`} className="inline-flex min-h-11 items-center text-[var(--river-deep)] underline decoration-[var(--cinnabar)]/55 underline-offset-4">
+            <Link href={`/culture/${next.slug}`} className="ml-auto inline-flex min-h-11 items-center text-[var(--river-deep)] underline decoration-[var(--cinnabar)]/55 underline-offset-4">
               Next: {next.name}
             </Link>
           ) : null}

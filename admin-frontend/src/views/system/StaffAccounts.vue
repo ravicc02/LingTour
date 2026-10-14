@@ -414,6 +414,7 @@ onBeforeUnmount(() => listAnimation?.revert())
   display: grid;
   gap: 20px;
   min-width: 0;
+  container: staff-page / inline-size;
 }
 .staff-header {
   display: flex;
@@ -449,7 +450,8 @@ onBeforeUnmount(() => listAnimation?.revert())
 }
 .staff-list {
   min-height: 180px;
-  overflow: hidden;
+  min-width: 0;
+  overflow-x: auto;
   border: 1px solid var(--lt-border-light);
   border-radius: var(--lt-radius-lg);
   background: var(--lt-bg-card);
@@ -457,6 +459,7 @@ onBeforeUnmount(() => listAnimation?.revert())
 .staff-table-head,
 .staff-row {
   display: grid;
+  min-width: 930px;
   grid-template-columns: minmax(260px, 1.4fr) 130px 110px 170px 160px;
   align-items: center;
   gap: 16px;
@@ -468,6 +471,9 @@ onBeforeUnmount(() => listAnimation?.revert())
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
+}
+.staff-table-head > :last-child {
+  text-align: right;
 }
 .staff-row {
   min-height: 82px;
@@ -512,7 +518,12 @@ onBeforeUnmount(() => listAnimation?.revert())
 }
 .staff-actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 8px;
+}
+.staff-actions :deep(.el-button + .el-button) {
+  margin-left: 0;
 }
 .staff-pagination {
   justify-self: end;
@@ -540,7 +551,7 @@ onBeforeUnmount(() => listAnimation?.revert())
   line-height: 1.6;
 }
 
-@media (max-width: 980px) {
+@container staff-page (max-width: 929px) {
   .staff-table-head {
     display: none;
   }
@@ -552,6 +563,7 @@ onBeforeUnmount(() => listAnimation?.revert())
     overflow: visible;
   }
   .staff-row {
+    min-width: 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     border: 1px solid var(--lt-border-light);
@@ -575,7 +587,7 @@ onBeforeUnmount(() => listAnimation?.revert())
   }
 }
 
-@media (max-width: 640px) {
+@container staff-page (max-width: 640px) {
   .staff-header {
     align-items: stretch;
     flex-direction: column;
@@ -593,6 +605,10 @@ onBeforeUnmount(() => listAnimation?.revert())
   .staff-date {
     grid-column: 1 / -1;
   }
+}
+
+/* The dialog is teleported outside the page's query container. */
+@media (max-width: 640px) {
   .form-grid {
     grid-template-columns: 1fr;
   }

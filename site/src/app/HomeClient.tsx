@@ -5,7 +5,6 @@ import { useLocale } from "@/lib/locale-context";
 import {
   fetchEvents,
   fetchHomeData,
-  fetchInterpreting,
   fetchStoreProducts,
   fetchRoutes,
   type EventData,
@@ -24,6 +23,8 @@ import type { StoreProduct } from "@/data/store";
 import { HomeAtlasHero } from "@/components/home/HomeAtlasHero";
 import { StoreProductCard } from "@/components/store/StoreProductCard";
 import { usePreviewBridge } from "@/lib/preview";
+import { CityTicket } from "@/components/home/CityTicket";
+import "./styles/home.css";
 
 interface HomeClientProps {
   initialHomeData: HomeData | null;
@@ -70,32 +71,16 @@ export default function HomeClient({
     { initialData: initialEvents, revalidateOnMount: false },
   );
 
-  // The interpreter line under the CTA states the real roster size and the
-  // languages actually listed on published profiles — never a padded count.
-  // It renders nothing until the API answers, so a failed request can't be
-  // replaced by a made-up number.
-  const { data: interpretingData } = useApiQuery(() => fetchInterpreting(), []);
-  const interpreterProfiles = interpretingData?.profiles ?? [];
-  const interpreterCount = interpreterProfiles.length;
-  const interpreterLanguages = Array.from(
-    new Set(
-      interpreterProfiles
-        .flatMap((profile) => profile.language.split(/[,/·]+/))
-        .map((lang) => lang.replace(/\s+support$/i, "").trim())
-        .filter(Boolean),
-    ),
-  ).slice(0, 4);
-
   // Only show loading spinner if we have NO initial data at all
   // (e.g., SSR failed AND client fetch is still pending).
   // In normal operation, initialHomeData is always available from SSR.
   if (homeLoading && !initialHomeData)
-    return <LoadingSpinner text="Opening the field journal…" />;
+    return <LoadingSpinner text="Loading home…" />;
   if (!homeData && !initialHomeData)
     return (
       <ErrorState
-        title="Home stories unavailable"
-        message="We can't reach the editorial archive right now. Please try again in a moment."
+        title="Home unavailable"
+        message="Home content could not be loaded. Please try again."
       />
     );
 
@@ -132,31 +117,11 @@ export default function HomeClient({
   // This way admin uploads will replace seed images automatically once available.
   const heroImage =
     hero.image ?? SEED_IMAGES.homeHero ?? placeholderFor("portrait");
-  const ctaImage =
-    hero.ctaImage ?? SEED_IMAGES.homeCta ?? placeholderFor("hero");
-  const interpretingImage =
-    hero.interpretingImage ??
-    SEED_IMAGES.homeInterpreting ??
-    placeholderFor("hero");
 
 
   return (
     <div className="bg-[var(--paper-deep)] bg-grain min-h-screen text-[var(--river-deep)]">
-      <HomeAtlasHero
-        image={heroImage}
-        eyebrow={t("home.hero.eyebrow")}
-        titleLine1={t("home.hero.headingLine1")}
-        accent={t("home.hero.headingAccent")}
-        titleLine3={t("home.hero.headingLine3")}
-        body={t("home.hero.body")}
-        primaryLabel={t("home.hero.primaryCta")}
-        secondaryLabel={t("home.hero.secondaryCta")}
-        tags={[
-          t("home.hero.tag.storyRoutes"),
-          t("home.hero.tag.cultureContext"),
-          t("home.hero.tag.languageSupport"),
-        ]}
-      />
+      <HomeAtlasHero image={heroImage} />
 
       <div className="relative z-10">
         <HomeVideoChapter video={hero.video} />
@@ -170,7 +135,7 @@ export default function HomeClient({
         </div>
 
         {/* 3. CALENDAR & ROUTE PILLAR */}
-        <GuangdongEventCalendar events={liveEvents} routes={storyRoutes} />
+        <GuangdongEventCalendar events={liveEvents} routes={storyRoutes} previewEvent={previewEvent ?? undefined} />
 
         {/* Divider */}
         <div className="site-container">
@@ -235,57 +200,8 @@ export default function HomeClient({
           <div className="h-px bg-[var(--line)]" />
         </div>
 
-        {/* 5. INTERPRETING: THE FIELD NOTES */}
-        <section className="site-container py-beat">
-          <div className="grid grid-cols-1 gap-10 min-[620px]:grid-cols-[minmax(0,1.15fr)_minmax(13rem,0.85fr)] min-[620px]:items-start min-[620px]:gap-7 lg:grid-cols-12 lg:items-center lg:gap-16">
-            <div className="min-w-0 max-w-2xl lg:col-span-5">
-              <Reveal>
-                <h2 className="mb-6 font-[family:var(--font-display)] text-[clamp(2.5rem,8vw,3.5rem)] leading-[0.92] text-[var(--river-deep)] sm:mb-10 lg:mb-12 lg:text-7xl">
-                  {t("home.interpreting.title")}
-                </h2>
-                <div className="mt-10 sm:mt-16">
-                  <Link
-                    href="/interpreting"
-                    className="btn-primary kinetic-link inline-flex w-full items-center justify-center gap-4 px-8 py-5 text-xs sm:w-auto sm:px-12"
-                  >
-                    <span className="relative z-10">{t("home.interpreting.cta")}</span>
-                    <span aria-hidden className="relative z-10 text-base">→</span>
-                  </Link>
-                  {interpreterCount > 0 ? (
-                    <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">
-                      {interpreterCount === 1
-                        ? "1 local interpreter on the roster"
-                        : `${interpreterCount} local interpreters on the roster`}
-                      {interpreterLanguages.length > 0
-                        ? ` · ${interpreterLanguages.join(" / ")}`
-                        : ""}
-                    </p>
-                  ) : null}
-                </div>
-              </Reveal>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-[32rem] self-start min-[620px]:mt-10 lg:col-span-7 lg:mt-0 lg:max-w-none lg:self-center">
-              <Reveal delay={300}>
-                <div className="group relative aspect-[6/5] overflow-hidden border border-white/70 bg-[var(--night)] shadow-panel min-[620px]:aspect-[3/4] lg:aspect-[16/10]">
-                  <img
-                    src={interpretingImage}
-                    alt="Professional interpreting service in Guangdong"
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.035]"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,18,24,0.04),rgba(8,18,24,0.62))]" />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-end gap-5 p-6 text-white sm:p-8">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center border border-white/30 bg-white/10 text-lg backdrop-blur-md" aria-hidden>
-                      →
-                    </span>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
+        {/* 5. Anonymous city souvenir, replacing the former interpreting panel. */}
+        <CityTicket cities={regionShowcase} />
 
         {/* 6. CULTURE: THE GALLERY ARCHIVE */}
         <section id="home-culture" className="site-container pb-16 sm:pb-20 lg:pb-28">
@@ -294,51 +210,7 @@ export default function HomeClient({
           </div>
         </section>
 
-        {/* FINAL CTA: THE DEPARTURE LOG */}
-        <section className="relative overflow-hidden bg-[var(--night)] pb-20 pt-16 text-white sm:pb-24 sm:pt-20 lg:pb-28 lg:pt-24">
-          <img
-            src={ctaImage}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover opacity-20 grayscale"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,18,24,0.97),rgba(8,18,24,0.78)_58%,rgba(8,18,24,0.42))]" />
 
-          <div className="site-container relative z-10">
-            <div className="max-w-4xl">
-              <Reveal>
-                <div className="mb-10 flex items-center gap-4 opacity-70">
-                  <span className="h-px w-10 bg-[var(--gold-light)]" />
-                  <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--gold-light)]">
-                    {t("home.cta.eyebrow")}
-                  </p>
-                </div>
-                <h2 className="mb-10 font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.04em] sm:text-5xl md:mb-12 md:text-7xl lg:text-8xl">
-                  {t("home.cta.title.primary")}{" "}
-                  <span className="italic text-[var(--gold-light)]">
-                    {t("home.cta.title.italic")}
-                  </span>
-                </h2>
-                <div className="mt-12 flex flex-wrap gap-4 sm:gap-6 md:mt-16">
-                  <Link
-                    href="/routes"
-                    className="btn-gold inline-flex w-full items-center justify-center px-8 py-4 text-xs sm:w-auto sm:px-12 sm:py-5"
-                  >
-                    {t("home.cta.startLog")}
-                  </Link>
-                  <Link
-                    href="/interpreting"
-                    className="btn-ghost-dark inline-flex w-full items-center justify-center px-8 py-4 text-xs sm:w-auto sm:px-12 sm:py-5"
-                  >
-                    {t("home.cta.bookCoordination")}
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );

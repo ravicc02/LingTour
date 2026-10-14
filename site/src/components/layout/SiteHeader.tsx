@@ -44,6 +44,14 @@ export function SiteHeader() {
     setIsOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1280px)");
+    const sync = () => { if (desktop.matches) setIsOpen(false); };
+    sync();
+    desktop.addEventListener("change", sync);
+    return () => desktop.removeEventListener("change", sync);
+  }, []);
+
   const isHome = pathname === "/";
 
   useEffect(() => {
@@ -62,6 +70,9 @@ export function SiteHeader() {
     if (!isOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const background = [document.querySelector("main"), document.querySelector("footer"), headerRef.current?.firstElementChild].filter((element): element is HTMLElement => element instanceof HTMLElement);
+    const previousInert = background.map((element) => element.inert);
+    background.forEach((element) => { element.inert = true; });
     const focusFrame = window.requestAnimationFrame(() => {
       mobilePanelRef.current?.querySelector<HTMLElement>("a[href], button:not([disabled])")?.focus();
     });
@@ -72,10 +83,10 @@ export function SiteHeader() {
         closeMenu();
         return;
       }
-      if (event.key !== "Tab" || !headerRef.current) return;
+      if (event.key !== "Tab" || !mobilePanelRef.current) return;
 
       const focusable = Array.from(
-        headerRef.current.querySelectorAll<HTMLElement>(
+        mobilePanelRef.current.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
       ).filter((element) => element.offsetParent !== null);
@@ -97,6 +108,7 @@ export function SiteHeader() {
       window.cancelAnimationFrame(focusFrame);
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
+      background.forEach((element, index) => { element.inert = previousInert[index]; });
     };
   }, [closeMenu, isOpen]);
 
@@ -106,7 +118,7 @@ export function SiteHeader() {
   }
 
   const leftNavigation = siteNavigation.filter((item) =>
-    ["/", "/culture", "/routes", "/interpreting"].includes(item.href),
+    ["/culture", "/routes", "/interpreting"].includes(item.href),
   );
   const rightNavigation = siteNavigation.filter((item) => ["/shop", "/community"].includes(item.href));
 
@@ -126,8 +138,8 @@ export function SiteHeader() {
             : "",
       ].filter(Boolean).join(" ")}
     >
-      <Container className="grid h-[calc(var(--site-header-height)-1px)] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-5">
-        <nav className="hidden items-center justify-start gap-1 lg:flex" aria-label="Primary navigation">
+      <Container className="grid h-[calc(var(--site-header-height)-1px)] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:gap-5">
+        <nav className="hidden min-w-0 items-center justify-center gap-1 xl:col-start-2 xl:row-start-1 xl:flex" aria-label="Primary navigation">
           {leftNavigation.map((item) => {
             const active = isActivePath(pathname, item.href);
 
@@ -139,7 +151,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
+                className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-2 py-3 text-sm transition xl:px-3 ${
                   active
                     ? "text-[var(--cinnabar)]"
                     : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -152,7 +164,7 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <Link href="/" className="justify-self-start text-center leading-none lg:justify-self-center" onClick={() => setIsOpen(false)}>
+        <Link href="/" className="inline-flex min-h-11 min-w-11 flex-col justify-center justify-self-start text-center leading-none xl:col-start-1 xl:row-start-1" onClick={() => setIsOpen(false)}>
           <p className="font-[family:var(--font-sans)] text-2xl font-medium tracking-[0.08em] text-[var(--river-deep)]">
             Culvoy
           </p>
@@ -161,7 +173,7 @@ export function SiteHeader() {
           </p>
         </Link>
 
-        <div className="hidden min-w-0 shrink-0 items-center justify-end gap-1 lg:flex">
+        <div className="hidden min-w-0 shrink-0 items-center justify-end gap-1 xl:flex">
           <nav className="flex items-center gap-1" aria-label="Secondary navigation">
             {rightNavigation.map((item) => {
               const active = isActivePath(pathname, item.href);
@@ -170,7 +182,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
+                  className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-2 py-3 text-sm transition xl:px-3 ${
                     active
                       ? "text-[var(--cinnabar)]"
                       : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -183,22 +195,16 @@ export function SiteHeader() {
             })}
           </nav>
           <AccountNavLink />
-          <Link
-            href="/interpreting#interpreting-booking"
-            className="ml-1 inline-flex min-h-11 min-w-[5.8rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--river-deep)] px-3 py-2 text-[12px] font-bold uppercase leading-5 tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar)] xl:px-4 xl:tracking-[0.2em]"
-          >
-            {t("common.nav.planTrip")}
-          </Link>
         </div>
 
-        <div className="flex items-center lg:hidden">
+        <div className="flex items-center xl:hidden">
           <AccountNavLink onNavigate={() => setIsOpen(false)} />
         </div>
 
         <button
           ref={menuButtonRef}
           type="button"
-          className="grid h-11 w-11 place-items-center border border-[var(--line)] bg-white/60 lg:hidden"
+          className="grid h-11 w-11 place-items-center border border-[var(--line)] bg-white/60 xl:hidden"
           aria-label={isOpen ? t("common.aria.closeMenu") : t("common.aria.openMenu")}
           aria-expanded={isOpen}
           aria-controls="site-mobile-navigation"
@@ -213,7 +219,7 @@ export function SiteHeader() {
       </Container>
 
       {isOpen ? (
-        <div aria-hidden="true" className="fixed inset-0 top-[var(--site-header-height)] z-40 bg-black/30 lg:hidden" onClick={closeMenu} />
+        <div aria-hidden="true" className="fixed inset-0 top-[var(--site-header-height)] z-40 bg-black/30 xl:hidden" onClick={closeMenu} />
       ) : null}
 
       {isOpen ? (
@@ -223,9 +229,10 @@ export function SiteHeader() {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation"
-          className="relative z-50 max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-t border-[var(--line)] bg-[var(--paper-deep)] bg-grain lg:hidden"
+          className="relative z-50 max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-t border-[var(--line)] bg-[var(--paper-deep)] bg-grain xl:hidden"
         >
           <Container className="grid gap-4 py-4">
+            <button type="button" className="min-h-11 justify-self-end px-4 text-base" onClick={closeMenu}>{t("common.aria.closeMenu")}</button>
             <div className="grid gap-2">
               <p className="px-1 text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--muted)]">
                 {t("common.nav.mobile.explore")}
@@ -251,15 +258,7 @@ export function SiteHeader() {
               })}
             </div>
 
-            <div className="grid grid-cols-1 gap-2 border-t border-[var(--line)] pt-4">
-              <Link
-                href="/interpreting#interpreting-booking"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--river-deep)] px-4 py-3 text-center text-[12px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[var(--cinnabar)]"
-                onClick={() => setIsOpen(false)}
-              >
-                {t("common.nav.planTrip")}
-              </Link>
-            </div>
+
           </Container>
         </div>
       ) : null}

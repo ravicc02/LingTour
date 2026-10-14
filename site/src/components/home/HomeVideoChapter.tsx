@@ -139,7 +139,7 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
   return (
     <section
       ref={scope}
-      aria-label={video?.title || "Guangzhou skyline film"}
+      aria-label={video?.title || "Guangdong film"}
       className="pb-6 pt-8 sm:pb-8 sm:pt-10 lg:pb-10 lg:pt-0"
     >
       <div className="relative w-full border-[0.4rem] border-[var(--paper-deep)] bg-[var(--paper-deep)] shadow-panel sm:border-[0.7rem]">
@@ -160,7 +160,7 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
             preload={shouldLoadVideo ? "metadata" : "none"}
             onPlay={() => setPaused(false)}
             onPause={() => setPaused(true)}
-            aria-label={video?.title || "Guangzhou skyline film"}
+            aria-label={video?.title || "Guangdong film"}
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div
@@ -170,7 +170,7 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
           <button
             type="button"
             onClick={togglePlayback}
-            aria-label={paused ? "Play Guangzhou skyline film" : "Pause Guangzhou skyline film"}
+            aria-label={`${paused ? "Play" : "Pause"} ${video?.title || "Guangdong film"}`}
             aria-pressed={!paused}
             className="absolute bottom-4 right-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/45 bg-[var(--night)]/58 text-white shadow-lift backdrop-blur-md transition duration-300 hover:scale-105 hover:bg-[var(--night)]/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-6 sm:right-6 sm:h-12 sm:w-12"
           >

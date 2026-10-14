@@ -1,0 +1,68 @@
+/* Home-only visual grammar. Shared shell rules are scoped below. */
+.home-brand-hero { position: relative; isolation: isolate; display: grid; place-items: center; min-height: min(860px, 100svh); overflow: hidden; background: var(--paper-deep); color: var(--river-deep); }
+.home-brand-photo,.home-brand-wash { position: absolute; inset: 0; pointer-events: none; }
+.home-brand-photo img { object-position: center 45%; }
+.home-brand-wash { background: linear-gradient(180deg,rgba(236,233,226,.26),rgba(236,233,226,.88) 42%,rgba(236,233,226,.9) 64%,var(--paper-deep)); }
+.home-brand-copy { position: relative; width: 100%; padding-block: 96px 48px; text-align: center; }
+.home-brand-wordmark { margin: 0; font-family: var(--font-sans); font-size: clamp(5rem,16vw,13rem); font-weight: 500; letter-spacing: -.06em; line-height: 1.12; }
+.home-brand-links { display: flex; justify-content: center; gap: clamp(1rem,3vw,3rem); margin-top: 2.5rem; }
+.home-brand-links a { display: flex; align-items: center; justify-content: center; min-height: 48px; border-bottom: 1px solid var(--river-deep); font-size: clamp(1rem,1.6vw,1.25rem); padding: .65rem .3rem; white-space: nowrap; }
+.home-brand-links a:hover { color: var(--cinnabar); border-color: var(--cinnabar); }
+.home-brand-links a:focus-visible,.home-city-map :is(a,button,input,select):focus-visible,.city-ticket :is(a,button,input,select,textarea):focus-visible,.city-ticket-preview:focus-visible { outline: 2px solid var(--river-deep); outline-offset: 5px; }
+.home-city-map h2,.city-ticket h2 { font-family: var(--font-display); font-size: clamp(2.25rem,5vw,4.8rem); line-height: 1.08; letter-spacing: -.035em; }
+.home-map-filters { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,2fr); gap: 1rem; margin-block: 2rem; }
+.home-map-filters label { display: grid; gap: .5rem; font-size: .9rem; }
+.home-map-filters :is(input,select),.city-ticket-form :is(input,select,textarea) { width: 100%; min-width: 0; min-height: 48px; border: 1px solid rgba(20,52,61,.4); background: var(--paper); color: var(--river-deep); padding: .75rem; font-size: 16px; border-radius: 0; }
+.home-map-layout { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.5fr); align-items: start; gap: clamp(1.5rem,4vw,4rem); }
+.home-map-panel { min-width: 0; background: var(--paper); padding: 1rem; border: 1px solid var(--line); }
+.home-map-photo { display: block; aspect-ratio: 4/3; overflow: hidden; }
+.home-map-photo img { width: 100%; height: 100%; object-fit: cover; }
+.home-map-panel h3 { font-family: var(--font-display); font-size: 2.25rem; line-height: 1.15; margin-top: 1.2rem; }
+.home-map-summary { color: var(--muted); font-size: 1rem; line-height: 1.7; margin-block: 1rem; }
+.home-map-actions { display: grid; }
+.home-map-actions a { display: flex; justify-content: space-between; gap: 1rem; align-items: center; min-height: 48px; padding-block: .7rem; border-top: 1px solid var(--line); font-size: 1rem; }
+.home-map-actions a:hover { color: var(--cinnabar); }
+.home-map-photo-controls { display: flex; align-items: center; justify-content: space-between; }
+.home-map-photo-controls button,.home-map-empty button { min-height: 44px; min-width: 44px; padding: .5rem; }
+.home-map-photo-controls span { font-size: .8rem; color: var(--muted); }
+.home-map-graphic { min-width: 0; }
+.home-map-graphic svg { display: block; width: 100%; height: auto; }
+.home-map-selectable { cursor: pointer; }
+.home-map-city-list { display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem 1rem; margin-top: 1rem; }
+.home-map-city-list button { min-height: 44px; padding: .5rem .75rem; border-bottom: 1px solid var(--line); font-size: 16px; }
+.home-map-city-list button[aria-pressed="true"] { color: var(--cinnabar); border-color: var(--cinnabar); }
+.home-map-empty { padding: 1rem; min-height: 200px; }
+.home-map-empty p { margin-top: 1rem; line-height: 1.6; }
+.city-ticket-intro { margin-block: 1rem 2.5rem; color: var(--muted); font-size: 1rem; }
+.city-ticket-layout { display: grid; grid-template-columns: minmax(0,.75fr) minmax(0,1.45fr); gap: clamp(1.5rem,4vw,4rem); align-items: start; }
+.city-ticket-form { display: grid; gap: .6rem; min-width: 0; }
+.city-ticket-form label:not(:first-child) { margin-top: .6rem; }
+.city-ticket-form label { font-size: 1rem; }
+.city-ticket-form label span { color: var(--muted); font-size: .85rem; }
+.city-ticket-form textarea { resize: vertical; }
+.city-ticket-help { font-size: .85rem; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }
+.city-ticket-generate,.city-ticket-download { display: flex; min-height: 48px; align-items: center; justify-content: center; gap: 1rem; padding: .9rem 1.2rem; background: var(--river-deep); color: white; font-size: 1rem; margin-top: .8rem; }
+.city-ticket-generate:disabled { opacity: .65; cursor: progress; }
+.city-ticket-generate:hover:not(:disabled),.city-ticket-download:hover { background: var(--cinnabar); }
+.city-ticket-status { color: var(--muted); font-size: .85rem; min-height: 1.5rem; line-height: 1.6; }
+.city-ticket-error { color: var(--cinnabar-deep); font-size: 1rem; line-height: 1.6; }
+.city-ticket-preview { min-width: 0; }
+.city-ticket-preview>img { width: 100%; height: auto; box-shadow: var(--shadow-panel); }
+.city-ticket-preview>.city-ticket-help { margin-top: 1rem; }
+.city-ticket-awaiting { display: grid; align-content: center; gap: 1rem; min-height: 300px; aspect-ratio: 8/5; padding: clamp(1.5rem,4vw,4rem); border: 1px dashed rgba(20,52,61,.4); background: var(--paper); text-align: center; }
+.city-ticket-awaiting p:first-child { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2rem); }
+.city-ticket-awaiting p+p { color: var(--muted); line-height: 1.6; }
+.city-ticket-empty { padding-block: 2rem; }
+@media (max-width: 767px) {
+  .home-brand-hero { min-height: min(700px,100svh); }
+  .home-brand-copy { padding-block: 88px 40px; }
+  .home-brand-links { display: grid; width: min(100%,24rem); margin: 1.5rem auto 0; gap: .6rem; }
+  .home-brand-links a { font-size: 1.1rem; }
+  .home-map-filters { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .home-map-search { grid-column: 1/-1; }
+  .home-map-layout,.city-ticket-layout { grid-template-columns: minmax(0,1fr); }
+  .home-map-graphic { grid-row: 1; }
+  .home-map-photo { aspect-ratio: 16/9; }
+  .city-ticket-awaiting { min-height: 220px; }
+}
+@media (prefers-reduced-motion: reduce) { .home-brand-hero *, .home-city-map *, .city-ticket * { animation: none !important; transition: none !important; } }

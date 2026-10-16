@@ -17,15 +17,6 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const NAV_LABEL_KEY: Record<string, string> = {
-  "/": "common.nav.home",
-  "/culture": "common.nav.culture",
-  "/routes": "common.nav.routes",
-  "/interpreting": "common.nav.interpreting",
-  "/shop": "common.nav.shop",
-  "/community": "common.nav.community",
-};
-
 export function SiteHeader() {
   const pathname = usePathname();
   const { t } = useLocale();
@@ -126,8 +117,8 @@ export function SiteHeader() {
             : "",
       ].filter(Boolean).join(" ")}
     >
-      <Container className="grid h-[calc(var(--site-header-height)-1px)] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-5">
-        <nav className="hidden items-center justify-start gap-1 lg:flex" aria-label="Primary navigation">
+      <Container className="grid h-[calc(var(--site-header-height)-1px)] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 min-[1440px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[1440px]:gap-5">
+        <nav className="hidden items-center justify-start gap-1 min-[1440px]:flex" aria-label="Primary navigation">
           {leftNavigation.map((item) => {
             const active = isActivePath(pathname, item.href);
 
@@ -139,20 +130,20 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
+                className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition min-[1440px]:px-3 ${
                   active
                     ? "text-[var(--cinnabar)]"
                     : "text-[var(--muted)] hover:text-[var(--ink)]"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                {t(NAV_LABEL_KEY[item.href] ?? item.label)}
+                {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <Link href="/" className="justify-self-start text-center leading-none lg:justify-self-center" onClick={() => setIsOpen(false)}>
+        <Link href="/" className="justify-self-start text-center leading-none min-[1440px]:justify-self-center" onClick={() => setIsOpen(false)}>
           <p className="font-[family:var(--font-sans)] text-2xl font-medium tracking-[0.08em] text-[var(--river-deep)]">
             Culvoy
           </p>
@@ -161,7 +152,7 @@ export function SiteHeader() {
           </p>
         </Link>
 
-        <div className="hidden min-w-0 shrink-0 items-center justify-end gap-1 lg:flex">
+        <div className="hidden min-w-0 shrink-0 items-center justify-end gap-1 min-[1440px]:flex">
           <nav className="flex items-center gap-1" aria-label="Secondary navigation">
             {rightNavigation.map((item) => {
               const active = isActivePath(pathname, item.href);
@@ -170,14 +161,14 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
+                  className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition min-[1440px]:px-3 ${
                     active
                       ? "text-[var(--cinnabar)]"
                       : "text-[var(--muted)] hover:text-[var(--ink)]"
                   }`}
                   aria-current={active ? "page" : undefined}
                 >
-                  {t(NAV_LABEL_KEY[item.href] ?? item.label)}
+                  {item.label}
                 </Link>
               );
             })}
@@ -185,20 +176,20 @@ export function SiteHeader() {
           <AccountNavLink />
           <Link
             href="/interpreting#interpreting-booking"
-            className="ml-1 inline-flex min-h-11 min-w-[5.8rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--river-deep)] px-3 py-2 text-[12px] font-bold uppercase leading-5 tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar)] xl:px-4 xl:tracking-[0.2em]"
+            className="ml-1 inline-flex min-h-11 min-w-[5.8rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--river-deep)] px-3 py-2 text-[12px] font-bold uppercase leading-5 tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar)] min-[1440px]:px-4 min-[1440px]:tracking-[0.2em]"
           >
-            {t("common.nav.planTrip")}
+            {"BOOK"}
           </Link>
         </div>
 
-        <div className="flex items-center lg:hidden">
+        <div className="flex items-center min-[1440px]:hidden">
           <AccountNavLink onNavigate={() => setIsOpen(false)} />
         </div>
 
         <button
           ref={menuButtonRef}
           type="button"
-          className="grid h-11 w-11 place-items-center border border-[var(--line)] bg-white/60 lg:hidden"
+          className="grid h-11 w-11 place-items-center border border-[var(--line)] bg-white/60 min-[1440px]:hidden"
           aria-label={isOpen ? t("common.aria.closeMenu") : t("common.aria.openMenu")}
           aria-expanded={isOpen}
           aria-controls="site-mobile-navigation"
@@ -213,7 +204,7 @@ export function SiteHeader() {
       </Container>
 
       {isOpen ? (
-        <div aria-hidden="true" className="fixed inset-0 top-[var(--site-header-height)] z-40 bg-black/30 lg:hidden" onClick={closeMenu} />
+        <div aria-hidden="true" className="fixed inset-0 top-[var(--site-header-height)] z-40 bg-black/30 min-[1440px]:hidden" onClick={closeMenu} />
       ) : null}
 
       {isOpen ? (
@@ -223,7 +214,7 @@ export function SiteHeader() {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation"
-          className="relative z-50 max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-t border-[var(--line)] bg-[var(--paper-deep)] bg-grain lg:hidden"
+          className="relative z-50 max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-t border-[var(--line)] bg-[var(--paper-deep)] bg-grain min-[1440px]:hidden"
         >
           <Container className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -245,7 +236,7 @@ export function SiteHeader() {
                     aria-current={active ? "page" : undefined}
                     onClick={() => setIsOpen(false)}
                   >
-                    {t(NAV_LABEL_KEY[item.href] ?? item.label)}
+                    {item.label}
                   </Link>
                 );
               })}
@@ -257,7 +248,7 @@ export function SiteHeader() {
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--river-deep)] px-4 py-3 text-center text-[12px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[var(--cinnabar)]"
                 onClick={() => setIsOpen(false)}
               >
-                {t("common.nav.planTrip")}
+                {"BOOK"}
               </Link>
             </div>
           </Container>

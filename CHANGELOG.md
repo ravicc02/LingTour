@@ -10,6 +10,12 @@
 
 - site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.
 
+## [Unreleased]
+
+### Changed
+
+- site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.
+
 ## 2026-09-22 — 认证防御修复与自动化收尾部署（root `1a25fa5`）
 
 ### Changed

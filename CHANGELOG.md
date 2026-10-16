@@ -8,6 +8,9 @@
 
 ### Changed
 
+- site: remove redundant subtitles and decorative labels across public pages, standardize service headings and controls, and keep the original compact header and map actions.
+- verification: site 22 files / 112 tests and API 28 suites / 201 tests passed; Docker site build passed; restored navigation, map actions and mobile menu verified in a browser at 390/901/1024/1354/1707px. No push, production deployment, migration or real payment.
+
 - api/site: price interpretation packages in USD, validate package IDs on the server, snapshot totals separately from deposits, and retain historical order currencies.
 
 - site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.

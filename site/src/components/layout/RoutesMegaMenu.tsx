@@ -139,9 +139,7 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
         >
           <div className="site-container py-8 lg:py-12">
             <div className="mb-8 flex items-center justify-between gap-8 border-b border-black/5 pb-7 lg:mb-12 lg:pb-10">
-              <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--cinnabar)]">
-                {t("common.nav.routesMega.eyebrow")}
-              </p>
+
               <Link
                 href="/routes"
                 className="inline-flex min-h-11 shrink-0 items-center px-5 py-3 text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--river-deep)] transition-colors hover:bg-[var(--river-deep)] hover:text-white"

@@ -1,9 +1,9 @@
 export const shop = {
   en: {
-    "shop.page.title": "Shop",
+    "shop.page.title": "Products",
     "shop.page.subtitle": "Route-linked objects selected for craft value, provenance, and story.",
-    "shop.image.pending": "Image pending cataloguing",
-    "shop.image.catalogueNote": "The object record is ready; photography is still being filed.",
+    "shop.image.pending": "Image unavailable",
+    "shop.image.catalogueNote": "",
     "shop.page.viewAll": "All products",
     "shop.page.collections": "Collections",
     "shop.page.sortBy": "Sort by",
@@ -21,7 +21,7 @@ export const shop = {
     "shop.detail.collectionFallback": "Culvoy Goods",
     "shop.detail.routesCta": "Related routes",
     "shop.detail.citiesCta": "Related cities",
-    "shop.detail.noteCta": "Add field note",
+    "shop.detail.noteCta": "Write a review",
 
     "shop.checkout.title": "Checkout",
     "shop.checkout.submit": "Create order",
@@ -29,11 +29,11 @@ export const shop = {
 
     "shop.hero.quote": "Objects carry stories too, especially the ones you can still trace back to place.",
 
-    "shop.atlas.titlePrimary": "Lingnan",
-    "shop.atlas.titleItalic": "Objects.",
+    "shop.atlas.titlePrimary": "Local",
+    "shop.atlas.titleItalic": "Products",
     "shop.atlas.lede": "A bowl pressed from Leizhou volcanic clay, teacups off a Chaozhou workshop shelf — objects that were in use here long before they were in a shop.",
-    "shop.atlas.collectionsTitle": "Collections by Place",
-    "shop.atlas.featuredTitle": "Featured Objects",
+    "shop.atlas.collectionsTitle": "Collections",
+    "shop.atlas.featuredTitle": "Featured Products",
     "shop.atlas.viewAll": "View all",
 
     "shop.atlas.empty.collections.title": "No collections",
@@ -43,8 +43,8 @@ export const shop = {
     "shop.atlas.empty.products.body":
       "No objects on the shelf yet.",
 
-    "shop.cta.title": "A gift that names its place.",
-    "shop.cta.button": "Browse all products",
+    "shop.cta.title": "Browse Products",
+    "shop.cta.button": "View all products",
   }
 
 };

@@ -1,5 +1,7 @@
 "use client";
 
+import { communityChannelLabel } from "@/lib/community-labels";
+
 import type { FieldBrief } from "@/lib/api-data";
 
 type BriefCardProps = {
@@ -21,10 +23,10 @@ export function BriefCard({ brief, onSelect, index }: BriefCardProps) {
       <div className="flex items-start justify-between border-b border-[var(--line)]/50 pb-4 mb-4">
         <div>
           <p className="font-mono text-[12px] uppercase tracking-widest text-[var(--cinnabar)]">
-            Active Brief
+            Editor update
           </p>
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)] mt-2">
-            {brief.channel}
+            {communityChannelLabel(brief.channel)}
           </p>
         </div>
         <div className="h-6 w-6 rounded-full border border-[var(--line)] flex items-center justify-center text-[var(--muted)] group-hover:text-[var(--cinnabar)] group-hover:border-[var(--cinnabar)] transition-colors">

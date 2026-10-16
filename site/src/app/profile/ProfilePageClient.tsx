@@ -87,7 +87,7 @@ function formatBookingDate(value: string) {
 function EmptyArchive({ title, body, href, cta }: { title: string; body: string; href: string; cta: string }) {
   return (
     <section data-pastoral-card className="mx-auto max-w-3xl border-y border-[var(--line)] px-1 py-9 sm:py-12">
-      <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--cinnabar)]">Culvoy field archive</p>
+
       <h2 className="mt-4 max-w-[20ch] font-[family:var(--font-display)] text-3xl leading-[1.02] text-[var(--river-deep)] sm:text-4xl">{title}</h2>
       <p className="mt-4 max-w-xl handwritten text-sm leading-7 text-[var(--muted)] sm:text-base">{body}</p>
       <Link
@@ -401,7 +401,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
                 <span className="block overflow-hidden pb-1"><span data-pastoral-title className="block">{user.name}</span></span>
               </h1>
               <p data-pastoral-subtitle className="mt-4 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-                {user.bio || t("account.profile.bioFallback")}
+                {user.bio}
               </p>
               <button
                 type="button"
@@ -748,8 +748,8 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
               </button>
             </div>
             <aside className="border-t border-[var(--line)] pt-6 lg:pt-7">
-              <p className="font-[family:var(--font-display)] text-2xl italic">{t("account.profile.settingsNoteTitle")}</p>
-              <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{t("account.profile.settingsNoteBody")}</p>
+
+
               <p className="mt-7 text-xs text-[var(--muted)]">{user.email}</p>
             </aside>
           </section>

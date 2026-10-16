@@ -207,7 +207,7 @@ export function StickyComposeBar({
         initialBrief={{
           title: routeTitle,
           channel: "Field Notes",
-          prompt: `Posting on: ${postingContext}. Add a field note others can use on this route.`,
+          prompt: `Posting on: ${postingContext}. Share your route experience.`,
         }}
         channels={routeChannels}
         compact
@@ -216,7 +216,7 @@ export function StickyComposeBar({
       <div
         className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--line)] bg-[var(--background)] pb-[env(safe-area-inset-bottom)] shadow-panel"
         role="region"
-        aria-label="Leave a field note on this route"
+        aria-label="Write a route review"
       >
         <button
           type="button"
@@ -232,14 +232,14 @@ export function StickyComposeBar({
           <div className="flex min-w-0 items-center gap-3">
             <span aria-hidden="true" className="inline-block h-2 w-2 animate-pulse rounded-full bg-[var(--cinnabar)]" />
             <span className="font-mono text-[12px] font-bold uppercase tracking-[0.32em] text-[var(--cinnabar)]">
-              Field Drop
+              Create Post
             </span>
             <span className="hidden truncate text-[13px] italic text-[var(--muted)] sm:inline">
               {composeTarget
                 ? `Add note for Stop ${composeTarget.index + 1}: ${composeTarget.name}`
                 : latestPost
                   ? `${latestPost.user.name} · ${formatRelativeTime(latestPost.createdAt)}`
-                  : "Add a field note to this route"}
+                  : "Write a route review"}
             </span>
           </div>
 

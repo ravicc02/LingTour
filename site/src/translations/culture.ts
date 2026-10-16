@@ -1,6 +1,6 @@
 export const culture = {
   en: {
-    "culture.page.title": "Explore Guangdong by Culture Line",
+    "culture.page.title": "Cultural Information",
     "culture.page.subtitle": "Each city belongs to one of three cultural traditions that shape its food, dialect, and daily rhythm.",
     "culture.page.backToAll": "See all cities",
 
@@ -15,7 +15,7 @@ export const culture = {
     "culture.detail.routeMapLabel": "Guangdong map showing cities on the selected route",
     "culture.detail.selectedRoute": "Selected route",
     "culture.detail.noRelatedRoutes": "No linked routes",
-    "culture.detail.routeLinks": "Linked Routes",
+    "culture.detail.routeLinks": "Related Routes",
     "culture.detail.nearbyCities": "Nearby Cities",
     "culture.detail.flavoursOf": "Flavours of {city}",
     "culture.detail.cities": "Cities passed through",
@@ -33,16 +33,16 @@ export const culture = {
     "culture.progress.route": "Route",
 
     "culture.atlas.eyebrow": "City Culture · The Atlas",
-    "culture.atlas.titlePrimary": "Guangdong",
-    "culture.atlas.titleItalic": "City Culture.",
+    "culture.atlas.titlePrimary": "Cultural",
+    "culture.atlas.titleItalic": "Information",
     "culture.atlas.lede": "Guangdong does not hold still between cities. Chaozhou pours tea into thimble cups, Guangzhou does its loudest talking over morning dim sum, and the Hakka hills keep a language of their own.",
-    "culture.atlas.archiveLabel": "Archive No.",
+    "culture.atlas.archiveLabel": "City",
     "culture.atlas.archiveCode": "GD-020-0755",
-    "culture.atlas.empty.title": "No city records",
+    "culture.atlas.empty.title": "No cities available",
     "culture.atlas.empty.body": "No city records on file yet.",
     "culture.atlas.openArchive": "Open archive",
-    "culture.filter.searchLabel": "Search city archives",
-    "culture.filter.searchPlaceholder": "City, region, craft, or food...",
+    "culture.filter.searchLabel": "Search cities",
+    "culture.filter.searchPlaceholder": "Search cities",
     "culture.filter.count": "{visible}/{total} cities",
     "culture.filter.open": "Filters",
     "culture.filter.all": "All",
@@ -53,8 +53,8 @@ export const culture = {
     "culture.filter.emptyBody": "Try another cultural thread or clear the current filters.",
 
     "culture.cta.eyebrow": "Start with a thread",
-    "culture.cta.title": "Pick a thread and follow it through the city.",
-    "culture.cta.button": "Browse routes",
+    "culture.cta.title": "Explore Routes",
+    "culture.cta.button": "View routes",
   }
 
 };

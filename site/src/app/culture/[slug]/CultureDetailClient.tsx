@@ -61,9 +61,6 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
   const index = (cities ?? []).findIndex(item => item.slug === activeCity.slug);
   const previous = index > 0 ? cities?.[index - 1] : undefined;
   const next = index >= 0 ? cities?.[index + 1] : undefined;
-  const isSummaryInArticle = Boolean(
-    activeCity.summary && activeCity.contentMarkdown?.includes(activeCity.summary),
-  );
   const mastheadMedia = activeCity.primaryMedia ?? (
     activeCity.image.trim()
       ? { type: "image" as const, url: activeCity.image }
@@ -80,9 +77,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
           <div className="grid min-w-0 items-center gap-6 min-[620px]:grid-cols-[minmax(13rem,0.78fr)_minmax(0,1.1fr)] min-[620px]:gap-10 lg:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] lg:gap-16">
             {mastheadMedia ? (
               <div className="relative order-1 min-w-0 min-[620px]:order-none">
-                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
-                  Opening field media
-                </p>
+
                 <figure
                   data-culture-brief-media
                   className="relative aspect-[4/3] min-w-0 overflow-hidden border-[0.55rem] border-white bg-[var(--paper)] scrapbook-shadow sm:border-[0.75rem] lg:aspect-[4/5] lg:border-[0.9rem]"
@@ -102,11 +97,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
               >
                 {activeCity.name}
               </h1>
-              {activeCity.summary && !isSummaryInArticle ? (
-                <p data-culture-brief-summary className="mt-6 max-w-[65ch] text-lg leading-[1.7] text-[var(--river-deep)] sm:text-xl">
-                  {activeCity.summary}
-                </p>
-              ) : null}
+
               <div data-culture-brief-meta className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[var(--muted)]">
                 {activeCity.publishedAt ? (
                   <time dateTime={activeCity.publishedAt}>

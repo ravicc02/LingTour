@@ -533,12 +533,8 @@ export default function CommunityPage() {
               <span className="block overflow-hidden pb-1"><span data-community-title className="block">{t("community.hero.title")}</span></span>
               <span className="block overflow-hidden pb-3"><span data-community-title className="block italic text-[var(--gold)]">{t("community.hero.titleAccent")}</span></span>
             </h1>
-            <p className="mx-auto mt-8 max-w-xl handwritten text-base leading-7 text-[var(--river-deep)]/85 sm:text-lg">
-              What travellers noticed on the ground, and what the editors are chasing next.
-            </p>
-            <p aria-live="polite" className="mt-6 font-mono text-[12px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
-              {allPosts.length} traveller notes · {fieldBriefs.length} editor briefs
-            </p>
+
+
           </div>
         </div>
       </section>

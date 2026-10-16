@@ -31,9 +31,7 @@ export function SiteFooter() {
           <div>
             <p className="font-[family:var(--font-display)] text-4xl lg:text-5xl tracking-tight">Culvoy</p>
           </div>
-          <p className="max-w-md text-lg leading-relaxed text-white/50 handwritten">
-            {t("common.site.tagline")}
-          </p>
+
         </div>
 
         <div className="flex flex-col gap-8">

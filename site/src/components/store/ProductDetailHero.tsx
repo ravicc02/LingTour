@@ -29,13 +29,7 @@ function buildNoteWords(product: StoreProduct) {
   return words.slice(0, 3);
 }
 
-function buildShortStory(story: string) {
-  const trimmed = story.trim();
-  const firstSentence = trimmed.split(/(?<=[.!?])\s+/)[0] || trimmed;
-  return firstSentence.length > 140
-    ? `${firstSentence.slice(0, 137).trim()}...`
-    : firstSentence;
-}
+
 
 export function ProductDetailHero({ product }: { product: StoreProduct }) {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -52,7 +46,6 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
   const [edition, setEdition] = useState("Single object");
   const activeMedia = media[activeIndex] ?? media[0] ?? null;
   const noteWords = buildNoteWords(product);
-  const shortStory = buildShortStory(product.story);
   const collectionLabel = product.collection || "Culvoy Goods";
 
   useGSAP(
@@ -185,13 +178,12 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
     >
       {/* React 19 hoists this into <head>: the lead media starts fetching with
           the document, so the object-file mount opens on parchment instead of
-          a long "opening field media" beat. */}
+          a long "loading product media" beat. */}
       <link rel="preload" as="image" href={mediaPoster(activeMedia, product.image)} />
       <div className="border-y border-[rgba(20,33,47,0.1)] bg-[var(--paper-deep)] bg-grain py-4">
         <div className="site-container">
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="handwritten text-lg text-[var(--gold)]">Studio dispatch</span>
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--river-deep)]/60 sm:text-[12px] sm:tracking-[0.2em]">
                 Free route-linked packing for this object.
               </span>
@@ -230,21 +222,19 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
                 <h1 className="text-balance font-[family:var(--font-display)] text-[clamp(1.875rem,6vw,5.5rem)] leading-[1.05] tracking-tight text-[var(--river-deep)]">
                   {product.name}
                 </h1>
-                <p className="handwritten text-xl text-[var(--gold)] sm:text-2xl">{product.tag}</p>
+
               </header>
             </div>
 
             <div className="order-4 col-span-1 space-y-5 min-[600px]:col-span-2 sm:space-y-8 lg:order-none lg:mt-10 lg:space-y-10">
               <div data-product-note className="space-y-3 border-t border-dashed border-[var(--river-deep)]/20 pt-6 sm:pt-8">
-                <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--river-deep)]/45 sm:text-[11px]">Story Summary</p>
-                <p className="max-w-[34rem] text-[15px] italic leading-7 text-[var(--river-deep)]/80 sm:text-base">
-                  &ldquo;{shortStory}&rdquo;
-                </p>
+
+
               </div>
 
               {noteWords.length ? (
                 <div data-product-note className="space-y-3 border-t border-dashed border-[var(--river-deep)]/20 pt-6 sm:pt-8">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--river-deep)]/45 sm:text-[11px]">Material Logic</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--river-deep)]/45 sm:text-[11px]">Materials</p>
                   <div className="flex flex-wrap gap-2">
                     {noteWords.map((word) => (
                       <span
@@ -356,7 +346,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
                       }`}
                     >
                       <span className="text-[12px] font-bold uppercase tracking-[0.16em] sm:text-xs sm:tracking-widest">{option}</span>
-                      {finish === option ? <span className="handwritten text-lg text-[var(--gold-light)]">Picked</span> : null}
+                      {finish === option ? <span className="handwritten text-lg text-[var(--gold-light)]">Selected</span> : null}
                     </button>
                   ))}
                 </div>
@@ -393,7 +383,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
                   Trace the route behind this object
                 </Link>
                 <Link
-                  href={`/community?compose=1&channel=Culture%20Desk&title=${encodeURIComponent(product.name)}&note=${encodeURIComponent(`Object note: ${product.name} belongs in the field archive because `)}`}
+                  href={`/community?compose=1&channel=Culture%20Desk&title=${encodeURIComponent(product.name)}&note=${encodeURIComponent(`Review: ${product.name}. `)}`}
                   className="inline-flex min-h-11 items-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold)] underline-offset-4 hover:text-[var(--cinnabar)] hover:underline sm:text-[12px] sm:tracking-[0.24em]"
                 >
                   Send this object to the community desk
@@ -402,7 +392,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
 
               <div className="flex items-center gap-3 pt-2 text-[11px] font-bold uppercase tracking-widest text-[var(--river-deep)]/35 italic sm:gap-4 sm:text-[12px]">
                 <div className="h-px flex-1 bg-[var(--river-deep)]/10" />
-                <span className="shrink-0">Registry #LT-{product.slug.slice(0, 4).toUpperCase()}</span>
+
                 <div className="h-px flex-1 bg-[var(--river-deep)]/10" />
               </div>
             </div>

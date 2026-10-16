@@ -81,9 +81,7 @@ export default function RoutesPageClient({
           <div className="grid grid-cols-1 items-center gap-10 sm:gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="z-10 min-w-0 max-w-3xl lg:col-span-7">
               <Reveal>
-                <p data-pastoral-kicker className="mb-6 text-[12px] font-bold uppercase tracking-[0.32em] text-[var(--cinnabar)] sm:mb-8">
-                  {t("routes.atlas.eyebrow")}
-                </p>
+
                 <h1 className="font-[family:var(--font-display)] text-[clamp(2.25rem,7vw,6rem)] leading-[0.92] tracking-[-0.04em] text-[var(--river-deep)]">
                   <span className="block overflow-hidden pb-1">
                     <span data-pastoral-title className="block">{t("routes.atlas.titlePrimary")}</span>
@@ -92,9 +90,7 @@ export default function RoutesPageClient({
                     <span data-pastoral-title className="block italic text-[var(--gold)]">{t("routes.atlas.titleItalic")}</span>
                   </span>
                 </h1>
-                <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
-                  {t("routes.atlas.lede")}
-                </p>
+
               </Reveal>
             </div>
 
@@ -104,14 +100,7 @@ export default function RoutesPageClient({
                     rows are computed from the live route list, so the sheet
                     always states what is actually on file. */}
                 <div className="relative border border-[var(--line)] bg-[var(--paper)] scrapbook-shadow">
-                  <div className="flex items-center justify-between border-b border-[var(--line)] px-5 py-3.5">
-                    <p className="font-mono text-[11px] font-bold uppercase tracking-[0.28em] text-[var(--river-deep)]/70">
-                      Route manifest
-                    </p>
-                    <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)]">
-                      GD-{String(storyRoutes.length).padStart(2, "0")}
-                    </p>
-                  </div>
+
 
                   <div className="relative px-5" aria-hidden="true">
                     <div className="border-t border-dashed border-[var(--river-deep)]/25" />
@@ -122,7 +111,7 @@ export default function RoutesPageClient({
                   <dl className="px-5">
                     <div className="flex items-baseline justify-between gap-6 border-b border-[var(--line)] py-4">
                       <dt className="shrink-0 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
-                        Routes on file
+                        Routes
                       </dt>
                       <dd className="text-right font-[family:var(--font-display)] text-2xl leading-none text-[var(--river-deep)]">
                         {storyRoutes.length}
@@ -130,7 +119,7 @@ export default function RoutesPageClient({
                     </div>
                     <div className="flex items-baseline justify-between gap-6 border-b border-[var(--line)] py-4">
                       <dt className="shrink-0 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
-                        Ground covered
+                        Cities
                       </dt>
                       <dd className="min-w-0 text-right font-[family:var(--font-display)] text-lg leading-snug text-[var(--river-deep)]">
                         {manifestCities.length > 0 ? manifestCities.join(" · ") : "—"}
@@ -138,7 +127,7 @@ export default function RoutesPageClient({
                     </div>
                     <div className="flex items-baseline justify-between gap-6 py-4">
                       <dt className="shrink-0 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
-                        Time on the road
+                        Duration
                       </dt>
                       <dd className="min-w-0 text-right font-[family:var(--font-display)] text-lg leading-snug text-[var(--river-deep)]">
                         {manifestDurations.length > 0 ? manifestDurations.join(" · ") : "—"}
@@ -151,16 +140,7 @@ export default function RoutesPageClient({
                       aria-hidden="true"
                       className="h-7 w-24 bg-[repeating-linear-gradient(90deg,var(--river-deep)_0_2px,transparent_2px_5px,var(--river-deep)_5px_8px,transparent_8px_11px)] opacity-70"
                     />
-                    <div
-                      data-pastoral-stamp
-                      className="grid h-16 w-16 rotate-6 place-items-center rounded-full border-2 border-[var(--cinnabar)]/60 text-center"
-                    >
-                      <span className="px-1 font-mono text-[11px] font-bold uppercase leading-[1.5] tracking-[0.14em] text-[var(--cinnabar)]">
-                        Guangdong
-                        <br />
-                        field transit
-                      </span>
-                    </div>
+
                   </div>
                 </div>
               </Reveal>
@@ -261,9 +241,7 @@ export default function RoutesPageClient({
                           <h2 className="text-balance font-[family:var(--font-display)] text-3xl leading-[1.03] text-[var(--river-deep)] transition-colors group-hover:text-[var(--cinnabar)] sm:text-4xl lg:text-3xl">
                             {route.title}
                           </h2>
-                          <p className="mt-4 max-w-[37ch] text-pretty text-sm leading-7 text-[var(--muted)] line-clamp-3 sm:text-base sm:line-clamp-none">
-                            {route.summary}
-                          </p>
+
                           <dl className="mt-auto grid grid-cols-2 gap-x-6 gap-y-2 border-t border-[var(--line)] pt-5 text-sm leading-6 text-[var(--river-deep)]">
                             <div>
                               <dt className="sr-only">City</dt>

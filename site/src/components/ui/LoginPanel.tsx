@@ -257,7 +257,7 @@ export function LoginPanel() {
       <section className="flex min-h-[100dvh] items-center px-6 py-14 sm:px-10 lg:px-[clamp(3rem,7vw,7rem)]">
         <div className="w-full max-w-md">
           <h1 className="font-[Georgia,'Times_New_Roman',serif] text-[clamp(2.75rem,4vw,4.25rem)] leading-[1] tracking-[-0.04em] text-balance lg:whitespace-nowrap">
-            {isLogin ? "Welcome back" : "Create your account"}
+            {isLogin ? "Log in" : "Create Account"}
           </h1>
           {error ? (
             <div className="mt-7 border-y border-[var(--cinnabar)]/45 py-3 text-sm leading-6 text-[var(--cinnabar)]" role="alert">

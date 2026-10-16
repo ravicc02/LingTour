@@ -62,7 +62,7 @@ export function StoreProductCard({ product, index = 0 }: StoreProductCardProps) 
 
             <div className="flex min-w-0 flex-col items-start gap-3">
               <div className="min-w-0 space-y-1 break-words">
-                <p className="text-[12px] font-bold uppercase tracking-widest text-[var(--gold)]">{product.tag}</p>
+
                 <p className="text-[12px] font-bold text-[var(--river-deep)]">
                   <Price amount={product.price} currency={product.currency} />
                 </p>

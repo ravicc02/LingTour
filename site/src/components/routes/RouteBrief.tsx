@@ -1,25 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import type { StoryRoute } from "@/data/routes";
 import { gsap, motionEase, useGSAP } from "@/lib/motion";
 
 type Props = { route: StoryRoute };
 
-function truncate(value: string, max = 190): string {
-  const clean = value.trim();
-  if (clean.length <= max) return clean;
-  return `${clean.slice(0, max - 1).trim()}...`;
-}
-
 export function RouteBrief({ route }: Props) {
   const briefRef = useRef<HTMLElement | null>(null);
-  const summary = useMemo(
-    () => truncate(route.summary || route.story || route.title),
-    [route.story, route.summary, route.title],
-  );
   const facts = [route.city, route.culture, route.duration].filter(Boolean);
 
   useGSAP(
@@ -31,7 +21,6 @@ export function RouteBrief({ route }: Props) {
         timeline
           .from("[data-route-brief-media]", { autoAlpha: 0, y: 22, rotation: -1.2, duration: 0.8 })
           .from("[data-route-brief-title]", { autoAlpha: 0, y: 30, duration: 0.76 }, "-=0.52")
-          .from("[data-route-brief-summary]", { autoAlpha: 0, y: 18, duration: 0.58 }, "-=0.4")
           .from("[data-route-brief-facts]", { autoAlpha: 0, y: 12, duration: 0.45 }, "-=0.28")
           .from("[data-route-brief-actions]", { autoAlpha: 0, y: 12, duration: 0.45 }, "-=0.25");
       });
@@ -64,12 +53,7 @@ export function RouteBrief({ route }: Props) {
             >
               {route.title}
             </h1>
-            <p
-              data-route-brief-summary
-              className="mt-5 max-w-[60ch] text-pretty text-base leading-8 text-[var(--muted)] lg:mt-6 lg:text-lg"
-            >
-              {summary}
-            </p>
+
 
             {facts.length ? (
               <dl data-route-brief-facts className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--river-deep)] sm:gap-x-7 lg:mt-8 lg:text-base">

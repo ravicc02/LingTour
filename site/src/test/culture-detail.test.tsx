@@ -44,13 +44,13 @@ describe("Culture detail publication and preview boundaries", () => {
     expect(mocks.query.mock.calls[0][2].enabled).toBe(true);
   });
 
-  it("pairs the culture masthead image with the route-style field media label", () => {
+  it("keeps the framed masthead image without a decorative media label", () => {
     const cityWithMedia = {
       ...city,
       image: "/editorial/city.jpg",
     };
     render(<CultureDetailClient slug="preview-city" initialCity={cityWithMedia} initialCityCultures={[cityWithMedia]} initialRoutes={[]} />);
-    expect(screen.getByText("Opening field media")).toBeInTheDocument();
+    expect(screen.queryByText("Opening field media")).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: cityWithMedia.name })).toBeInTheDocument();
   });
 

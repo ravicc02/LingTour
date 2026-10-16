@@ -1,5 +1,7 @@
 "use client";
 
+import { communityChannelLabel } from "@/lib/community-labels";
+
 import { useEffect, useMemo, useState } from "react";
 import type { CommunityFeedPost } from "@/lib/api-data";
 import {
@@ -172,7 +174,7 @@ export function PostCard({
                   : "handwritten rotate-[2deg] bg-[var(--paper)]/85 text-[var(--river-deep)] shadow-sm backdrop-blur-sm"
               }`}
             >
-              {post.channel}
+              {communityChannelLabel(post.channel)}
             </span>
             {variant === "feature" ? (
               <div className="absolute inset-x-0 bottom-0 p-5">
@@ -185,7 +187,7 @@ export function PostCard({
         ) : (
           <div className="relative overflow-hidden px-6 pb-2 pt-8 sm:px-7">
             <div className="max-w-[13rem]">
-              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{post.channel}</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{communityChannelLabel(post.channel)}</p>
             </div>
           </div>
         )}

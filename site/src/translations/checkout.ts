@@ -87,7 +87,7 @@ export const checkout = {
     "checkout.success.statusRefunded": "Refunded",
     "checkout.success.total": "Total",
     "checkout.success.continueBrowsing": "Continue browsing",
-    "checkout.success.returnToInterpreting": "Return to interpreting",
+    "checkout.success.returnToInterpreting": "Return to interpretation",
     "checkout.success.visitCommunity": "Visit community",
     "checkout.success.checkAgain": "Check again",
     "checkout.success.checkingAgain": "Checking",
@@ -114,7 +114,7 @@ export const checkout = {
 
     "checkout.error.loadSelection": "We could not load the current checkout selection.",
     "checkout.error.productNotFound": "That object is no longer available. Return to the store to choose another.",
-    "checkout.error.itemUnavailable": "\"{item}\" is not yet mapped to a live catalog item. Re-add it from the store before checkout.",
+    "checkout.error.itemUnavailable": "\\\"{item}\\\" is not yet mapped to a live catalog item. Re-add it from the store before checkout.",
     "checkout.error.createOrder": "We could not create your order right now.",
   }
 

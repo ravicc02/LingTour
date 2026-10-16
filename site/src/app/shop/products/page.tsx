@@ -18,14 +18,11 @@ export default async function ProductsPage() {
       <section className="border-b border-[var(--line)] py-beat">
         <Reveal>
           <EditorialIntro
-            eyebrow={`${String(products.length).padStart(2, "0")} field objects / All products`}
+            eyebrow={`${String(products.length).padStart(2, "0")} products`}
             title="From Zhanjiang clay to Chaozhou teacups."
             description={
               <>
-                <p>
-                  Browse the complete Lingnan store: pieces selected for their craft lineage,
-                  route connection, and quiet usefulness after the trip ends.
-                </p>
+
                 <Link
                   href="/shop"
                   className="mt-6 inline-flex min-h-11 items-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)] transition hover:translate-x-1 hover:text-[var(--river-deep)]"

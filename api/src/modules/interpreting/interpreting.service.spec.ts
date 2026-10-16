@@ -204,3 +204,61 @@ describe('InterpretingService booking workflow', () => {
     expect(saved.assignedInterpreterId).toBe('i1');
   });
 });
+
+
+describe('USD interpretation packages', () => {
+  function setup() {
+    const manager = {
+      create: jest.fn((_entity, value) => ({ ...value, id: 'package-booking' })),
+      save: jest.fn().mockResolvedValue({ id: 'package-booking', status: 'deposit_pending' }),
+    };
+    const orders = { createInterpretingDeposit: jest.fn().mockResolvedValue({
+      orderNo: 'USD1', totalAmount: 180, currency: 'USD', status: 'pending',
+    }) };
+    const transaction = jest.fn((work) => work(manager));
+    const service = new InterpretingService(
+      { find: jest.fn().mockResolvedValue([]) } as any,
+      { find: jest.fn().mockResolvedValue([]) } as any,
+      { find: jest.fn().mockResolvedValue([]) } as any,
+      {} as any, orders as any, { notifyStaff: jest.fn() } as any,
+      { transaction } as any, { sendTemplated: jest.fn().mockResolvedValue(true) } as any,
+    );
+    return { service, manager, orders, transaction };
+  }
+  const request = { name: 'Guest', contact: 'guest@example.com', city: 'Guangzhou',
+    serviceDate: '2026-11-01', supportMode: 'client-supplied label' };
+  it('publishes the six approved dollar prices from one server catalogue', async () => {
+    const { service } = setup();
+    const result = await service.getPublicPageData();
+    expect(result.packages.map((item: any) => [item.hours, item.routeType, item.priceCents, item.currency]))
+      .toEqual([[4,'fixed',30500,'USD'],[4,'custom',40000,'USD'],[5,'fixed',37500,'USD'],
+        [5,'custom',50000,'USD'],[7,'fixed',52500,'USD'],[7,'custom',70000,'USD']]);
+  });
+  it('ignores client pricing and stores the server package snapshot', async () => {
+    const { service, manager, orders } = setup();
+    const result = await service.submitBookingWithDeposit({
+      ...request, packageId: 'fixed-4h', amount: 1, currency: 'CNY',
+    } as any);
+    expect(orders.createInterpretingDeposit).toHaveBeenCalledWith(expect.objectContaining({
+      currency: 'USD', depositAmount: 180, supportMode: '4-hour interpretation — Fixed route',
+      interpretationPackage: expect.objectContaining({ id: 'fixed-4h', priceCents: 30500, currency: 'USD' }),
+    }), manager);
+    expect(manager.create).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      supportMode: '4-hour interpretation — Fixed route',
+    }));
+    expect(result.package?.priceCents).toBe(30500);
+    expect(result.deposit.currency).toBe('USD');
+  });
+  it('rejects an invalid package before persistence even with fast track', async () => {
+    const { service, transaction, orders } = setup();
+    await expect(service.submitBookingWithDeposit({ ...request, packageId: 'fake', fastTrack: true }))
+      .rejects.toThrow(BadRequestException);
+    expect(transaction).not.toHaveBeenCalled();
+    expect(orders.createInterpretingDeposit).not.toHaveBeenCalled();
+  });
+  it('prices new legacy requests in USD with their existing numeric deposit', async () => {
+    const { service, manager, orders } = setup();
+    await service.submitBookingWithDeposit({ ...request, supportMode: 'City companion support' });
+    expect(orders.createInterpretingDeposit).toHaveBeenCalledWith(expect.objectContaining({ currency: 'USD', depositAmount: 120 }), manager);
+  });
+});

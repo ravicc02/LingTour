@@ -8,11 +8,7 @@
 
 ### Changed
 
-- site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.
-
-## [Unreleased]
-
-### Changed
+- api/site: price interpretation packages in USD, validate package IDs on the server, snapshot totals separately from deposits, and retain historical order currencies.
 
 - site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.
 

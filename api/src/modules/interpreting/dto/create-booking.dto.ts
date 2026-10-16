@@ -1,3 +1,4 @@
+import { INTERPRETATION_PACKAGES } from '../interpretation-packages';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
@@ -6,6 +7,7 @@ import {
   MaxLength,
   IsBoolean,
   IsUUID,
+  IsIn,
 } from 'class-validator';
 
 export class CreateBookingDto {
@@ -45,6 +47,11 @@ export class CreateBookingDto {
   @IsOptional()
   @IsUUID('4')
   serviceModeId?: string;
+
+  @ApiPropertyOptional({ example: 'fixed-4h', description: 'Server-priced USD interpretation package' })
+  @IsOptional()
+  @IsIn(INTERPRETATION_PACKAGES.map((item) => item.id))
+  packageId?: string;
 
   @ApiPropertyOptional({ example: '1-2' })
   @IsOptional()

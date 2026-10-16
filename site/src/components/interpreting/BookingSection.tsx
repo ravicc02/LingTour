@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import type { InterpretationPackage } from "@/lib/api-data";
+
 import { MultiStepForm } from "@/components/interpreting/MultiStepForm";
 
 type BookingFormSnapshot = {
@@ -16,9 +18,10 @@ type BookingFormSnapshot = {
 
 type Props = {
   prefillNeeds?: string;
+  packages?: InterpretationPackage[];
 };
 
-export function BookingSection({ prefillNeeds }: Props) {
+export function BookingSection({ prefillNeeds, packages = [] }: Props) {
   const [bookingStep, setBookingStep] = useState(0);
   const [bookingFastTrack, setBookingFastTrack] = useState(false);
   const stepTrackRef = useRef<HTMLDivElement | null>(null);
@@ -28,7 +31,7 @@ export function BookingSection({ prefillNeeds }: Props) {
     contact: "",
     city: "Zhanjiang",
     date: "",
-    mode: "Story-led route support",
+    mode: "Route interpretation",
     groupSize: "",
     needs: "",
   });
@@ -75,7 +78,7 @@ export function BookingSection({ prefillNeeds }: Props) {
               body: "Name · Contact · City · Date",
             },
             {
-              title: "Support",
+              title: "Service",
               body: "Mode · Group · Route",
             },
             {
@@ -110,15 +113,13 @@ export function BookingSection({ prefillNeeds }: Props) {
 
   return (
     <section id="interpreting-booking" className="site-container order-1 scroll-mt-24 pb-28 md:pb-20 lg:pb-28">
-      <div className="mb-10 grid gap-5 border-b border-[var(--line)] pb-8 sm:grid-cols-[minmax(0,1fr)_minmax(16rem,0.55fr)] sm:items-end lg:mb-14">
+      <div className="mb-10 grid gap-5 border-b border-[var(--line)] pb-8 lg:mb-14">
         <div>
           <h2 className="font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl lg:text-6xl">
-            {"Request support"}
+            {"Book Interpretation"}
           </h2>
         </div>
-        <p className="max-w-md handwritten text-sm leading-7 text-[var(--muted)] sm:justify-self-end">
-          {"Share a few details; we’ll match the right interpreter."}
-        </p>
+
       </div>
 
       <div className="relative border-y border-[var(--line)] bg-[var(--paper)]/62 py-6 sm:p-6 lg:p-8">
@@ -129,7 +130,7 @@ export function BookingSection({ prefillNeeds }: Props) {
             <div className="px-1 sm:px-0">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--cinnabar)]">
-                  {"Request summary"}
+                  {"Booking summary"}
                 </p>
                 <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--gold)] animate-pulse" />
@@ -181,9 +182,7 @@ export function BookingSection({ prefillNeeds }: Props) {
                       <span className="block text-[11px] font-bold uppercase leading-tight tracking-[0.08em] text-[var(--river-deep)] sm:text-[11px] lg:font-[family:var(--font-display)] lg:text-xl lg:font-normal lg:normal-case lg:leading-none lg:tracking-normal">
                         {item.title}
                       </span>
-                      <span className="mt-2 hidden handwritten text-[11px] italic leading-5 text-[var(--muted)] lg:block">
-                        {item.body}
-                      </span>
+
                     </span>
                   </button>
                 );
@@ -195,16 +194,15 @@ export function BookingSection({ prefillNeeds }: Props) {
             <div className="mb-6 flex items-end justify-between gap-4 px-1 sm:px-0">
               <div>
                 <h3 className="font-[family:var(--font-display)] text-3xl italic leading-none text-[var(--river-deep)] sm:text-4xl">
-                  {"Your request"}
+                  {"Booking Details"}
                 </h3>
               </div>
-              <span className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--gold)] sm:block">
-                {"About 3 minutes"}
-              </span>
+
             </div>
 
             <MultiStepForm
               prefillNeeds={prefillNeeds}
+              packages={packages}
               requestedStep={bookingStep}
               onStepChange={handleBookingStepChange}
               onFastTrackChange={handleBookingFastTrackChange}

@@ -1,3 +1,4 @@
+import type { InterpretationPackage } from '../interpreting/interpretation-packages';
 import {
   Injectable,
   Logger,
@@ -283,6 +284,7 @@ export class OrdersService {
       routeOrNeed?: string | null;
       depositAmount: number;
       currency?: string;
+      interpretationPackage?: InterpretationPackage;
     },
     manager: EntityManager,
   ) {
@@ -292,7 +294,7 @@ export class OrdersService {
       );
     }
 
-    const currency = (input.currency ?? 'SGD').toUpperCase();
+    const currency = 'USD';
     const publicStatusToken = this.createPublicStatusToken();
     const order = manager.create(Order, {
       orderNo: this.generateOrderNo(),
@@ -320,6 +322,7 @@ export class OrdersService {
         routeOrNeed: input.routeOrNeed ?? '',
         currency,
         serviceType: 'interpreting-deposit',
+        ...(input.interpretationPackage ? { interpretationPackage: input.interpretationPackage } : {}),
       },
     });
 

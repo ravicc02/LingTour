@@ -44,7 +44,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
       <div className="mb-8 opacity-60">
         <Reveal>
           <h2 className="whitespace-nowrap font-[family:var(--font-display)] text-2xl leading-[1.05] tracking-[-0.02em] text-[var(--river-deep)] sm:text-3xl md:text-4xl">
-            {"Meet the interpreters"}
+            {"Interpreters"}
           </h2>
         </Reveal>
       </div>
@@ -82,11 +82,6 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--river-deep)]/80 via-transparent to-transparent opacity-60" />
 
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
-                      {profile.level ?? profile.levelZh}
-                    </span>
-                  </div>
 
                   <div className="absolute bottom-6 left-6 right-6 z-10">
                     <p className="mb-1 line-clamp-2 text-[11px] font-bold uppercase leading-snug tracking-[0.16em] text-[var(--gold)] handwritten sm:text-[12px] sm:tracking-[0.2em]">
@@ -104,12 +99,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
                       <p className="text-xs leading-relaxed text-[var(--muted)] italic mb-2">
                         {profile.languages}
                       </p>
-                      <div className="flex items-center gap-2">
-                        <div aria-hidden="true" className="w-1 h-1 rounded-full bg-[var(--cinnabar)] animate-pulse" />
-                        <p className="text-[12px] font-bold uppercase tracking-widest text-[var(--cinnabar)]">
-                          Ready to match
-                        </p>
-                      </div>
+
                     </div>
                   </div>
 
@@ -129,7 +119,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
                       isSelected ? "bg-[var(--cinnabar)]" : ""
                     ].join(" ")}
                   >
-                    <span>{"Add to request"}</span>
+                    <span>{"Select interpreter"}</span>
                     <svg className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>

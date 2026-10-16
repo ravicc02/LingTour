@@ -1,3 +1,4 @@
+import { INTERPRETATION_PACKAGES } from './interpretation-packages';
 import {
   BadRequestException,
   ConflictException,
@@ -66,6 +67,7 @@ export class InterpretingService {
 
     return {
       service_modes: serviceModes,
+      packages: INTERPRETATION_PACKAGES,
       profiles,
       faqs,
     };
@@ -394,7 +396,18 @@ export class InterpretingService {
       }
     }
 
-    const depositAmount = await this.calculateDepositAmount(dto);
+    const interpretationPackage = dto.packageId
+      ? INTERPRETATION_PACKAGES.find((item) => item.id === dto.packageId)
+      : undefined;
+    if (dto.packageId && !interpretationPackage) {
+      throw new BadRequestException('Unknown interpretation package');
+    }
+    const supportMode = interpretationPackage?.title ?? dto.supportMode;
+    // Keep the established numeric deposits; changing currency does not change
+    // the owner's deposit policy. Package totals are never charged as deposits.
+    const depositAmount = interpretationPackage
+      ? dto.fastTrack ? 90 : 180
+      : await this.calculateDepositAmount(dto);
     let checkout: {
       booking: BookingSubmission;
       depositOrder: Awaited<
@@ -408,7 +421,7 @@ export class InterpretingService {
           contact: dto.contact,
           city: dto.city,
           serviceDate: dto.serviceDate,
-          supportMode: dto.supportMode,
+          supportMode,
           groupSize: dto.groupSize ?? null,
           routeOrNeed: dto.routeOrNeed ?? null,
           status: 'deposit_pending',
@@ -422,11 +435,12 @@ export class InterpretingService {
             contact: dto.contact,
             city: dto.city,
             serviceDate: dto.serviceDate,
-            supportMode: dto.supportMode,
+            supportMode,
             groupSize: dto.groupSize ?? null,
             routeOrNeed: dto.routeOrNeed ?? null,
             depositAmount,
-            currency: 'SGD',
+            currency: 'USD',
+            interpretationPackage,
           },
           manager,
         );
@@ -440,10 +454,11 @@ export class InterpretingService {
       throw error;
     }
 
-    await this.notifyNewBooking(checkout.booking.id, dto);
+    await this.notifyNewBooking(checkout.booking.id, { ...dto, supportMode });
 
     return {
       bookingId: checkout.booking.id,
+      package: interpretationPackage ?? null,
       created_at: checkout.booking.createdAt,
       status: checkout.booking.status,
       message:
@@ -453,7 +468,7 @@ export class InterpretingService {
         amount: checkout.depositOrder.totalAmount,
         currency: checkout.depositOrder.currency,
         status: checkout.depositOrder.status,
-        paymentLabel: this.describeDeposit(dto),
+        paymentLabel: interpretationPackage ? 'Interpretation deposit' : this.describeDeposit(dto),
         paypalOrderId: checkout.depositOrder.paypalOrderId,
         paypalApprovalUrl: checkout.depositOrder.paypalApprovalUrl,
         publicStatusToken: checkout.depositOrder.publicStatusToken,
@@ -713,17 +728,17 @@ export class InterpretingService {
 
   private describeDeposit(dto: CreateBookingDto): string {
     if (dto.fastTrack) {
-      return 'Fast Track slot deposit';
+      return 'Interpretation deposit';
     }
 
     const normalized = dto.supportMode.toLowerCase();
     if (normalized.includes('group') || normalized.includes('study')) {
-      return 'Group visit interpreter deposit';
+      return 'Group interpretation deposit';
     }
     if (normalized.includes('story') || normalized.includes('route')) {
-      return 'Story-led route interpreter deposit';
+      return 'Route interpretation deposit';
     }
-    return 'City companion interpreter deposit';
+    return 'City interpretation deposit';
   }
 
   private async notifyNewBooking(id: string, dto: CreateBookingDto) {

@@ -354,6 +354,9 @@ describe('OrdersService interpreting deposits', () => {
         serviceDate: '2026-08-01',
         supportMode: 'City companion support',
         depositAmount: 120,
+        currency: 'CNY',
+        interpretationPackage: { id: 'custom-5h', hours: 5, routeType: 'custom',
+          currency: 'USD', priceCents: 50000, title: '5-hour interpretation — Custom route' },
       },
       manager as any,
     );
@@ -363,11 +366,17 @@ describe('OrdersService interpreting deposits', () => {
       expect.objectContaining({
         bookingSubmissionId: 'booking-id',
         orderType: 'interpreting_deposit',
-        currency: 'SGD',
+        currency: 'USD',
         paymentMethod: 'paypal',
         publicStatusTokenHash: expect.any(String),
       }),
     );
+    expect(result.currency).toBe('USD');
+    expect(manager.create).toHaveBeenCalledWith(Order, expect.objectContaining({
+      shippingAddr: expect.objectContaining({
+        currency: 'USD', interpretationPackage: expect.objectContaining({ priceCents: 50000, currency: 'USD' }),
+      }),
+    }));
     expect(result.publicStatusToken).toEqual(expect.any(String));
     expect(result.publicStatusToken).toHaveLength(43);
     expect(manager.create).toHaveBeenCalledWith(

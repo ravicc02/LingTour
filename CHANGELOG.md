@@ -38,6 +38,8 @@
 
 ### Flow validation
 
+- release verification (2026-10-17): root PR #8 CI run `39007342743`, head `12034d3653bb8413c926d39fbd28b5dac363b790`, passed API, site, admin and documentation checks in GitHub Actions. Docker was skipped by PR policy; publication additionally requires the final main CI with all three image builds. Admin PR #1 is merged at `015143fb3875a0e1cd1fdbeec66138cd5bca8b4d`; root/admin mirrored trees were verified equal except the intentional admin-only VS Code config.
+
 - toolchain: `actionlint` v1.7.12 and Prettier 3.9.10 installed and passed for both GitHub Actions workflows.
 - dependencies: API, site, and admin `npm ci` completed; npm reported existing dependency audit findings (API 21, site 20, admin 11) and no automatic audit fixes were applied.
 - api: TypeScript check, 28 Jest suites / 201 tests, and production build passed. Test output contained the existing mailer connection-refused log while the suites remained green.

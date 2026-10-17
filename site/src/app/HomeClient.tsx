@@ -5,7 +5,6 @@ import { useLocale } from "@/lib/locale-context";
 import {
   fetchEvents,
   fetchHomeData,
-  fetchInterpreting,
   fetchStoreProducts,
   fetchRoutes,
   type EventData,
@@ -70,32 +69,16 @@ export default function HomeClient({
     { initialData: initialEvents, revalidateOnMount: false },
   );
 
-  // The interpreter line under the CTA states the real roster size and the
-  // languages actually listed on published profiles — never a padded count.
-  // It renders nothing until the API answers, so a failed request can't be
-  // replaced by a made-up number.
-  const { data: interpretingData } = useApiQuery(() => fetchInterpreting(), []);
-  const interpreterProfiles = interpretingData?.profiles ?? [];
-  const interpreterCount = interpreterProfiles.length;
-  const interpreterLanguages = Array.from(
-    new Set(
-      interpreterProfiles
-        .flatMap((profile) => profile.language.split(/[,/·]+/))
-        .map((lang) => lang.replace(/\s+support$/i, "").trim())
-        .filter(Boolean),
-    ),
-  ).slice(0, 4);
-
   // Only show loading spinner if we have NO initial data at all
   // (e.g., SSR failed AND client fetch is still pending).
   // In normal operation, initialHomeData is always available from SSR.
   if (homeLoading && !initialHomeData)
-    return <LoadingSpinner text="Opening the field journal…" />;
+    return <LoadingSpinner text="Loading…" />;
   if (!homeData && !initialHomeData)
     return (
       <ErrorState
-        title="Home stories unavailable"
-        message="We can't reach the editorial archive right now. Please try again in a moment."
+        title="Home page unavailable"
+        message="Please try again."
       />
     );
 
@@ -144,18 +127,12 @@ export default function HomeClient({
     <div className="bg-[var(--paper-deep)] bg-grain min-h-screen text-[var(--river-deep)]">
       <HomeAtlasHero
         image={heroImage}
-        eyebrow={t("home.hero.eyebrow")}
         titleLine1={t("home.hero.headingLine1")}
         accent={t("home.hero.headingAccent")}
         titleLine3={t("home.hero.headingLine3")}
-        body={t("home.hero.body")}
         primaryLabel={t("home.hero.primaryCta")}
         secondaryLabel={t("home.hero.secondaryCta")}
-        tags={[
-          t("home.hero.tag.storyRoutes"),
-          t("home.hero.tag.cultureContext"),
-          t("home.hero.tag.languageSupport"),
-        ]}
+
       />
 
       <div className="relative z-10">
@@ -251,16 +228,7 @@ export default function HomeClient({
                     <span className="relative z-10">{t("home.interpreting.cta")}</span>
                     <span aria-hidden className="relative z-10 text-base">→</span>
                   </Link>
-                  {interpreterCount > 0 ? (
-                    <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">
-                      {interpreterCount === 1
-                        ? "1 local interpreter on the roster"
-                        : `${interpreterCount} local interpreters on the roster`}
-                      {interpreterLanguages.length > 0
-                        ? ` · ${interpreterLanguages.join(" / ")}`
-                        : ""}
-                    </p>
-                  ) : null}
+
                 </div>
               </Reveal>
             </div>
@@ -270,7 +238,7 @@ export default function HomeClient({
                 <div className="group relative aspect-[6/5] overflow-hidden border border-white/70 bg-[var(--night)] shadow-panel min-[620px]:aspect-[3/4] lg:aspect-[16/10]">
                   <img
                     src={interpretingImage}
-                    alt="Professional interpreting service in Guangdong"
+                    alt="Interpretation services in Guangdong"
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.035]"
@@ -311,9 +279,7 @@ export default function HomeClient({
               <Reveal>
                 <div className="mb-10 flex items-center gap-4 opacity-70">
                   <span className="h-px w-10 bg-[var(--gold-light)]" />
-                  <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--gold-light)]">
-                    {t("home.cta.eyebrow")}
-                  </p>
+
                 </div>
                 <h2 className="mb-10 font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.04em] sm:text-5xl md:mb-12 md:text-7xl lg:text-8xl">
                   {t("home.cta.title.primary")}{" "}

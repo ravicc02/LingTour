@@ -65,7 +65,7 @@ export function ProductDetailClient({ slug, initialProduct, initialProducts }: P
               <div className="max-w-xl">
                 <p className="handwritten text-xl text-[var(--gold)]">Related items</p>
                 <h2 className="mt-4 max-w-[15ch] font-[family:var(--font-display)] text-4xl leading-[0.98] text-[var(--river-deep)] sm:text-5xl">
-                  Objects from the <span className="italic">same</span> memory line.
+                  Related Products
                 </h2>
               </div>
               <Link
@@ -96,7 +96,7 @@ export function ProductDetailClient({ slug, initialProduct, initialProducts }: P
               <div className="relative z-10 mx-auto max-w-2xl">
                 <p className="handwritten text-xl text-[var(--gold-light)] sm:text-2xl">Continue exploring</p>
                 <h2 className="mt-6 font-[family:var(--font-display)] text-4xl leading-tight sm:text-5xl sm:mt-8 md:text-7xl">
-                  Let the next object lead you <span className="italic">back</span> into the journey.
+                  Browse Products
                 </h2>
                 <div className="mt-9 sm:mt-12">
                   <Link

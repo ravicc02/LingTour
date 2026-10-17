@@ -67,9 +67,7 @@ export function CultureGallery({ highlights = [] }: Props) {
   if (!highlights.length) {
     return (
       <div className="scrapbook-shadow mx-auto max-w-2xl rotate-1 border border-[var(--line)] bg-white/70 p-10">
-        <p className="text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--gold)]">
-          {t("culture.atlas.eyebrow")}
-        </p>
+
         <h3 className="mt-4 font-[family:var(--font-display)] text-3xl text-[var(--river-deep)]">
           {t("culture.atlas.empty.title")}
         </h3>

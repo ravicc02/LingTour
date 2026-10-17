@@ -29,6 +29,7 @@
   --night: #111923;
   --shadow-soft: var(--shadow-panel);
   --site-max-width: 82rem;
+  --site-header-height: 4.75rem;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: #f9f8f5;
   --surface-dark: #132b33;
@@ -181,7 +182,9 @@ main > #profile-panel {
   padding: 0.75rem 1.25rem;
   font-size: 0.75rem;
   font-weight: 700;
+  line-height: 1.5;
   letter-spacing: 0.16em;
+  text-align: center;
   text-transform: uppercase;
   transition:
     transform 300ms var(--ease-out-expo),
@@ -248,9 +251,19 @@ main > #profile-panel {
   text-transform: uppercase;
 }
 
+@media (min-width: 768px) {
+  .site-container {
+    padding-inline: 1.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .site-container {
     padding-inline: 2.5rem;
+  }
+
+  .site-container.home-hero-container {
+    width: min(100%, 90rem);
   }
 
   .home-hero-bleed {
@@ -278,7 +291,8 @@ main > #profile-panel {
 /* ── Mobile overflow & sizing guards ──────────────────────── */
 @media (max-width: 767px) {
   .site-container {
-    padding-inline: max(1rem, env(safe-area-inset-left));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 
   /* Prevent images from blowing out of their containers */

@@ -369,20 +369,22 @@ onBeforeUnmount(() => motionContext?.revert())
               <div class="pane-head">
                 <span>实际发件效果</span>
               </div>
-              <div class="preview-meta">
-                <strong class="preview-subject">{{ previewSubject || subject || '（无主题）' }}</strong>
-                <span v-if="previewStoredDisabled" class="preview-note">
-                  已保存的模板处于停用状态，真实发送会改用系统默认模板
-                </span>
+              <div class="preview-body">
+                <div class="preview-meta">
+                  <strong class="preview-subject">{{ previewSubject || subject || '（无主题）' }}</strong>
+                  <span v-if="previewStoredDisabled" class="preview-note">
+                    已保存的模板处于停用状态，真实发送会改用系统默认模板
+                  </span>
+                </div>
+                <iframe
+                  v-if="previewHtml"
+                  class="preview-frame"
+                  sandbox=""
+                  title="邮件正文预览"
+                  :srcdoc="previewHtml"
+                />
+                <div v-else class="preview-empty">编辑正文后点击「预览 / 刷新」渲染</div>
               </div>
-              <iframe
-                v-if="previewHtml"
-                class="preview-frame"
-                sandbox=""
-                title="邮件正文预览"
-                :srcdoc="previewHtml"
-              />
-              <div v-else class="preview-empty">编辑正文后点击「预览 / 刷新」渲染</div>
             </div>
           </div>
         </el-form>
@@ -620,7 +622,17 @@ onBeforeUnmount(() => motionContext?.revert())
 .editor-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
   gap: 16px;
+}
+
+.editor-source,
+.editor-preview {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  row-gap: 8px;
 }
 
 .pane-head {
@@ -629,7 +641,8 @@ onBeforeUnmount(() => motionContext?.revert())
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
+  min-height: 36px;
+  margin-bottom: 0;
   font-size: 13px;
   font-weight: 600;
   color: var(--el-text-color-primary);
@@ -638,23 +651,18 @@ onBeforeUnmount(() => motionContext?.revert())
 .pane-tools {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .pane-tools .el-button + .el-button {
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .source-textarea :deep(.el-textarea__inner) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12.5px;
   line-height: 1.6;
-}
-
-.editor-preview {
-  display: flex;
-  flex-direction: column;
 }
 
 .preview-meta {
@@ -746,6 +754,12 @@ onBeforeUnmount(() => motionContext?.revert())
 @media (max-width: 1100px) {
   .editor-grid {
     grid-template-columns: 1fr;
+  }
+
+  .editor-source,
+  .editor-preview {
+    grid-row: auto;
+    grid-template-rows: auto auto;
   }
 }
 

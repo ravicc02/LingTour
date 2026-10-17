@@ -86,9 +86,7 @@ export function ProductNarrative({ product }: { product: StoreProduct }) {
                   <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold)] sm:text-[12px]">
                     {collectionLabel}
                   </p>
-                  <p className="mt-2 max-w-[18ch] font-[family:var(--font-display)] text-2xl leading-tight sm:text-3xl">
-                    {product.tag}
-                  </p>
+
                 </div>
               </div>
             </div>

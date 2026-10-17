@@ -102,8 +102,8 @@ function handleMarkAllRead() {
 <style scoped>
 .notification-bell {
   display: inline-flex;
-  width: 40px;
-  height: 40px;
+  width: var(--admin-header-control-size);
+  height: var(--admin-header-control-size);
   align-items: center;
   justify-content: center;
   padding: 0;

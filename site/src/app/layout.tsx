@@ -10,7 +10,7 @@ import { translate } from "@/translations";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://culvoy.com"),
-  title: "Culvoy Guangdong — Story Routes, Culture & Local Interpreters",
+  title: "Culvoy Guangdong — Culture, Routes & Interpretation",
   description:
     "Story routes through Guangdong's three cultures — a crater lake in Zhanjiang, gongfu tea in Chaozhou, morning dim sum in Guangzhou — with a local interpreter at your side.",
   // culvoy.com and the legacy lingfengtranstour.cn family serve the same copy

@@ -6,6 +6,7 @@ import {
   createInterpretingDepositCheckout,
   fetchCities,
   type InterpretingDepositCheckout,
+  type InterpretationPackage,
 } from "@/lib/api-data";
 import { getCalendarDateKey, getLocalDateKey } from "@/lib/calendar-date";
 import { formatCurrency } from "@/lib/region-currency";
@@ -22,6 +23,7 @@ type FormData = {
 };
 
 type Props = {
+  packages?: InterpretationPackage[];
   prefillNeeds?: string;
   prefillCity?: string;
   requestedStep?: number;
@@ -31,15 +33,16 @@ type Props = {
 };
 
 const serviceModes = [
-  { value: "City companion support", labelKey: "interpreting.flow.mode.city" },
-  { value: "Story-led route support", labelKey: "interpreting.flow.mode.route" },
-  { value: "Group or study visit support", labelKey: "interpreting.flow.mode.group" },
+  { value: "City interpretation", labelKey: "interpreting.flow.mode.city" },
+  { value: "Route interpretation", labelKey: "interpreting.flow.mode.route" },
+  { value: "Group interpretation", labelKey: "interpreting.flow.mode.group" },
 ];
 
 const inputClass =
-  "rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base leading-6 text-[var(--ink)] outline-none transition focus:border-[var(--gold)] focus:bg-[var(--paper)] md:text-[15px]";
+  "min-h-[54px] rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base leading-6 text-[var(--ink)] outline-none transition focus:border-[var(--gold)] focus:bg-[var(--paper)] md:text-[15px]";
 
 function MultiStepFormInner({
+  packages = [],
   prefillNeeds,
   prefillCity,
   requestedStep,
@@ -57,11 +60,13 @@ function MultiStepFormInner({
     contact: "",
     city: "Zhanjiang",
     date: "",
-    mode: "Story-led route support",
+    mode: "Route interpretation",
     groupSize: "",
     needs: "",
   });
   const [depositSession, setDepositSession] = useState<InterpretingDepositCheckout | null>(null);
+  const [packageId, setPackageId] = useState("");
+  const selectedPackage = packages.find((item) => item.id === packageId);
   const [submitting, setSubmitting] = useState(false);
   const idempotencyKeyRef = useRef<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -116,8 +121,8 @@ function MultiStepFormInner({
   }, [showCalendar]);
 
   useEffect(() => {
-    onStateChange?.(form);
-  }, [form, onStateChange]);
+    onStateChange?.({ ...form, mode: selectedPackage?.title ?? t(serviceModes.find((item) => item.value === form.mode)?.labelKey ?? "interpreting.flow.mode.route") });
+  }, [form, onStateChange, selectedPackage, t]);
 
   useEffect(() => {
     if (typeof requestedStep !== "number") return;
@@ -131,14 +136,14 @@ function MultiStepFormInner({
   const totalSteps = fastTrack ? 2 : 4;
   const canNext = (): boolean => {
     if (fastTrack) {
-      return !!form.name && !!form.contact && !!form.city;
+      return !!form.name && !!form.contact && !!form.city && !!selectedPackage;
     }
     if (step === 0) return !!form.name && !!form.contact && !!form.city && !!form.date;
-    if (step === 1) return !!form.mode && !!form.groupSize && !!form.needs;
+    if (step === 1) return !!form.mode && !!form.groupSize && !!form.needs && !!selectedPackage;
     return true;
   };
 
-  const canOpenDeposit = fastTrack ? canNext() : step === 2;
+  const canOpenDeposit = !!selectedPackage && (fastTrack ? canNext() : step === 2);
   const completionHint = (() => {
     if (canNext()) return null;
     if (fastTrack) {
@@ -165,18 +170,15 @@ function MultiStepFormInner({
         contact: form.contact,
         city: form.city,
         serviceDate: form.date || getLocalDateKey(),
-        supportMode: form.mode || "City companion support",
+        supportMode: selectedPackage?.title ?? (form.mode || "City interpretation"),
         groupSize: form.groupSize || undefined,
         routeOrNeed: form.needs || undefined,
         fastTrack,
+        packageId: selectedPackage?.id,
       };
 
-      const idempotencyKey =
-        idempotencyKeyRef.current ??
-        (idempotencyKeyRef.current =
-          typeof crypto !== "undefined" && "randomUUID" in crypto
-            ? crypto.randomUUID()
-            : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+      const idempotencyKey = idempotencyKeyRef.current ?? crypto.randomUUID();
+      idempotencyKeyRef.current = idempotencyKey;
       const session = await createInterpretingDepositCheckout(payload, idempotencyKey);
       setDepositSession(session);
       setStep(fastTrack ? 1 : 3);
@@ -266,6 +268,18 @@ function MultiStepFormInner({
       </div>
 
       <div className="px-5 py-6 sm:px-7 sm:py-8">
+        {!depositSession && (fastTrack || step === 1) ? (
+          <label className="mb-6 flex flex-col gap-2">
+            <span className="text-sm font-semibold">Interpretation package</span>
+            <select aria-label="Interpretation package" value={packageId} onChange={(event) => setPackageId(event.target.value)} className={inputClass}>
+              <option value="">Select a package</option>
+              {packages.map((item) => <option key={item.id} value={item.id}>{item.title} · {formatCurrency(item.priceCents / 100, item.currency)}</option>)}
+            </select>
+            {!packages.length ? <span role="status">Packages unavailable. Reload to try again.</span> : null}
+          </label>
+        ) : null}
+        {selectedPackage ? <p className="mb-5 text-sm font-medium">Package total: {formatCurrency(selectedPackage.priceCents / 100, selectedPackage.currency)}</p> : null}
+
         {errorMessage ? (
           <div role="alert" className="mb-5 rounded-sm border border-[var(--cinnabar)]/20 bg-[var(--cinnabar)]/6 px-4 py-3 text-sm text-[var(--cinnabar-deep)]">
             {errorMessage}
@@ -318,7 +332,7 @@ function MultiStepFormInner({
                   aria-expanded={showCalendar}
                   aria-controls="interpreting-service-calendar"
                   ref={calendarTriggerRef}
-                  className="flex w-full items-center justify-between rounded-sm border border-[var(--line)] bg-white px-4 py-3.5 text-base text-[var(--ink)] outline-none transition hover:border-[var(--gold)] hover:bg-[var(--paper)] md:text-sm"
+                  className={`${inputClass} flex w-full items-center justify-between hover:border-[var(--gold)] hover:bg-[var(--paper)]`}
                 >
                   <span className={form.date ? "text-[var(--ink)]" : "text-[var(--muted)]"}>
                     {form.date ? formatDate(form.date) : t("interpreting.flow.chooseDate")}
@@ -354,7 +368,7 @@ function MultiStepFormInner({
                       </button>
                     </div>
 
-                    <div className="mb-1 grid grid-cols-7">
+                    <div className="mb-1 grid grid-cols-7 gap-0.5">
                       {weekdays.map((d) => (
                         <p key={d} className="text-center text-[12px] uppercase tracking-[0.12em] text-[var(--muted)]">{d}</p>
                       ))}
@@ -374,7 +388,7 @@ function MultiStepFormInner({
                             aria-label={formatDate(dateStr)}
                             aria-pressed={isSelected}
                             onClick={() => handleCalendarSelect(day)}
-                            className={`grid h-10 w-10 place-items-center rounded-full text-xs transition ${
+                            className={`grid min-h-11 w-full min-w-0 place-items-center rounded-full text-xs transition ${
                               isSelected
                                 ? "bg-[var(--cinnabar)] text-white"
                                 : isToday
@@ -580,7 +594,7 @@ function MultiStepFormInner({
           <button
             type="button"
             onClick={openDepositCheckout}
-            disabled={submitting}
+            disabled={!canOpenDeposit || submitting}
             className={`w-full rounded-full px-6 py-3 text-[14px] font-semibold transition sm:w-auto ${
               submitting
                 ? "cursor-not-allowed bg-[var(--line)] text-[var(--muted)]"

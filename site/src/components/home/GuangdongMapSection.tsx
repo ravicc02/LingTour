@@ -251,10 +251,6 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
   const hitRadius = isCompact ? 18 : 14;
 
   const panelTitle = activeCity.name;
-  const panelEyebrow = activeCity.label;
-  const panelLead = activeCity.summary
-    .replace(/^#{1,3}\s+/gm, "")
-    .replace(/\*{1,3}(.+?)\*{1,3}/g, "$1");
 
   useGSAP(
     () => {
@@ -331,21 +327,13 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
 
               <div className="space-y-3 md:space-y-4">
                 <div>
-                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold)]">
-                    {panelEyebrow}
-                  </p>
+
                   <h3 className="font-[family:var(--font-display)] text-[1.75rem] italic leading-none text-[var(--river-deep)] md:text-2xl">
                     {panelTitle}
                   </h3>
                 </div>
 
                 <div className="h-px bg-[var(--line)]" />
-
-                <div className="min-h-[3.5rem] md:min-h-[4.5rem]">
-                  <p className="handwritten line-clamp-4 text-sm leading-relaxed text-[var(--muted)]">
-                    {panelLead}
-                  </p>
-                </div>
 
                 <div className="grid grid-cols-2 gap-2 pt-1 md:pt-2">
                   <Link
@@ -539,24 +527,20 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
             </Link>
 
             <div className="flex min-w-0 flex-col justify-center py-0.5">
-              <p className="truncate text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold)]">
-                {panelEyebrow}
-              </p>
+
               <div className="mt-1 flex min-w-0 items-baseline justify-between gap-2">
                 <h3 className="truncate font-[family:var(--font-display)] text-[1.55rem] italic leading-none text-[var(--river-deep)]">
                   {panelTitle}
                 </h3>
                 <Link
                   href={`/culture/${activeCity.slug}`}
-                  aria-label={`Open ${activeCity.name} story`}
+                  aria-label={`View ${activeCity.name}`}
                   className="-my-3 -mr-3 shrink-0 py-3 pl-4 pr-3 text-xl leading-none text-[var(--cinnabar)] transition-transform duration-300 hover:translate-x-1"
                 >
                   →
                 </Link>
               </div>
-              <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-[var(--muted)]">
-                {panelLead}
-              </p>
+
             </div>
           </div>
 

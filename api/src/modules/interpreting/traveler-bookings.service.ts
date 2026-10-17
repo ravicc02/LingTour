@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import { BookingSubmission } from './entities/booking-submission.entity';
 
 @Injectable()
@@ -19,7 +19,11 @@ export class TravelerBookingsService {
     const safePage = Math.max(1, Math.floor(page) || 1);
     const safePageSize = Math.min(50, Math.max(1, Math.floor(pageSize) || 12));
     const [items, total] = await this.bookingRepo.findAndCount({
-      where: { contact: ILike(normalizedEmail) },
+      where: {
+        contact: Raw((alias) => `LOWER(${alias}) = :travelerEmail`, {
+          travelerEmail: normalizedEmail,
+        }),
+      },
       select: {
         id: true,
         city: true,

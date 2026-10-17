@@ -217,34 +217,36 @@ function getBookingStatusLabel(status: string): string {
         </el-table-column>
         <el-table-column label="操作" width="270" :fixed="isMobile ? false : 'right'">
           <template #default="{ row }">
-            <el-button type="primary" link size="small" @click="openDrawer(row)">详情</el-button>
-            <el-button
-              v-if="row.status === 'confirmed' || row.status === 'deposit_paid'"
-              type="primary"
-              link
-              size="small"
-              @click="handleResendEmail(row)"
-            >
-              重发邮件
-            </el-button>
-            <el-button
-              v-if="row.status === 'new' || row.status === 'read' || row.status === 'contacted'"
-              type="success"
-              link
-              size="small"
-              @click="async () => { selectedBooking = row; await handleConfirm() }"
-            >
-              确认
-            </el-button>
-            <el-popconfirm
-              v-if="row.status === 'new' || row.status === 'read' || row.status === 'contacted' || row.status === 'confirmed'"
-              title="确定取消该预约？"
-              @confirm="async () => { selectedBooking = row; await handleCancelBooking() }"
-            >
-              <template #reference>
-                <el-button type="warning" link size="small">取消</el-button>
-              </template>
-            </el-popconfirm>
+            <div class="admin-table-actions">
+              <el-button type="primary" link size="small" @click="openDrawer(row)">详情</el-button>
+              <el-button
+                v-if="row.status === 'confirmed' || row.status === 'deposit_paid'"
+                type="primary"
+                link
+                size="small"
+                @click="handleResendEmail(row)"
+              >
+                重发邮件
+              </el-button>
+              <el-button
+                v-if="row.status === 'new' || row.status === 'read' || row.status === 'contacted'"
+                type="success"
+                link
+                size="small"
+                @click="async () => { selectedBooking = row; await handleConfirm() }"
+              >
+                确认
+              </el-button>
+              <el-popconfirm
+                v-if="row.status === 'new' || row.status === 'read' || row.status === 'contacted' || row.status === 'confirmed'"
+                title="确定取消该预约？"
+                @confirm="async () => { selectedBooking = row; await handleCancelBooking() }"
+              >
+                <template #reference>
+                  <el-button type="warning" link size="small">取消</el-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
       </el-table>

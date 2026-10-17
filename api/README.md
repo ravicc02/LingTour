@@ -6,7 +6,7 @@
 - 本地启动：`npm run start:dev` → http://localhost:8000（健康检查 `/health`，OpenAPI `/api/docs-json`）
 - 验证：`npx tsc --noEmit --skipLibCheck` · `npm test -- --runInBand` · `npm run build`
 - 注意：`npm run lint` 带 `--fix`、`npm run format` 会写文件，二者不是只读校验命令
-- 数据库：`data-source.ts` 保持 `synchronize: false`；迁移只新增、不重写，任何迁移执行前必须备份数据库并确认目标（见根 `docs/release.md`）
+- 数据库：`data-source.ts` 保持 `synchronize: false`；迁移只新增、不重写，任何迁移执行前必须备份数据库并确认目标（见根 `docs/reference/release.md`）
 - 种子/导入命令多带 `--apply`：未确认目标与备份不得运行；`npm run seed:reset` 永不运行
 - 环境变量：`DB_*`、`JWT_SECRET`、PayPal 与媒体存储等；完整清单见 `.env.production.example`（值不入库、不入文档）
 

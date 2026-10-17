@@ -44,6 +44,23 @@ describe("Culture detail publication and preview boundaries", () => {
     expect(mocks.query.mock.calls[0][2].enabled).toBe(true);
   });
 
+  it("keeps the framed masthead image without a decorative media label", () => {
+    const cityWithMedia = {
+      ...city,
+      image: "/editorial/city.jpg",
+    };
+    render(<CultureDetailClient slug="preview-city" initialCity={cityWithMedia} initialCityCultures={[cityWithMedia]} initialRoutes={[]} />);
+    expect(screen.queryByText("Opening field media")).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: cityWithMedia.name })).toBeInTheDocument();
+  });
+
+  it("keeps next-only city navigation at the trailing edge", () => {
+    const nextCity = { ...city, slug: "next-city", name: "Next City" };
+    render(<CultureDetailClient slug={city.slug} initialCity={city} initialCityCultures={[city, nextCity]} initialRoutes={[]} />);
+    expect(screen.queryByRole("link", { name: /Previous:/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Next: Next City" })).toHaveClass("ml-auto");
+  });
+
   it("waits for the trusted draft payload in the explicit preview shell", () => {
     render(<CultureDetailClient previewOnly slug="preview-city" initialCity={null} initialCityCultures={[]} initialRoutes={[]} />);
     expect(screen.getByText("Loading preview...")).toBeInTheDocument();

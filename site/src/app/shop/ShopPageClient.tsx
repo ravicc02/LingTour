@@ -92,9 +92,7 @@ export default function ShopPageClient({
                   <span className="block overflow-hidden pb-1"><span data-pastoral-title className="block">{t("shop.atlas.titlePrimary")}</span></span>
                   <span className="block overflow-hidden pb-3"><span data-pastoral-title className="block italic text-[var(--gold)]">{t("shop.atlas.titleItalic")}</span></span>
                 </h1>
-                <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
-                  {t("shop.atlas.lede")}
-                </p>
+
               </Reveal>
             </div>
 
@@ -172,9 +170,7 @@ export default function ShopPageClient({
                         <h3 className="font-[family:var(--font-display)] text-3xl leading-tight text-[var(--river-deep)] transition-colors group-hover:text-[var(--cinnabar)]">
                           {collection.title}
                         </h3>
-                        <p className="mt-4 handwritten text-sm leading-7 text-[var(--muted)] line-clamp-3 sm:line-clamp-none">
-                          {collection.body}
-                        </p>
+
                         <div className="mt-6 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.22em] text-[var(--river-deep)]">
                           <span>{t("common.btn.enter")}</span>
                           <div className="h-px w-8 bg-[var(--gold)] transition-all duration-300 group-hover:w-12" />

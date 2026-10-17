@@ -44,9 +44,9 @@ describe("FieldKit dialog", () => {
       </>,
     );
 
-    const close = screen.getByRole("button", { name: "Close field note kit" });
+    const close = screen.getByRole("button", { name: "Close post editor" });
     await waitFor(() => expect(close).toHaveFocus());
-    expect(screen.getByRole("dialog", { name: "Field Note Kit" })).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Create Post" })).toBeInTheDocument();
     expect(document.body.style.overflow).toBe("hidden");
 
     fireEvent.keyDown(document, { key: "Escape" });

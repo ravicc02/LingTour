@@ -105,8 +105,10 @@ onMounted(() => { fetchPost() })
 <template>
   <div class="detail-page" v-loading="loading">
     <div class="page-header">
-      <el-button :icon="ArrowLeft" @click="handleBack">返回列表</el-button>
-      <h2>帖子详情</h2>
+      <div class="detail-heading">
+        <el-button :icon="ArrowLeft" @click="handleBack">返回列表</el-button>
+        <h2>帖子详情</h2>
+      </div>
     </div>
 
     <template v-if="post">
@@ -246,7 +248,14 @@ onMounted(() => { fetchPost() })
   gap: 16px;
   margin-bottom: 20px;
 }
-.page-header h2 { margin: 0; font-size: 20px; color: #303133; }
+.detail-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-width: 0;
+}
+.page-header h2 { margin: 0; font-size: 20px; color: var(--lt-text-primary); }
 
 .post-card { margin-bottom: 20px; }
 .post-image-wrap { margin-bottom: 20px; display: grid; gap: 12px; }

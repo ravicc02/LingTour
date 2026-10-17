@@ -41,7 +41,7 @@ const PROFILE_TABS: Array<{ key: ProfileTab; labelKey: string }> = [
 ];
 
 const PROFILE_FIELD_CLASS =
-  "mt-2 min-h-12 w-full border border-[var(--line)] bg-[var(--background)] px-4 py-3 text-base text-[var(--river-deep)] outline-none transition focus:border-[var(--river-deep)] focus:shadow-[0_0_0_3px_rgba(20,52,61,0.08)]";
+  "mt-2 min-h-[50px] w-full border border-[var(--line)] bg-[var(--background)] px-4 py-3 text-base leading-6 text-[var(--river-deep)] outline-none transition focus:border-[var(--river-deep)] focus:shadow-[0_0_0_3px_rgba(20,52,61,0.08)]";
 
 const PROFILE_LABEL_CLASS =
   "text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]";
@@ -87,7 +87,7 @@ function formatBookingDate(value: string) {
 function EmptyArchive({ title, body, href, cta }: { title: string; body: string; href: string; cta: string }) {
   return (
     <section data-pastoral-card className="mx-auto max-w-3xl border-y border-[var(--line)] px-1 py-9 sm:py-12">
-      <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--cinnabar)]">Culvoy field archive</p>
+
       <h2 className="mt-4 max-w-[20ch] font-[family:var(--font-display)] text-3xl leading-[1.02] text-[var(--river-deep)] sm:text-4xl">{title}</h2>
       <p className="mt-4 max-w-xl handwritten text-sm leading-7 text-[var(--muted)] sm:text-base">{body}</p>
       <Link
@@ -401,7 +401,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
                 <span className="block overflow-hidden pb-1"><span data-pastoral-title className="block">{user.name}</span></span>
               </h1>
               <p data-pastoral-subtitle className="mt-4 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-                {user.bio || t("account.profile.bioFallback")}
+                {user.bio}
               </p>
               <button
                 type="button"
@@ -443,7 +443,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
         </div>
       </header>
 
-      <div className="sticky top-[4.6rem] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)] bg-grain">
+      <div className="sticky top-[var(--site-header-height)] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)] bg-grain">
         <nav
           className="site-container scrollbar-hide flex gap-2 overflow-x-auto py-3"
           aria-label={t("account.profile.tabLabel")}
@@ -661,7 +661,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
                       type="button"
                       disabled={emailChange.sending || !emailChange.newEmail.trim()}
                       onClick={() => void startEmailChange()}
-                      className="min-h-11 self-end border border-[var(--line)] px-4 py-2 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--river-deep)] transition-colors hover:border-[var(--river-deep)] disabled:opacity-40"
+                      className="min-h-[50px] self-end border border-[var(--line)] px-4 py-2 text-[12px] leading-6 font-bold uppercase tracking-[0.14em] text-[var(--river-deep)] transition-colors hover:border-[var(--river-deep)] disabled:opacity-40"
                     >
                       {emailChange.sending ? "Sending…" : "Send code"}
                     </button>
@@ -694,7 +694,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
                           emailChange.code.trim().length !== 6
                         }
                         onClick={() => void confirmEmailChange()}
-                        className="min-h-11 self-end bg-[var(--river-deep)] px-4 py-2 text-[12px] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar)] disabled:opacity-40"
+                        className="min-h-[50px] self-end bg-[var(--river-deep)] px-4 py-2 text-[12px] leading-6 font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar)] disabled:opacity-40"
                       >
                         {emailChange.confirming ? "Confirming…" : "Confirm change"}
                       </button>
@@ -748,8 +748,8 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
               </button>
             </div>
             <aside className="border-t border-[var(--line)] pt-6 lg:pt-7">
-              <p className="font-[family:var(--font-display)] text-2xl italic">{t("account.profile.settingsNoteTitle")}</p>
-              <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{t("account.profile.settingsNoteBody")}</p>
+
+
               <p className="mt-7 text-xs text-[var(--muted)]">{user.email}</p>
             </aside>
           </section>

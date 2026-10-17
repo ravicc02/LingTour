@@ -84,7 +84,7 @@ export function AllProductsClient({ products, collections, tags }: AllProductsCl
       <div data-registry-board className="mb-12 rotate-[-0.5deg] border border-[var(--line)] bg-[var(--paper)] bg-grain p-5 scrapbook-shadow sm:mb-16 sm:p-6 lg:p-10">
         <div className="grid gap-6 lg:grid-cols-[1fr_14rem_12rem]">
           <label className="block">
-            <span className="text-[12px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2 block">Search Registry</span>
+            <span className="text-[12px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2 block">Search products</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -123,7 +123,7 @@ export function AllProductsClient({ products, collections, tags }: AllProductsCl
 
       <div data-registry-summary className="mb-10 flex flex-wrap items-center justify-between gap-4 text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] sm:mb-12">
         <p>
-          Showing {filteredProducts.length} <span className="text-[var(--gold)]">/</span> {products.length} Field Objects
+          Showing {filteredProducts.length} <span className="text-[var(--gold)]">/</span> {products.length} Products
         </p>
         {(query || collection !== "All collections" || tag !== "All types") && (
           <button
@@ -154,9 +154,9 @@ export function AllProductsClient({ products, collections, tags }: AllProductsCl
       {filteredProducts.length === 0 && (
         <div className="mt-24 text-center py-20 border border-[var(--line)] bg-white/30 scrapbook-shadow rotate-1">
           <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)] italic">
-            Registry empty.
+            No products found.
           </p>
-          <p className="mt-4 text-sm text-[var(--muted)] handwritten">No matching field objects found in this archive.</p>
+          <p className="mt-4 text-sm text-[var(--muted)] handwritten">Try another search.</p>
           <button
             type="button"
             onClick={() => { setQuery(""); setCollection("All collections"); setTag("All types"); }}

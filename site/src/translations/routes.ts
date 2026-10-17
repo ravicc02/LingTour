@@ -1,10 +1,10 @@
 export const routes = {
   en: {
-    "routes.page.title": "Story Routes",
+    "routes.page.title": "Route Planning",
     "routes.page.subtitle": "Routes are written as stories, not checklists. Each one follows a cultural thread through the places that define it.",
-    "routes.page.viewFull": "View full journey",
+    "routes.page.viewFull": "View itinerary",
     "routes.page.duration": "duration",
-    "routes.page.audience": "who it is for",
+    "routes.page.audience": "Travellers",
 
     "routes.detail.journey": "Journey",
     "routes.detail.routeNarrative": "Route narrative",
@@ -36,27 +36,27 @@ export const routes = {
     "routes.detail.stops.3.name": "Jinsha Bay & Seafood Dinner",
     "routes.detail.stops.3.story": "End the day at a table facing south — the traditional orientation for a Zhanjiang dinner.",
 
-    "routes.cta.book.title": "Take this route with an interpreter",
+    "routes.cta.book.title": "Route Interpretation",
     "routes.cta.book.body": "Every story route can be accompanied by a live English-speaking interpreter who knows the culture and the context.",
-    "routes.cta.book.button": "Book an interpreter",
-    "routes.cta.browse.title": "Looking for another route?",
+    "routes.cta.book.button": "Book interpretation",
+    "routes.cta.browse.title": "More Routes",
     "routes.cta.browse.body": "Coast, mountain, delta, city — each covered by a route file.",
-    "routes.cta.browse.button": "Browse more routes",
+    "routes.cta.browse.button": "View routes",
 
     "routes.progress.stop": "Stop",
     "routes.progress.of": "of",
 
-    "routes.atlas.eyebrow": "Story Routes / Selection",
-    "routes.atlas.titlePrimary": "Guangdong",
-    "routes.atlas.titleItalic": "Story Routes.",
+    "routes.atlas.eyebrow": "Routes / Selection",
+    "routes.atlas.titlePrimary": "Route",
+    "routes.atlas.titleItalic": "Planning",
     "routes.atlas.lede": "Each route is written the way you would actually walk it: an 08:00 start, a market in the middle, a slow last hour before dinner.",
     "routes.atlas.archiveBadge": "Archive · Story routes",
     "routes.atlas.dispatchInfo": "Dispatch info",
     "routes.atlas.waypoints": "Waypoints:",
-    "routes.atlas.empty.title": "No route records",
+    "routes.atlas.empty.title": "No routes available",
     "routes.atlas.empty.body": "No route files on record yet.",
-    "routes.filter.searchLabel": "Search story routes",
-    "routes.filter.searchPlaceholder": "Route, city, culture, or audience...",
+    "routes.filter.searchLabel": "Search routes",
+    "routes.filter.searchPlaceholder": "Search routes",
     "routes.filter.count": "{visible}/{total} routes",
     "routes.filter.open": "Filters",
     "routes.filter.all": "All",
@@ -64,13 +64,13 @@ export const routes = {
     "routes.filter.culture": "Culture",
     "routes.filter.duration": "Duration",
     "routes.filter.audience": "For whom",
-    "routes.filter.emptyTitle": "No routes match this brief.",
+    "routes.filter.emptyTitle": "No matching routes",
     "routes.filter.emptyBody": "Widen the culture, duration, or audience filters to continue exploring.",
 
     "routes.cta.localVoice.eyebrow": "Need a local voice?",
     "routes.cta.localVoice.title":
       "Walk the route with an interpreter who already knows it.",
-    "routes.cta.localVoice.button": "Plan an interpreter",
+    "routes.cta.localVoice.button": "Book interpretation",
   }
 
 };

@@ -70,7 +70,7 @@ export function RouteMap({ stops, routeTitle }: Props) {
         <h3 id={titleId} className="font-[family:var(--font-display)] text-2xl leading-tight">Route sketch</h3>
         <p className="mt-1 text-sm leading-5 text-[var(--muted)]">
           {geometry.points.length === stops.length
-            ? "A quiet outline of the day."
+            ? "Route map"
             : `${geometry.points.length} of ${stops.length} stops are located.`}
         </p>
       </header>
@@ -113,7 +113,7 @@ export function RouteMap({ stops, routeTitle }: Props) {
                     <span className="font-bold">{stop.stop}</span>
                     {stop.time ? <span> ({stop.time})</span> : null}
                     {!coordinates ? (
-                      <span className="block text-xs leading-5 text-[var(--muted)]">Location not recorded</span>
+                      <span className="block text-xs leading-5 text-[var(--muted)]">Coordinates unavailable</span>
                     ) : null}
                   </div>
                 </li>

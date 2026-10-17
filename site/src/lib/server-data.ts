@@ -699,12 +699,14 @@ export async function fetchEventsServer(): Promise<EventData[]> {
 export async function fetchInterpretingServer(): Promise<InterpretingData> {
   const res = await serverGet<{
     service_modes: InterpretingData["serviceModes"];
+    packages?: InterpretingData["packages"];
     profiles: InterpretingData["profiles"];
     faqs: InterpretingData["faqs"];
   }>("/public/interpreting");
 
   return {
     serviceModes: res.service_modes ?? [],
+    packages: res.packages ?? [],
     profiles: res.profiles ?? [],
     faqs: res.faqs ?? [],
   };

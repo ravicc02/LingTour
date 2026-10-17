@@ -220,17 +220,19 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" width="170" :fixed="isMobile ? false : 'right'">
         <template #default="{ row }">
-          <el-button link type="primary" :icon="View" @click="openDetail(row)">详情</el-button>
-          <el-button
-            v-if="row.status !== 'sent'"
-            link
-            type="primary"
-            :icon="RefreshRight"
-            :loading="resendingId === row.id"
-            @click="handleResend(row)"
-          >
-            重发
-          </el-button>
+          <div class="admin-table-actions">
+            <el-button link type="primary" :icon="View" @click="openDetail(row)">详情</el-button>
+            <el-button
+              v-if="row.status !== 'sent'"
+              link
+              type="primary"
+              :icon="RefreshRight"
+              :loading="resendingId === row.id"
+              @click="handleResend(row)"
+            >
+              重发
+            </el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

@@ -28,13 +28,29 @@ describe('TravelerBookingsService', () => {
       }),
     );
     const options = bookingRepo.findAndCount.mock.calls[0][0];
-    expect(options.where.contact._value).toBe('traveler@example.com');
+    expect(options.where.contact.objectLiteralParameters).toEqual({
+      travelerEmail: 'traveler@example.com',
+    });
+    expect(options.where.contact.type).toBe('raw');
     expect(result).toEqual({
       items: [{ id: 'booking-1' }],
       total: 1,
       page: 2,
       pageSize: 5,
       totalPages: 1,
+    });
+  });
+
+  it('treats email wildcard characters literally in the ownership predicate', async () => {
+    bookingRepo.findAndCount.mockResolvedValue([[], 0]);
+    await service.findForTraveler('A_B%tag@example.com');
+    const predicate = bookingRepo.findAndCount.mock.calls[0][0].where.contact;
+    expect(predicate.type).toBe('raw');
+    expect(predicate.getSql('booking.contact')).toBe(
+      'LOWER(booking.contact) = :travelerEmail',
+    );
+    expect(predicate.objectLiteralParameters).toEqual({
+      travelerEmail: 'a_b%tag@example.com',
     });
   });
 

@@ -5,11 +5,18 @@
   box-sizing: border-box;
 }
 
-:root {
+html:root {
   --admin-font-page-title: 20px;
   --admin-font-section-title: 15px;
   --admin-font-body: 14px;
   --admin-font-hint: 12px;
+  --admin-shell-gutter: 24px;
+  --admin-header-control-size: 40px;
+
+  /* Let Element Plus derive wrapper, stepper and circle geometry from one scale. */
+  --el-component-size-small: 28px;
+  --el-component-size: 40px;
+  --el-component-size-large: 44px;
 }
 
 html,
@@ -92,14 +99,79 @@ select {
   font-size: var(--admin-font-body);
 }
 
-.el-button,
-.el-input__wrapper,
-.el-select__wrapper {
-  min-height: 40px;
+/* Some Element Plus controls still compile sizes as literals. Bridge those
+   geometries to the same tokens used natively by el-input. */
+html .el-button,
+html .el-select,
+html .el-input-number,
+html .el-range-editor {
+  --admin-control-size: var(--el-component-size);
+}
+
+html .el-button--small,
+html .el-select--small,
+html .el-input-number--small,
+html .el-range-editor--small {
+  --admin-control-size: var(--el-component-size-small);
+}
+
+html .el-button--large,
+html .el-select--large,
+html .el-input-number--large,
+html .el-range-editor--large {
+  --admin-control-size: var(--el-component-size-large);
+}
+
+html .el-button:not(.is-link) {
+  height: var(--admin-control-size);
+}
+
+html .el-button.is-circle {
+  width: var(--admin-control-size);
+  height: var(--admin-control-size);
+}
+
+html .el-select .el-select__wrapper {
+  min-height: var(--admin-control-size);
+}
+
+html .el-input-number {
+  line-height: calc(var(--admin-control-size) - 2px);
+}
+
+html .el-input-number .el-input-number__increase,
+html .el-input-number .el-input-number__decrease {
+  width: var(--admin-control-size);
+}
+
+html .el-input-number:not(.is-without-controls) .el-input__wrapper {
+  padding-inline: calc(var(--admin-control-size) + 7px);
+}
+
+html .el-input-number.is-controls-right .el-input__wrapper {
+  padding-left: 15px;
+}
+
+html .el-input-number.is-controls-right .el-input-number__increase,
+html .el-input-number.is-controls-right .el-input-number__decrease {
+  height: calc((var(--admin-control-size) - 2px) / 2);
+  line-height: calc((var(--admin-control-size) - 2px) / 2);
+}
+
+html .el-range-editor.el-input__wrapper {
+  height: var(--admin-control-size);
+}
+
+html .el-date-editor .el-range-input {
+  height: calc(var(--admin-control-size) - 2px);
+  line-height: calc(var(--admin-control-size) - 2px);
+}
+
+.el-button:not(.is-circle) {
+  border-radius: var(--lt-radius-md);
 }
 
 .el-button {
-  border-radius: var(--lt-radius-md);
   font-weight: 600;
   transition:
     transform 220ms var(--lt-ease-out),
@@ -156,9 +228,27 @@ select {
   padding-block: 12px;
 }
 
-.el-pagination {
+.el-pagination.el-pagination {
+  --el-pagination-button-height: var(--el-component-size);
+  --el-pagination-button-width: var(--el-component-size);
+  --el-pagination-button-height-small: var(--el-component-size-small);
+  --el-pagination-button-width-small: var(--el-component-size-small);
+  --el-pagination-button-height-large: var(--el-component-size-large);
+  --el-pagination-button-width-large: var(--el-component-size-large);
   margin-top: 16px;
   justify-content: flex-end;
+}
+
+html .el-switch {
+  height: var(--el-component-size);
+}
+
+html .el-switch--small {
+  height: var(--el-component-size-small);
+}
+
+html .el-switch--large {
+  height: var(--el-component-size-large);
 }
 
 /* Shared search row */
@@ -240,10 +330,31 @@ select {
 
 .pagination-wrap {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  min-width: 0;
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--lt-border-light);
+}
+
+.pagination-wrap > .el-pagination {
+  min-width: 0;
+  margin-top: 0;
+}
+
+.admin-table-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.el-table .admin-table-actions .el-button + .el-button,
+.admin-table-actions > .el-button,
+.admin-table-actions > .el-dropdown {
+  margin-left: 0;
 }
 
 .el-table .el-button + .el-button {
@@ -308,7 +419,39 @@ select {
   box-shadow: var(--lt-shadow-sm);
 }
 
+@media (min-width: 769px) and (max-width: 1023px) {
+  html:root {
+    --admin-shell-gutter: 16px;
+  }
+}
+
 @media (max-width: 768px) {
+  html:root {
+    --admin-shell-gutter: 14px;
+    --admin-header-control-size: 44px;
+    --el-component-size-small: 44px;
+    --el-component-size: 44px;
+    --el-component-size-large: 44px;
+  }
+
+  .el-button,
+  .el-pagination button,
+  .el-pagination .el-pager li {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .el-button.is-circle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .el-input__inner,
+  .el-textarea__inner,
+  .el-select__input {
+    font-size: 16px;
+  }
+
   .page-header {
     align-items: stretch;
     flex-direction: column;
@@ -329,26 +472,26 @@ select {
     font-size: 24px !important;
   }
 
-  .table-card {
-    overflow-x: auto;
-  }
-
+  /* Element Plus owns the table scroll area; the footer stays in its container. */
   .table-card .el-card__body {
-    min-width: min-content;
+    min-width: 0;
   }
 
   .table-card .pagination-wrap {
-    position: sticky;
-    left: 0;
-    width: calc(100vw - 28px);
-    min-width: calc(100vw - 28px);
+    width: 100%;
     justify-content: center;
     padding: 12px !important;
   }
 
-  .pagination-wrap .el-pagination__total,
-  .pagination-wrap .el-pagination__sizes {
+  .el-pagination .el-pager li:not(.is-active),
+  .el-pagination__total,
+  .el-pagination__sizes,
+  .el-pagination__jump {
     display: none;
+  }
+
+  .el-pagination.el-pagination {
+    justify-content: center;
   }
 
   .page-header-actions {

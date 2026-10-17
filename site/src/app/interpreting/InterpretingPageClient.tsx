@@ -20,73 +20,8 @@ import { MobileStickyActions } from "@/components/layout/MobileStickyActions";
 import { SEED_IMAGES } from "@/lib/seed-images";
 import { placeholderFor } from "@/lib/placeholders";
 import { PastoralPageMotion } from "@/components/ui/PastoralPageMotion";
+import { formatCurrency } from "@/lib/region-currency";
 import { usePreviewBridge } from "@/lib/preview";
-
-type ServiceType = {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  duration: string;
-  body: string;
-  tags: string[];
-};
-
-type PricingTier = {
-  service: string;
-  icon: string;
-  junior: string;
-  mid: string;
-  senior: string;
-  note: string;
-};
-
-const clampCopy = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  const sliced = text.slice(0, maxLength).trim();
-  const clean = sliced.replace(/[,:;.!?\-\s]+$/g, "");
-  return `${clean}...`;
-};
-
-/**
- * Present CMS-authored price strings in one notation. The pricing matrix
- * uses "¥680", so a service mode stored as "From RMB 680 / half day" is
- * displayed as "From ¥680 / half day" instead of mixing RMB / ¥ on screen.
- */
-const normalizePriceNotation = (price: string) => price.replace(/RMB\s*/gi, "¥");
-
-const serviceImagePool = [
-  SEED_IMAGES.interpretingHero,
-  SEED_IMAGES.interpretingShowcase,
-  SEED_IMAGES.ambientLandscape,
-];
-
-const buildPricingMatrix = (t: (key: string) => string): PricingTier[] => [
-  {
-    service: t("interpreting.pricing.city"),
-    icon: "CITY",
-    junior: "¥680",
-    mid: "¥980",
-    senior: "¥1,480",
-    note: t("interpreting.pricing.halfDay"),
-  },
-  {
-    service: t("interpreting.pricing.route"),
-    icon: "ROUTE",
-    junior: "¥980",
-    mid: "¥1,280",
-    senior: "¥1,880",
-    note: t("interpreting.pricing.fullDay"),
-  },
-  {
-    service: t("interpreting.pricing.group"),
-    icon: "GROUP",
-    junior: "-",
-    mid: "¥1,680",
-    senior: "¥2,680+",
-    note: t("interpreting.pricing.byGroup"),
-  },
-];
 
 interface InterpretingPageClientProps {
   initialInterpretingData: InterpretingData | null;
@@ -122,20 +57,9 @@ export default function InterpretingPageClient({
     setPrefillNeeds(needsText);
   }, []);
 
-  const profileLevels = useMemo(
-    () => [
-      t("interpreting.levels.junior"),
-      t("interpreting.levels.mid"),
-      t("interpreting.levels.senior"),
-    ],
-    [t],
-  );
-
-  const baseInterpretingData = interpretingData ?? initialInterpretingData ?? {
-    serviceModes: [],
-    profiles: [],
-    faqs: [],
-  };
+  const baseInterpretingData = useMemo(() => interpretingData ?? initialInterpretingData ?? {
+    serviceModes: [], profiles: [], faqs: [], packages: [],
+  }, [interpretingData, initialInterpretingData]);
   const effectiveInterpretingData = useMemo<InterpretingData>(() => {
     const prependPreview = <T extends { id: string }>(
       preview: T | null,
@@ -146,6 +70,7 @@ export default function InterpretingPageClient({
         : items;
 
     return {
+      packages: baseInterpretingData.packages ?? [],
       serviceModes: prependPreview(
         previewService,
         baseInterpretingData.serviceModes,
@@ -163,34 +88,17 @@ export default function InterpretingPageClient({
     previewService,
   ]);
 
-  const serviceTypes = useMemo<ServiceType[]>(() => {
-    const modes = effectiveInterpretingData.serviceModes ?? [];
-    return modes.map((mode, index) => ({
-      id: mode.id,
-      title: mode.title,
-      subtitle: clampCopy(mode.bestFor, 40),
-      image:
-        serviceImagePool[index % serviceImagePool.length] ??
-        placeholderFor("hero"),
-      duration: normalizePriceNotation(mode.price),
-      body: clampCopy(mode.body, 110),
-      tags: mode.includes?.slice(0, 3) ?? [],
-    }));
-  }, [effectiveInterpretingData.serviceModes]);
-
   const showcaseProfiles = useMemo<InterpreterProfile[]>(() => {
     const profiles = effectiveInterpretingData.profiles ?? [];
-    return profiles.map((profile, index) => {
-      const levelLabel =
-        profileLevels[Math.min(index, profileLevels.length - 1)];
+    return profiles.map((profile) => {
       const profileAvatar =
         "avatar" in profile && typeof profile.avatar === "string"
           ? profile.avatar
           : undefined;
       return {
         id: profile.id,
-        level: levelLabel,
-        levelZh: levelLabel,
+        level: "",
+        levelZh: "",
         name: profile.name,
         specialty: profile.focus,
         languages: profile.language,
@@ -201,8 +109,6 @@ export default function InterpretingPageClient({
     });
   }, [
     effectiveInterpretingData.profiles,
-    effectiveInterpretingData.serviceModes,
-    profileLevels,
   ]);
 
   const hasRestoredBookingHash = useRef(false);
@@ -271,31 +177,31 @@ export default function InterpretingPageClient({
   ]);
 
   if (loading && !initialInterpretingData) {
-    return <LoadingSpinner text="Setting up the interpreting desk..." />;
+    return <LoadingSpinner text="Loading interpretation services…" />;
   }
 
   if (error && !initialInterpretingData) {
     return (
       <ErrorState
-        title="Interpreting service unavailable"
-        message="We can't load the interpreting catalogue right now. Please try again shortly."
+        title="Interpretation unavailable"
+        message="Please try again."
         onRetry={refetch}
       />
     );
   }
 
-  const matrix = buildPricingMatrix(t);
+  const packages = effectiveInterpretingData.packages ?? [];
   const cinematicImage =
     SEED_IMAGES.interpretingShowcase ?? placeholderFor("portrait");
 
   return (
     <PastoralPageMotion
       className="min-h-screen bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)]"
-      motionKey={`${serviceTypes.map((service) => service.id).join("|")}:${showcaseProfiles
+      motionKey={`${packages.map((item) => item.id).join("|")}:${showcaseProfiles
         .map((profile) => profile.id)
         .join("|")}`}
     >
-      <section className="relative overflow-hidden pb-16 pt-14 sm:pb-20 sm:pt-16 lg:min-h-[calc(100dvh-4.5rem)] lg:pb-20 lg:pt-20">
+      <section className="relative overflow-hidden pb-16 pt-14 sm:pb-20 sm:pt-16 lg:min-h-[calc(100dvh-var(--site-header-height))] lg:pb-20 lg:pt-20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(185,138,70,0.1),transparent_40%)]" />
 
         <div className="site-container relative w-full">
@@ -308,22 +214,20 @@ export default function InterpretingPageClient({
                 </h1>
 
                 <div className="grid grid-cols-1 items-end gap-5 border-t border-[var(--line)] pt-5 sm:gap-6 lg:gap-8 lg:pt-7">
-                  <p data-pastoral-subtitle className="max-w-[34rem] handwritten text-[13px] leading-6 text-[var(--river-deep)]/85 sm:text-base sm:leading-relaxed lg:text-lg">
-                    {t("interpreting.hero.subtitle")}
-                  </p>
+
 
                   <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3 lg:gap-4">
                     <a
                       href="#interpreting-booking"
                       className="btn-primary inline-flex w-full items-center justify-center px-6 py-4 text-xs leading-none active:scale-95 sm:w-auto sm:px-10 sm:py-5"
                     >
-                      {"Request support"}
+                      {"Book interpretation"}
                     </a>
                     <a
                       href="#service-types"
                       className="btn-paper inline-flex w-full items-center justify-center px-6 py-4 text-xs leading-none sm:w-auto sm:px-10 sm:py-5"
                     >
-                      {"View options"}
+                      {"View packages"}
                     </a>
                   </div>
                 </div>
@@ -345,78 +249,36 @@ export default function InterpretingPageClient({
         </div>
       </section>
 
-      <section id="service-types" className="site-container py-beat">
-        <div className="mb-8">
-          <Reveal>
-            <h2 className="font-[family:var(--font-display)] text-3xl leading-[1.05] tracking-[-0.02em] text-[var(--river-deep)] sm:text-4xl md:text-5xl">
-              {t("interpreting.atlas.chooseShape")}
-            </h2>
-          </Reveal>
-        </div>
-
-        <div className="scroll-fade-x-lg scrollbar-hide -mx-4 mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible lg:px-0">
-          {serviceTypes.map((item, index) => (
-            <Reveal key={item.id} delay={index * 100} className="h-full w-[82vw] max-w-[24rem] shrink-0 snap-start lg:w-auto lg:max-w-none lg:shrink lg:snap-none">
-              <article
-                className={`group relative flex h-full min-h-[380px] flex-col bg-white p-6 scrapbook-shadow transition-all duration-500 hover:-translate-y-1.5 sm:min-h-[420px] sm:p-8 ${
-                  index % 2 === 0 ? "sm:rotate-1" : "sm:-rotate-1"
-                }`}
-              >
-                <div className="absolute top-4 right-6 font-[family:var(--font-display)] text-8xl text-[var(--gold)]/10 select-none group-hover:text-[var(--gold)]/20 transition-colors">
-                  0{index + 1}
-                </div>
-
-                <div className="relative z-10 flex h-full flex-col">
-                  <div className="mb-6 border-b border-[var(--line)] pb-6">
-                    <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)]">
-                      {t("interpreting.atlas.from")}
-                    </p>
-                    <div className="mt-2 flex items-baseline">
-                      <span className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
-                        {item.duration}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex-1">
-                    <h3 className="mb-2 font-[family:var(--font-display)] text-3xl leading-tight text-[var(--river-deep)]">
-                      {item.title}
-                    </h3>
-                    <p className="mb-6 text-xs font-bold uppercase tracking-widest text-[var(--gold)] italic">
-                      {item.subtitle}
-                    </p>
-                    <p className="mb-8 handwritten text-sm leading-relaxed text-[var(--muted)]">
-                      {item.body}
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--muted)]">
-                      {t("interpreting.atlas.includes")}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-sm border border-[var(--line)] bg-[var(--paper-deep)]/30 px-3 py-1 text-[12px] font-bold uppercase text-[var(--river-deep)]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    <a
-                      href="#interpreting-booking"
-                      className="btn-outline mt-6 block w-full py-4 text-center text-[12px] leading-none"
-                    >
-                      {"Request support"}
-                    </a>
-                  </div>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+      <section id="service-types" className="site-container scroll-mt-24 py-beat">
+        <span id="interpreting-pricing" className="scroll-mt-24" />
+        <h2 className="mb-8 font-[family:var(--font-display)] text-3xl text-[var(--river-deep)] sm:text-4xl">
+          Interpretation Packages
+        </h2>
+        {packages.length ? (
+          <div className="overflow-x-auto border border-[var(--line)] bg-white">
+            <table className="w-full text-left text-sm sm:text-base">
+              <caption className="sr-only">Interpretation package prices in US dollars</caption>
+              <thead className="border-b border-[var(--line)]">
+                <tr>
+                  <th scope="col" className="p-4 sm:p-6">Duration</th>
+                  <th scope="col" className="p-4 sm:p-6">Fixed route</th>
+                  <th scope="col" className="p-4 sm:p-6">Custom route</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from(new Set(packages.map((item) => item.hours))).map((hours) => (
+                  <tr key={hours} className="border-b border-[var(--line)] last:border-0">
+                    <th scope="row" className="p-4 font-medium sm:p-6">{hours} hours</th>
+                    {(["fixed", "custom"] as const).map((routeType) => {
+                      const item = packages.find((entry) => entry.hours === hours && entry.routeType === routeType);
+                      return <td key={routeType} className="whitespace-nowrap p-4 sm:p-6">{item ? formatCurrency(item.priceCents / 100, item.currency) : "Unavailable"}</td>;
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : <p role="status">Package prices are unavailable. Please try again.</p>}
       </section>
 
       {showcaseProfiles.length ? (
@@ -426,85 +288,6 @@ export default function InterpretingPageClient({
         />
       ) : null}
 
-      <section id="interpreting-pricing" className="site-container scroll-mt-24 py-16 pb-28 lg:py-24 lg:pb-32">
-        <Reveal>
-          <div>
-            <div className="mb-10 border-b border-[var(--line)] pb-8">
-              <h2 className="max-w-[14ch] font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl md:max-w-none">
-                {"Rates"}
-              </h2>
-            </div>
-
-            <div>
-              <div className="space-y-4">
-                <div className="hidden grid-cols-[1.2fr_repeat(3,1fr)] border-b border-[var(--line)] px-5 pb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] md:grid">
-                  <div className="p-4">{"Service"}</div>
-                  <div className="text-center">
-                    {t("interpreting.levels.junior")}
-                  </div>
-                  <div className="text-center">
-                    {t("interpreting.levels.mid")}
-                  </div>
-                  <div className="text-center">
-                    {t("interpreting.levels.senior")}
-                  </div>
-                </div>
-                {matrix.map((row, rowIndex) => (
-                  <div
-                    key={row.service}
-                    className={`group grid grid-cols-1 border border-[var(--line)] bg-white/88 text-sm text-[var(--muted)] scrapbook-shadow transition-transform duration-500 hover:-translate-y-1.5 md:grid-cols-[1.2fr_repeat(3,1fr)] ${rowIndex === 1 ? "md:translate-x-3" : rowIndex === 2 ? "md:-translate-x-2" : ""}`}
-                  >
-                    <div className="flex items-center gap-4 p-5 sm:p-6">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center border border-[var(--gold)]/35 bg-[var(--paper)] text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--gold)] transition-colors group-hover:bg-[var(--gold)] group-hover:text-white">
-                        {row.icon}
-                      </span>
-                      <div>
-                        <p className="font-[family:var(--font-display)] text-2xl leading-none text-[var(--river-deep)]">
-                          {row.service}
-                        </p>
-                        <p className="mt-2 text-[11px] leading-5 text-[var(--muted)]">
-                          {row.note}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mx-5 grid grid-cols-3 gap-2 border-t border-[var(--line)] pb-5 pt-5 md:hidden">
-                      {[
-                        {
-                          label: t("interpreting.levels.junior"),
-                          value: row.junior,
-                        },
-                        { label: t("interpreting.levels.mid"), value: row.mid },
-                        {
-                          label: t("interpreting.levels.senior"),
-                          value: row.senior,
-                        },
-                      ].map((tier) => (
-                        <div key={tier.label} className="text-center">
-                          <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                            {tier.label}
-                          </p>
-                          <p className="mt-2 font-[family:var(--font-display)] text-[1.3rem] leading-none text-[var(--river-deep)]">
-                            {tier.value}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                    {[row.junior, row.mid, row.senior].map((price, i) => (
-                      <div
-                        key={`${row.service}-${i}`}
-                        className="hidden place-items-center border-l border-[var(--line)] p-4 font-[family:var(--font-display)] text-2xl text-[var(--river-deep)] md:grid"
-                      >
-                        {price}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
       <div className="flex flex-col">
       {effectiveInterpretingData.faqs.length ? (
         <section id="interpreting-faq" className="site-container order-2 scroll-mt-24 pb-24 lg:pb-32">
@@ -512,7 +295,7 @@ export default function InterpretingPageClient({
             <Reveal>
               <div className="lg:sticky lg:top-28">
                 <h2 className="max-w-[9ch] font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.03em] text-[var(--river-deep)] sm:text-5xl">
-                  {"Q&A"}
+                  {"FAQs"}
                 </h2>
               </div>
             </Reveal>
@@ -565,18 +348,18 @@ export default function InterpretingPageClient({
         </section>
       ) : null}
 
-      <BookingSection prefillNeeds={prefillNeeds} />
+      <BookingSection prefillNeeds={prefillNeeds} packages={packages} />
       </div>
 
       <MobileStickyActions
         actions={[
           {
-            label: "Request",
+            label: "Book",
             href: "#interpreting-booking",
             variant: "primary",
           },
           {
-            label: "Rates",
+            label: "Packages",
             href: "#interpreting-pricing",
             variant: "secondary",
           },

@@ -33,14 +33,14 @@ describe("LoginPanel", () => {
   it("opens directly on the returning traveler form and keeps registration at the bottom", () => {
     render(<LoginPanel />);
 
-    expect(screen.getByRole("heading", { name: "Welcome back" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Log in" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Log in" })).toBeInTheDocument();
     expect(screen.queryByText("Continue browsing")).not.toBeInTheDocument();
     expect(screen.queryByRole("tab")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Create account" }));
 
-    expect(screen.getByRole("heading", { name: "Create your account" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Create Account" })).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Log in" })).toBeInTheDocument();
     expect(screen.getByLabelText("Verification code")).toBeInTheDocument();

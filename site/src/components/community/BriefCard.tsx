@@ -1,5 +1,7 @@
 "use client";
 
+import { communityChannelLabel } from "@/lib/community-labels";
+
 import type { FieldBrief } from "@/lib/api-data";
 
 type BriefCardProps = {
@@ -16,15 +18,15 @@ export function BriefCard({ brief, onSelect, index }: BriefCardProps) {
   return (
     <button
       onClick={() => onSelect(brief)}
-      className={`group w-full border border-[var(--line)] bg-[var(--paper)] p-6 text-left scrapbook-shadow transition-[transform,border-color] duration-300 hover:z-10 hover:scale-[1.03] hover:border-[var(--gold)]/40 sm:p-8 ${rotation}`}
+      className={`group flex h-full w-full flex-col border border-[var(--line)] bg-[var(--paper)] p-6 text-left scrapbook-shadow transition-[transform,border-color] duration-300 hover:z-10 hover:scale-[1.03] hover:border-[var(--gold)]/40 sm:p-8 ${rotation}`}
     >
       <div className="flex items-start justify-between border-b border-[var(--line)]/50 pb-4 mb-4">
         <div>
           <p className="font-mono text-[12px] uppercase tracking-widest text-[var(--cinnabar)]">
-            Active Brief
+            Editor update
           </p>
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)] mt-2">
-            {brief.channel}
+            {communityChannelLabel(brief.channel)}
           </p>
         </div>
         <div className="h-6 w-6 rounded-full border border-[var(--line)] flex items-center justify-center text-[var(--muted)] group-hover:text-[var(--cinnabar)] group-hover:border-[var(--cinnabar)] transition-colors">
@@ -42,7 +44,7 @@ export function BriefCard({ brief, onSelect, index }: BriefCardProps) {
         {brief.prompt}
       </p>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-auto flex flex-wrap gap-2 pt-6">
         {brief.location && (
           <span className="rounded-full bg-[var(--paper)] px-3 py-1 text-[12px] uppercase tracking-widest text-[var(--muted)]">
             @{brief.location}

@@ -338,13 +338,10 @@ export function TimeAxisItinerary({ stops, routeStory, routeTitle, routeMap, onA
         <div className="mx-auto max-w-6xl">
           <header data-route-header className="mb-10 max-w-3xl text-left lg:mb-12">
             <h2 className="text-balance font-[family:var(--font-display)] text-4xl leading-[1.08] text-[var(--river-deep)] lg:text-5xl">
-              A day shaped by place.
+              Itinerary Overview
             </h2>
-            {briefStory ? (
-              <p className="mt-5 max-w-2xl whitespace-pre-line text-base leading-[1.8] text-[var(--ink)] lg:text-lg">
-                {briefStory}
-              </p>
-            ) : null}
+            {briefStory ? <p className="mt-4 text-sm leading-7 text-[var(--muted)]">{briefStory}</p> : null}
+
           </header>
           <div className="relative">
             <div

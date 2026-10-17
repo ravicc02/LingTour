@@ -17,10 +17,10 @@ export function StoreProductCard({ product, index = 0 }: StoreProductCardProps) 
   const { t } = useLocale();
   const fallbackImage = product.gallery?.find((image) => image?.trim());
   return (
-    <Reveal delay={index * 80}>
+    <Reveal delay={index * 80} className="min-w-0">
       <article
         className={[
-          "group relative overflow-hidden bg-white shadow-2xl transition-all duration-700 md:aspect-[4/5] md:overflow-visible",
+          "group relative min-w-0 overflow-hidden bg-white shadow-2xl transition-all duration-700 md:aspect-[4/5] md:overflow-visible",
           index % 2 === 0 ? "md:rotate-[-1deg]" : "md:rotate-[1deg]",
           "md:hover:-translate-y-1.5 md:hover:rotate-0"
         ].join(" ")}
@@ -45,7 +45,7 @@ export function StoreProductCard({ product, index = 0 }: StoreProductCardProps) 
         </Link>
 
         {/* The Interactive "Specimen Tag" */}
-        <div className="relative z-20 border-t border-[var(--line)] bg-[var(--paper)] p-3 shadow-xl transition-transform duration-500 md:absolute md:bottom-4 md:left-4 md:right-4 md:border md:shadow-none lg:-bottom-10 lg:-right-4 lg:left-auto lg:w-40 lg:origin-bottom-right lg:rotate-3 lg:p-4 lg:shadow-xl lg:group-hover:rotate-0">
+        <div className="relative z-20 min-w-0 border-t border-[var(--line)] bg-[var(--paper)] p-3 shadow-xl transition-transform duration-500 md:absolute md:bottom-4 md:left-4 md:right-4 md:border md:shadow-none lg:-bottom-10 lg:-right-4 lg:left-auto lg:w-40 lg:origin-bottom-right lg:rotate-3 lg:p-4 lg:shadow-xl lg:group-hover:rotate-0">
           {/* String loop hole */}
           <div className="absolute top-2 left-2 w-2 h-2 rounded-full bg-[var(--paper-deep)] border border-[var(--line)]" />
 
@@ -54,15 +54,15 @@ export function StoreProductCard({ product, index = 0 }: StoreProductCardProps) 
               <FavoriteButton id={product.slug} type="product" title={product.name} variant="dark" />
             </div>
 
-            <h3 className="font-[family:var(--font-display)] text-base leading-tight text-[var(--river-deep)] md:text-lg">
+            <h3 className="min-w-0 break-words font-[family:var(--font-display)] text-base leading-tight text-[var(--river-deep)] md:text-lg">
               {product.name}
             </h3>
 
             <div className="h-px bg-[var(--line)] w-full" />
 
-            <div className="flex justify-between items-end">
-              <div className="space-y-1">
-                <p className="text-[12px] font-bold uppercase tracking-widest text-[var(--gold)]">{product.tag}</p>
+            <div className="flex min-w-0 flex-col items-start gap-3">
+              <div className="min-w-0 space-y-1 break-words">
+
                 <p className="text-[12px] font-bold text-[var(--river-deep)]">
                   <Price amount={product.price} currency={product.currency} />
                 </p>

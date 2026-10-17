@@ -77,16 +77,12 @@ export default function CulturePageClient({
           <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-[minmax(0,1.35fr)_minmax(12rem,0.75fr)] sm:items-center sm:gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="z-10 min-w-0 max-w-3xl lg:col-span-7">
               <Reveal>
-                <p data-pastoral-kicker className="mb-6 text-[12px] font-bold uppercase tracking-[0.32em] text-[var(--cinnabar)] sm:mb-8">
-                  {t("culture.atlas.eyebrow")}
-                </p>
+
                 <h1 className="font-[family:var(--font-display)] text-[clamp(1.8rem,7vw,6rem)] leading-[0.94] tracking-[-0.04em] text-[var(--river-deep)]">
                   <span className="block overflow-hidden pb-1"><span data-pastoral-title className="block">{t("culture.atlas.titlePrimary")}</span></span>
                   <span className="block overflow-hidden pb-3"><span data-pastoral-title className="block italic text-[var(--gold)]">{t("culture.atlas.titleItalic")}</span></span>
                 </h1>
-                <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
-                  {t("culture.atlas.lede")}
-                </p>
+
               </Reveal>
             </div>
 
@@ -145,9 +141,7 @@ export default function CulturePageClient({
         ) : null}
         {cultures.length === 0 ? (
           <div className="scrapbook-shadow mx-auto max-w-2xl rotate-1 border border-[var(--line)] bg-white/70 p-10">
-            <p className="text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--gold)]">
-              {t("culture.atlas.eyebrow")}
-            </p>
+
             <h3 className="mt-4 font-[family:var(--font-display)] text-3xl text-[var(--river-deep)]">
               {t("culture.atlas.empty.title")}
             </h3>
@@ -201,15 +195,9 @@ export default function CulturePageClient({
                           <h2 className="mt-2 font-[family:var(--font-display)] text-3xl leading-[0.98] text-[var(--river-deep)] transition-colors group-hover:text-[var(--cinnabar)] sm:text-4xl lg:text-3xl">
                             {city.name}
                           </h2>
-                          <p className="handwritten mt-3 flex-1 text-sm leading-relaxed text-[var(--muted)] line-clamp-3 sm:text-base sm:line-clamp-none">
-                            {city.narrative}
-                          </p>
+
                           <div className="mt-5 flex items-end justify-between gap-4">
-                            {city.tags.length > 0 ? (
-                              <p className="min-w-0 truncate text-[12px] font-bold uppercase tracking-[0.15em] text-[var(--muted)]">
-                                {city.tags.slice(0, 2).join(" / ")}
-                              </p>
-                            ) : <span />}
+
                             <span className="shrink-0 text-[12px] font-bold uppercase tracking-[0.18em] text-[var(--cinnabar)] underline decoration-[var(--cinnabar)]/45 underline-offset-4">
                               Read city
                             </span>
@@ -233,9 +221,7 @@ export default function CulturePageClient({
             />
             <div className="relative z-10 mx-auto max-w-2xl">
               <Reveal>
-                <p className="text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--gold-light)]">
-                  {t("culture.cta.eyebrow")}
-                </p>
+
                 <h2 className="mt-8 font-[family:var(--font-display)] text-3xl leading-tight sm:text-4xl md:text-6xl">
                   {t("culture.cta.title")}
                 </h2>

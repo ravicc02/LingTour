@@ -203,25 +203,27 @@ function itemsSummary(items: Order['items']) {
       </el-table-column>
       <el-table-column label="操作" width="200" :fixed="isMobile ? false : 'right'">
         <template #default="{ row }">
-          <el-button type="primary" link size="small" @click="handleViewDetail(row.id)">详情</el-button>
-          <el-button
-            v-if="row.status === 'confirmed' && row.paymentStatus === 'paid'"
-            type="success"
-            link
-            size="small"
-            @click="handleShip(row)"
-          >
-            发货
-          </el-button>
-          <el-button
-            v-if="row.paymentStatus === 'paid' && row.status !== 'cancelled'"
-            type="warning"
-            link
-            size="small"
-            @click="handleRefund(row)"
-          >
-            退款
-          </el-button>
+          <div class="admin-table-actions">
+            <el-button type="primary" link size="small" @click="handleViewDetail(row.id)">详情</el-button>
+            <el-button
+              v-if="row.status === 'confirmed' && row.paymentStatus === 'paid'"
+              type="success"
+              link
+              size="small"
+              @click="handleShip(row)"
+            >
+              发货
+            </el-button>
+            <el-button
+              v-if="row.paymentStatus === 'paid' && row.status !== 'cancelled'"
+              type="warning"
+              link
+              size="small"
+              @click="handleRefund(row)"
+            >
+              退款
+            </el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

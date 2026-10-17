@@ -153,8 +153,10 @@ onMounted(() => {
 <template>
   <div class="settings-page" v-loading="loading">
     <div class="page-header">
-      <h2>系统设置</h2>
-      <span class="page-desc">配置网站 SEO、语言、币种、税率、运费模板和服务城市</span>
+      <div class="page-heading-copy">
+        <h2>系统设置</h2>
+        <span class="page-desc">配置网站 SEO、语言、币种、税率、运费模板和服务城市</span>
+      </div>
     </div>
 
     <el-form label-width="140px" label-position="left">
@@ -467,8 +469,8 @@ onMounted(() => {
   bottom: 0;
   display: flex;
   justify-content: center;
-  padding: 16px 0;
-  margin: 24px -24px -20px;
+  padding: 16px var(--admin-shell-gutter);
+  margin: 24px 0 0;
   background: var(--lt-bg-page, #f0f2f5);
   border-top: 1px solid var(--lt-border-light, #f0f0f0);
   z-index: 10;

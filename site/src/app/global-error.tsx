@@ -51,7 +51,7 @@ export default function GlobalError({
               color: "#b64235",
             }}
           >
-            Field note lost
+            Error
           </p>
           <h1
             style={{
@@ -63,7 +63,7 @@ export default function GlobalError({
               letterSpacing: "-0.03em",
             }}
           >
-            The atlas failed to load.
+            Unable to load the page.
           </h1>
           <p style={{ margin: "1.5rem 0 0", fontSize: "1rem", lineHeight: 1.75, color: "#5b6874" }}>
             Something broke before the page could be assembled. Try again — the rest of the site

@@ -69,6 +69,7 @@ export function FavoriteButton({ id, type, title, image, variant = "light" }: Fa
     <button
       type="button"
       aria-pressed={saved}
+      aria-label={saved ? `Remove ${title} from saved items` : `Save ${title}`}
       aria-busy={pending || undefined}
       data-favorite-button="true"
       data-react-favorite="true"
@@ -82,7 +83,7 @@ export function FavoriteButton({ id, type, title, image, variant = "light" }: Fa
       }`}
       onClick={handleClick}
     >
-      <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"}>
+      <svg aria-hidden="true" className="block h-4 w-4 shrink-0" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"}>
         <path
           d="M12 20.5L10.8 19.4C6.6 15.6 4 13.2 4 10.2C4 7.8 5.9 6 8.3 6C9.6 6 10.9 6.6 11.7 7.6H12.3C13.1 6.6 14.4 6 15.7 6C18.1 6 20 7.8 20 10.2C20 13.2 17.4 15.6 13.2 19.4L12 20.5Z"
           stroke="currentColor"

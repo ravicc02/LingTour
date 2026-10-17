@@ -19,11 +19,6 @@
     display: none !important;
   }
 
-  /* Main content */
-  .admin-main {
-    padding: 14px !important;
-  }
-
   /* List toolbar → stack vertically */
   .list-toolbar {
     flex-direction: column !important;
@@ -116,17 +111,7 @@
 
 /* ── Tablet ── */
 @media (min-width: 769px) and (max-width: 1023px) {
-  .admin-main {
-    padding: 16px !important;
-  }
   .editor-shell {
     grid-template-columns: 1fr !important;
-  }
-}
-
-/* ── Desktop large ── */
-@media (min-width: 1280px) {
-  .admin-main {
-    padding: 24px;
   }
 }

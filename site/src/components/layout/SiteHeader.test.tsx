@@ -40,4 +40,13 @@ describe("SiteHeader mobile navigation", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(document.body.style.overflow).toBe("");
   });
+
+  it("joins the outer menu strokes at their shared center when open", () => {
+    render(<SiteHeader />);
+    const trigger = screen.getByRole("button", { name: "Open menu" });
+    fireEvent.click(trigger);
+    const strokes = trigger.querySelectorAll("span > span");
+    expect(strokes[0]).toHaveClass("translate-y-[7px]", "rotate-45");
+    expect(strokes[2]).toHaveClass("-translate-y-[7px]", "-rotate-45");
+  });
 });

@@ -6,26 +6,20 @@ import { gsap, motionEase, motionMedia, motionScrub, useGSAP } from "@/lib/motio
 
 type HomeAtlasHeroProps = {
   image: string;
-  eyebrow: string;
   titleLine1: string;
   accent: string;
   titleLine3: string;
-  body: string;
   primaryLabel: string;
   secondaryLabel: string;
-  tags: string[];
 };
 
 export function HomeAtlasHero({
   image,
-  eyebrow,
   titleLine1,
   accent,
   titleLine3,
-  body,
   primaryLabel,
   secondaryLabel,
-  tags,
 }: HomeAtlasHeroProps) {
   const scope = useRef<HTMLElement | null>(null);
 
@@ -79,7 +73,7 @@ export function HomeAtlasHero({
   return (
     <section
       ref={scope}
-      className="home-hero relative isolate flex min-h-[100dvh] overflow-hidden border-b border-[var(--line)] bg-[var(--paper-deep)] text-[var(--river-deep)]"
+      className="home-hero relative isolate flex min-h-[100dvh] overflow-hidden bg-[var(--paper-deep)] text-[var(--river-deep)]"
     >
       <div className="absolute inset-0 overflow-hidden bg-[var(--paper-deep)]">
         <img
@@ -91,20 +85,23 @@ export function HomeAtlasHero({
         />
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(236,233,226,0.97)_0%,rgba(236,233,226,0.91)_22%,rgba(236,233,226,0.58)_43%,rgba(236,233,226,0.14)_66%,rgba(236,233,226,0.02)_84%)] max-lg:bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.02)_25%,rgba(236,233,226,0.26)_38%,rgba(236,233,226,0.94)_55%,#ece9e2_70%)]" />
+      {/* Desktop keeps the photo visible to the very bottom edge, so it used to
+          butt straight into the paper background below. Fade the last slice of
+          the image into --paper-deep instead, matching the section that follows. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[32vh] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.24)_42%,rgba(236,233,226,0.72)_76%,#ece9e2_100%)] max-lg:hidden"
+      />
 
-      <div className="site-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
+      <div className="site-container home-hero-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
         <div data-home-copy className="max-w-[46rem] lg:max-w-[53rem]">
-          <p className="font-mono text-[12px] font-bold uppercase tracking-[0.3em] text-[var(--cinnabar)]">
-            {eyebrow}
-          </p>
+
           <h1 className="home-hero-title mt-7 max-w-[8.5ch] font-[family:var(--font-sans)] text-[clamp(3.1rem,8.6vw,8.4rem)] font-medium leading-[0.86] max-lg:mt-5">
             {titleLine1}
             <span className="mt-1 block italic text-[var(--gold)]">{accent}</span>
             <span className="block">{titleLine3}</span>
           </h1>
-          <p className="mt-8 max-w-[38rem] text-sm leading-7 text-[var(--muted)] sm:text-base lg:mt-10 max-lg:mt-5 max-lg:max-w-[25rem] max-lg:text-[0.86rem] max-lg:leading-6">
-            {body}
-          </p>
+
           <div className="mt-8 flex flex-col gap-3 sm:flex-row max-lg:mt-6">
             <Link href="/interpreting#interpreting-booking" className="lt-action lt-action-gold min-w-[12rem]">
               {primaryLabel} <span aria-hidden>→</span>
@@ -115,19 +112,7 @@ export function HomeAtlasHero({
           </div>
         </div>
 
-        <div className="mt-12 grid gap-5 border-t border-[var(--line)] pt-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end lg:absolute lg:bottom-10 lg:left-[var(--space-gutter)] lg:right-[var(--space-gutter)] lg:mt-0 max-lg:mt-8 max-lg:gap-3 max-lg:pt-4">
-          <div className="flex max-w-[95%] flex-wrap gap-x-7 gap-y-2 max-lg:gap-x-5 max-lg:gap-y-1.5">
-            {tags.map((label) => (
-              <span key={label} className="font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-                {label}
-              </span>
-            ))}
-          </div>
-          <span className="hidden items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)] sm:flex">
-            <span className="h-8 w-px bg-[var(--gold)]" />
-            Scroll to explore
-          </span>
-        </div>
+
       </div>
     </section>
   );

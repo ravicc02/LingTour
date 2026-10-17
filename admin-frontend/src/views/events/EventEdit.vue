@@ -212,17 +212,17 @@ async function handleSave() {
             <ContentInput v-model="form.title" />
           </el-form-item>
           <el-row :gutter="16">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="开始日期" prop="date">
                 <el-date-picker v-model="form.date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="结束日期">
                 <el-date-picker v-model="form.endDate" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="活动状态">
                 <el-select v-model="form.status" style="width: 100%">
                   <el-option v-for="opt in statusOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
@@ -235,7 +235,7 @@ async function handleSave() {
         <el-card shadow="never" class="section-card">
           <template #header>关联城市与路线</template>
           <el-row :gutter="16">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="关联城市">
                 <el-select
                   v-model="form.citySlug"
@@ -253,12 +253,12 @@ async function handleSave() {
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="前台显示城市">
                 <el-input v-model="form.city" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="地图区划代码">
                 <el-input-number v-model="form.adcode" :min="0" :max="999999" style="width: 100%" />
               </el-form-item>
@@ -452,7 +452,7 @@ async function handleSave() {
   color: #e6a23c;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1023px) {
   .editor-shell {
     grid-template-columns: 1fr;
   }

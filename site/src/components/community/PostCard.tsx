@@ -1,5 +1,7 @@
 "use client";
 
+import { communityChannelLabel } from "@/lib/community-labels";
+
 import { useEffect, useMemo, useState } from "react";
 import type { CommunityFeedPost } from "@/lib/api-data";
 import {
@@ -111,7 +113,7 @@ export function PostCard({
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[var(--radius-md)] scrapbook-shadow transition-[transform,box-shadow] duration-500 hover:-translate-y-0.5 ${variantClasses}`}
+      className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] scrapbook-shadow transition-[transform,box-shadow] duration-500 hover:-translate-y-0.5 ${variantClasses}`}
     >
       <a
         href={`/community?post=${post.id}`}
@@ -125,11 +127,11 @@ export function PostCard({
             window.history.replaceState({}, "", `/community?post=${post.id}`);
           }
         }}
-        className="block w-full text-left"
+        className="flex min-h-0 w-full flex-1 flex-col text-left"
       >
         {hasImage && cover ? (
           <div
-            className={`relative overflow-hidden ${
+            className={`relative shrink-0 overflow-hidden ${
               variant === "feature"
                 ? "aspect-[1.12] border-b border-[var(--line)]"
                 : "aspect-[1.1]"
@@ -172,7 +174,7 @@ export function PostCard({
                   : "handwritten rotate-[2deg] bg-[var(--paper)]/85 text-[var(--river-deep)] shadow-sm backdrop-blur-sm"
               }`}
             >
-              {post.channel}
+              {communityChannelLabel(post.channel)}
             </span>
             {variant === "feature" ? (
               <div className="absolute inset-x-0 bottom-0 p-5">
@@ -184,13 +186,13 @@ export function PostCard({
           </div>
         ) : (
           <div className="relative overflow-hidden px-6 pb-2 pt-8 sm:px-7">
-            <div className="max-w-[13rem] pl-4">
-              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{post.channel}</p>
+            <div className="max-w-[13rem]">
+              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{communityChannelLabel(post.channel)}</p>
             </div>
           </div>
         )}
 
-        <div className={variant === "feature" ? "p-5" : variant === "text" ? "p-6 sm:p-7" : "p-5"}>
+        <div className={`flex flex-1 flex-col ${variant === "feature" ? "p-5" : variant === "text" ? "p-6 sm:p-7" : "p-5"}`}>
           <div className="flex items-center gap-2">
             <Avatar
               src={post.user.avatar}
@@ -256,7 +258,7 @@ export function PostCard({
         </div>
       </a>
 
-      <div className="flex items-center justify-between border-t border-[var(--line)] px-5 py-2 text-[var(--river-deep)]">
+      <div className={`flex items-center justify-between border-t border-[var(--line)] py-2 text-[var(--river-deep)] ${variant === "text" ? "px-4 sm:px-5" : "px-5"}`}>
         <button
           type="button"
           onClick={handleLike}

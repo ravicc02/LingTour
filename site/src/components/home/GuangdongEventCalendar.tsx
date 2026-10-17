@@ -260,9 +260,7 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
                   <h4 className="mb-3 font-[family:var(--font-display)] text-xl text-[var(--river-deep)] sm:text-2xl">
                     {event.title}
                   </h4>
-                  <p className="handwritten max-w-lg text-sm leading-relaxed text-[var(--muted)]">
-                    {event.summary || t("home.calendar.eventFallbackEn")}
-                  </p>
+
                 </div>
               ))
             ) : (
@@ -276,7 +274,7 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
           </div>
         </div>
 
-        <div className="lg:sticky lg:top-32">
+        <div>
           {relatedRoute ? (
             <Reveal delay={200}>
               <Link
@@ -298,9 +296,7 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
 
                   <div className="min-w-0 space-y-3 lg:space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="border border-[var(--gold)] px-3 py-1 text-[11px] font-bold uppercase text-[var(--gold)]">
-                        {t("home.calendar.verifiedRoute")}
-                      </span>
+
                       <span className="text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
                         {relatedRoute.duration}
                       </span>
@@ -308,9 +304,7 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
                     <h4 className="font-[family:var(--font-display)] text-xl leading-tight text-[var(--river-deep)] lg:text-3xl">
                       {relatedRoute.title}
                     </h4>
-                    <p className="hidden line-clamp-2 text-sm leading-relaxed text-[var(--muted)] lg:block">
-                      {relatedRoute.summary}
-                    </p>
+
                     <div className="flex items-center justify-between border-t border-[var(--line)] pt-3 text-[var(--cinnabar)] lg:pt-6">
                       <span className="text-[12px] font-bold uppercase tracking-widest">
                         {t("home.calendar.exploreRoute")}

@@ -168,18 +168,20 @@ async function handleEnable(row: Interpreter) {
       </el-table-column>
       <el-table-column label="操作" width="240" :fixed="isMobile ? false : 'right'">
         <template #default="{ row }">
-          <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
-          <template v-if="row.status === 'pending_review'">
-            <el-button type="success" link size="small" @click="handleApprove(row)">通过</el-button>
-            <el-button type="warning" link size="small" @click="handleReject(row)">拒绝</el-button>
-          </template>
-          <template v-if="row.status === 'active'">
-            <el-button type="warning" link size="small" @click="handleDisable(row)">禁用</el-button>
-          </template>
-          <template v-if="row.status === 'inactive'">
-            <el-button type="success" link size="small" @click="handleEnable(row)">启用</el-button>
-          </template>
-          <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+          <div class="admin-table-actions">
+            <el-button type="primary" link size="small" @click="handleEdit(row.id)">编辑</el-button>
+            <template v-if="row.status === 'pending_review'">
+              <el-button type="success" link size="small" @click="handleApprove(row)">通过</el-button>
+              <el-button type="warning" link size="small" @click="handleReject(row)">拒绝</el-button>
+            </template>
+            <template v-if="row.status === 'active'">
+              <el-button type="warning" link size="small" @click="handleDisable(row)">禁用</el-button>
+            </template>
+            <template v-if="row.status === 'inactive'">
+              <el-button type="success" link size="small" @click="handleEnable(row)">启用</el-button>
+            </template>
+            <el-button type="danger" link size="small" @click="handleDelete(row)">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

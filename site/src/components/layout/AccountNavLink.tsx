@@ -46,7 +46,7 @@ export function AccountNavLink({
       <Link
         href="/login?next=%2Fprofile%3Ftab%3Dnotes"
         onClick={onNavigate}
-        className="ml-2 inline-flex min-h-11 min-w-[6.4rem] items-center justify-center rounded-full border border-[var(--gold)]/75 bg-white/30 px-4 py-2 text-[12px] uppercase tracking-[0.2em] text-[var(--river-deep)] transition-colors hover:border-[var(--river-deep)] hover:bg-[var(--river-deep)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--gold)]"
+        className="ml-2 inline-flex min-h-11 min-w-[6.4rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[var(--gold)]/75 bg-white/30 px-4 py-2 text-[12px] uppercase leading-5 tracking-[0.2em] text-[var(--river-deep)] transition-colors hover:border-[var(--river-deep)] hover:bg-[var(--river-deep)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--gold)]"
         aria-label="Log in to open your traveler profile"
       >
         {t("common.nav.login")}

@@ -258,12 +258,12 @@ async function handleSave() {
         <el-card shadow="never" class="section-card">
           <template #header>基础信息</template>
           <el-row :gutter="16">
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="Slug" prop="slug">
                 <el-input v-model="form.slug" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="所属系列">
                 <el-select
                   v-model="form.collectionId"
@@ -291,7 +291,7 @@ async function handleSave() {
         <el-card shadow="never" class="section-card">
           <template #header>价格、库存与发布</template>
           <el-row :gutter="16">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="币种">
                 <el-select v-model="form.currency" style="width: 100%">
                   <el-option label="SGD" value="SGD" />
@@ -301,7 +301,7 @@ async function handleSave() {
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="价格" prop="price">
                 <el-input-number
                   v-model="form.price"
@@ -311,7 +311,7 @@ async function handleSave() {
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="库存">
                 <el-input-number
                   v-model="form.stock"
@@ -353,12 +353,12 @@ async function handleSave() {
         <el-card shadow="never" class="section-card">
           <template #header>溯源与产地</template>
           <el-row :gutter="16">
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="产地位置">
                 <el-input v-model="form.originTrace.location" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="关联城市">
                 <el-select
                   v-model="form.originTrace.citySlug"
@@ -376,12 +376,12 @@ async function handleSave() {
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="产地城市名">
                 <el-input v-model="form.originTrace.cityName" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="地图区划代码">
                 <el-input-number
                   v-model="form.originTrace.mapAdcode"

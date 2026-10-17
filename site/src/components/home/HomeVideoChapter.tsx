@@ -140,10 +140,14 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
     <section
       ref={scope}
       aria-label={video?.title || "Guangzhou skyline film"}
-      className="pb-6 pt-12 sm:pb-8 sm:pt-16 lg:pb-10 lg:pt-24"
+      className="pb-6 pt-8 sm:pb-8 sm:pt-10 lg:pb-10 lg:pt-0"
     >
       <div className="relative w-full border-[0.4rem] border-[var(--paper-deep)] bg-[var(--paper-deep)] shadow-panel sm:border-[0.7rem]">
         <div className="relative aspect-[4/3] overflow-hidden bg-[var(--night)] sm:aspect-video">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[22%] bg-[linear-gradient(180deg,#ece9e2_0%,rgba(236,233,226,0.82)_30%,rgba(236,233,226,0)_100%)]"
+          />
           <video
             ref={videoRef}
             data-home-film
@@ -158,6 +162,10 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
             onPause={() => setPaused(true)}
             aria-label={video?.title || "Guangzhou skyline film"}
             className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[18%] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.58)_68%,#ece9e2_100%)]"
           />
           <button
             type="button"

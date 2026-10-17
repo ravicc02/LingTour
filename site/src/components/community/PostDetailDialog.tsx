@@ -312,7 +312,7 @@ export function PostDetailDialog({
         <div className="flex items-center justify-between border-b border-[var(--line)] px-5 py-4 sm:px-8">
           <div>
             <p className="font-mono text-[12px] uppercase tracking-[0.24em] text-[var(--cinnabar)]">
-              Field Record
+              Post
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">{metaLine}</p>
           </div>

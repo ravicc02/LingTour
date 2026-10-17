@@ -16,7 +16,7 @@
 | `docs/` | 文档 | — | 当前状态、设计基线、开发与发布规范 |
 | `tools/` | 运维工具 | — | 部署与巡检脚本 |
 
-> `admin-frontend/` 同时是**独立 Git 仓库**（根仓库也跟踪其文件，非 submodule）。提交时先提交独立仓库、再提交根仓库对应路径并保持逐字节一致，详见 [`docs/development.md`](docs/development.md)。
+> `admin-frontend/` 同时是**独立 Git 仓库**（根仓库也跟踪其文件，非 submodule）。提交时先提交独立仓库、再提交根仓库对应路径并保持逐字节一致，详见 [`docs/reference/development.md`](docs/reference/development.md)。
 
 ## 环境地址
 
@@ -35,7 +35,7 @@ cd site && npm ci --legacy-peer-deps
 cd api && npm ci
 cd admin-frontend && npm ci
 
-# 2. 配置：按各端 example/env 文件准备本地环境变量（变量清单见 docs/development.md）
+# 2. 配置：按各端 example/env 文件准备本地环境变量（变量清单见 docs/reference/development.md）
 
 # 3. 启动（三个终端）
 cd site && npm run dev            # http://localhost:3000
@@ -47,18 +47,19 @@ cd api && npm run start:dev       # http://localhost:8000
 
 | 文档 | 用途 |
 | --- | --- |
-| [`AGENT.md`](AGENT.md) | AI/开发者操作规范（必读）：工作流、硬约束、验证要求 |
-| [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) | 唯一活状态源：Git、生产、受保护 WIP、验证与积压 |
-| [`docs/development.md`](docs/development.md) | 环境搭建、分支规范、代码与提交规范、协作流程 |
-| [`docs/release.md`](docs/release.md) | 发布流程、服务器与 PM2 配置、迁移与上线冒烟 |
-| [`CHANGELOG.md`](CHANGELOG.md) | 按版本记录的变更日志 |
+| [`AGENTS.md`](AGENTS.md) | AI/开发者操作规范（必读）：工作流、硬约束、验证要求 |
+| [`CHANGELOG.md`](CHANGELOG.md) | 当前更新、验证、发布、部署和回滚记录 |
+| [`docs/reference/development.md`](docs/reference/development.md) | 环境搭建、分支规范、代码与提交规范、协作流程 |
+| [`docs/reference/release.md`](docs/reference/release.md) | 发布流程、服务器与 PM2 配置、迁移与上线冒烟 |
+| [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) | 已弃用的历史状态入口，仅指向归档和新记录规则 |
 | [`PRODUCT.md`](PRODUCT.md) / [`DESIGN.md`](DESIGN.md) | 产品定位与设计语言 |
-| [`docs/RESPONSIVE-SPEC.md`](docs/RESPONSIVE-SPEC.md) / [`docs/UI-OVERHAUL-2026.md`](docs/UI-OVERHAUL-2026.md) | 响应式与视觉改版基线 |
-| `docs/backend/` | 各业务域后端设计（文化 / 路线 / 传译 / 店铺） |
-| `docs/archive/` | 历史 handoff、旧部署手册与过程文档（**非当前状态**） |
+| [`docs/reference/RESPONSIVE-SPEC.md`](docs/reference/RESPONSIVE-SPEC.md) / [`docs/reference/UI-OVERHAUL-2026.md`](docs/reference/UI-OVERHAUL-2026.md) | 响应式与视觉改版基线 |
+| [`docs/README.md`](docs/README.md) | 按日期整理的文档目录；每个日期独立一个文件夹 |
+| `docs/2026-05-09/backend/`、`docs/2026-05-11/backend/` | 各业务域后端设计（文化 / 路线 / 传译 / 店铺） |
+| `docs/YYYY-MM-DD/` | 历史 handoff、旧部署手册与过程文档（**非当前状态**） |
 
 ## 变更与发布
 
-- 提交信息遵循 Conventional Commits，规范见 [`docs/development.md`](docs/development.md)。
-- 版本与变更记录见 [`CHANGELOG.md`](CHANGELOG.md)；发布流程见 [`docs/release.md`](docs/release.md)。
+- 提交信息遵循 Conventional Commits，规范见 [`docs/reference/development.md`](docs/reference/development.md)。
+- 版本与变更记录见 [`CHANGELOG.md`](CHANGELOG.md)；发布流程见 [`docs/reference/release.md`](docs/reference/release.md)。
 - 未经明确授权，不执行 commit / push / 数据库迁移 / 部署 / 生产数据变更。

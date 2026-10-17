@@ -71,3 +71,7 @@ next-env.d.ts
 /.local-backups/
 /admin-backoffice-visual-reference.png
 /api/src/database/seeds/seed-local-preview.ts
+
+# Python validation caches
+**/__pycache__/
+*.py[cod]

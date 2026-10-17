@@ -7,9 +7,7 @@ type SectionHeadingProps = {
 };
 
 export function SectionHeading({
-  eyebrow,
   title,
-  description,
   align = "left",
   className = "",
 }: SectionHeadingProps) {
@@ -17,11 +15,11 @@ export function SectionHeading({
 
   return (
     <div className={["space-y-3", alignment, className].filter(Boolean).join(" ")}>
-      <p className="text-label text-[var(--muted)]">{eyebrow}</p>
+
       <h2 className="font-[family:var(--font-display)] text-3xl text-[var(--deep-blue)] md:text-4xl">
         {title}
       </h2>
-      {description ? <p className="max-w-3xl text-base leading-8 text-[var(--muted)]">{description}</p> : null}
+
     </div>
   );
 }

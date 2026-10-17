@@ -170,12 +170,12 @@ export function FieldKit<TChannel extends string>({
 
     const room = FIELD_KIT_MEDIA_LIMIT - media.length;
     if (room <= 0) {
-      setError(`Up to ${FIELD_KIT_MEDIA_LIMIT} photos per note.`);
+      setError(`Up to ${FIELD_KIT_MEDIA_LIMIT} photos per post.`);
       return;
     }
     const accepted = files.slice(0, room);
     if (accepted.length < files.length) {
-      setError(`Up to ${FIELD_KIT_MEDIA_LIMIT} photos per note.`);
+      setError(`Up to ${FIELD_KIT_MEDIA_LIMIT} photos per post.`);
     }
 
     setMediaUploading(true);
@@ -239,7 +239,7 @@ export function FieldKit<TChannel extends string>({
     <div className="fixed inset-0 z-50 flex justify-center overflow-y-auto overscroll-contain p-3 sm:p-6">
       <button
         type="button"
-        aria-label="Close field note kit"
+        aria-label="Close post editor"
         aria-hidden="true"
         tabIndex={-1}
         className="absolute inset-0 bg-[var(--night)]/50 backdrop-blur-[2px]"
@@ -286,7 +286,7 @@ export function FieldKit<TChannel extends string>({
                     compact ? "text-2xl" : "text-3xl"
                   }`}
                 >
-                  Field Note Kit
+                  Create Post
                 </h2>
               </div>
               <button
@@ -294,7 +294,7 @@ export function FieldKit<TChannel extends string>({
                 type="button"
                 onClick={onClose}
                 disabled={submitting}
-                aria-label="Close field note kit"
+                aria-label="Close post editor"
                 className="flex h-11 w-11 items-center justify-center border border-[var(--line)] text-xl text-[var(--muted)] transition-colors hover:border-[var(--cinnabar)] hover:text-[var(--cinnabar)] disabled:opacity-40"
               >
                 ×
@@ -494,10 +494,10 @@ export function FieldKit<TChannel extends string>({
                     compact ? "py-4 text-base" : "py-5 text-lg"
                   } hover:bg-[var(--cinnabar)]`}
                 >
-                  {submitting ? "POSTING..." : mediaUploading ? "UPLOADING MEDIA..." : "POST NOTE"}
+                  {submitting ? "POSTING..." : mediaUploading ? "UPLOADING MEDIA..." : "PUBLISH POST"}
                 </button>
                 <p className="mt-4 text-center text-[12px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                  Publish as a text note, a photo set, or with live moments
+                  Publish text, images or video
                 </p>
               </div>
             </div>

@@ -473,7 +473,17 @@ export interface ApiInterpretingFaq {
   answer: string;
 }
 
+export interface InterpretationPackage {
+  id: string;
+  hours: number;
+  routeType: "fixed" | "custom";
+  currency: "USD";
+  priceCents: number;
+  title: string;
+}
+
 export interface InterpretingData {
+  packages?: InterpretationPackage[];
   serviceModes: ApiInterpretingMode[];
   profiles: ApiInterpreterProfile[];
   faqs: ApiInterpretingFaq[];
@@ -488,9 +498,11 @@ export type InterpretingBookingPayload = {
   groupSize?: string;
   routeOrNeed?: string;
   fastTrack?: boolean;
+  packageId?: string;
 };
 
 export type InterpretingDepositCheckout = {
+  package?: InterpretationPackage | null;
   bookingId: string;
   created_at: string;
   status: string;
@@ -526,12 +538,14 @@ export async function fetchInterpreting(
 ): Promise<InterpretingData> {
   const res = await apiGet<{
     service_modes: ApiInterpretingMode[];
+    packages?: InterpretationPackage[];
     profiles: ApiInterpreterProfile[];
     faqs: ApiInterpretingFaq[];
   }>("/public/interpreting", {
   });
   return {
     serviceModes: res.service_modes ?? [],
+    packages: res.packages ?? [],
     profiles: res.profiles ?? [],
     faqs: res.faqs ?? [],
   };

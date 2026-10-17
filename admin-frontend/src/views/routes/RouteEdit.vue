@@ -413,19 +413,19 @@ async function handleSave() {
         <el-card shadow="never" class="section-card">
           <template #header>基础信息</template>
           <el-row :gutter="16">
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="Slug" prop="slug">
                 <el-input v-model="form.slug" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="路线标题" prop="title">
                 <ContentInput v-model="form.title" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="16">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="文化标签">
                 <el-select v-model="form.cultureTag" style="width: 100%">
                   <el-option
@@ -437,7 +437,7 @@ async function handleSave() {
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="路线地区">
                 <el-select
                   v-model="form.routeRegionKey"
@@ -453,7 +453,7 @@ async function handleSave() {
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :xs="24" :sm="12" :md="8">
               <el-form-item label="发布状态">
                 <el-switch
                   v-model="form.published"
@@ -503,12 +503,12 @@ async function handleSave() {
             <ContentInput v-model="form.cityName" />
           </el-form-item>
           <el-row :gutter="16">
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="时长">
                 <ContentInput v-model="form.duration" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :sm="12">
               <el-form-item label="适合人群">
                 <ContentInput v-model="form.audience" />
               </el-form-item>
@@ -567,12 +567,12 @@ async function handleSave() {
           <div v-else-if="activeStop" class="workspace-panel">
             <div class="panel-title">站点 {{ activeStopIndex + 1 }}</div>
             <el-row :gutter="16">
-              <el-col :span="8">
+              <el-col :xs="24" :sm="12" :md="8">
                 <el-form-item label="时间">
                   <el-input v-model="activeStop.time" placeholder="08:30" />
                 </el-form-item>
               </el-col>
-              <el-col :span="16">
+              <el-col :xs="24" :sm="12" :md="16">
                 <el-form-item label="站点名称">
                   <ContentInput v-model="activeStop.stopName" />
                 </el-form-item>
@@ -607,7 +607,7 @@ async function handleSave() {
               />
             </el-form-item>
             <el-row :gutter="16">
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="纬度">
                   <el-input-number
                     v-model="activeStop.lat"
@@ -616,7 +616,7 @@ async function handleSave() {
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="经度">
                   <el-input-number
                     v-model="activeStop.lng"
@@ -664,17 +664,17 @@ async function handleSave() {
               />
             </el-form-item>
             <el-row :gutter="16">
-              <el-col :span="8">
+              <el-col :xs="24" :sm="12" :md="8">
                 <el-form-item label="餐饮">
                   <ContentInput v-model="activeStop.meal" />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :xs="24" :sm="12" :md="8">
                 <el-form-item label="住宿">
                   <ContentInput v-model="activeStop.hotel" />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :xs="24" :sm="12" :md="8">
                 <el-form-item label="交通">
                   <ContentInput v-model="activeStop.transit" />
                 </el-form-item>

@@ -2,11 +2,27 @@
 
 本项目的所有重要变更都记录在此文件中。
 
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。`1.0.0` 基线之后本项目采用 `workflow_dispatch` 滚动部署且不使用 git tag，因此已发布变更按**生产部署日期**分节（最新在上），每节以当时的根仓库 HEAD SHA 为锚点；admin-frontend 独立仓库的对应提交随各条目一并生效，双仓库对应关系见 `docs/CURRENT-STATE.md`。
+格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。项目使用 Semantic Versioning，发布版本以根仓库 `vX.Y.Z` Git tag 为准；未发布内容统一放在 `[Unreleased]`。每个发布分节记录根仓库 SHA、admin-frontend SHA、CI、发布、部署、迁移、备份、冒烟和回滚结果。流程规范见 `AGENTS.md`，详细发布 SOP 见 `docs/reference/release.md`。
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-17
+
+> 源码发布（Not deployed）。本次发布不代表生产站点已更新。
+> admin-frontend 对应 main：`015143fb3875a0e1cd1fdbeec66138cd5bca8b4d`，已通过 admin PR #1 合并。
+> root 发布提交由 `v1.1.0^{commit}` 唯一确定；实际 GitHub CI run 和最终 root SHA 随 Release 说明记录。
+
+### Release scope
+
+- 保留既有光学对齐、页面文案精简和紧凑导航，发布已完成的美元口译套餐、服务端定价及订单金额校验。
+- 文档按日期分类，AGENTS 专注流程，CHANGELOG 统一更新与发布记录；保留历史状态归档。
+- 三份首页/Ticket、路线预约、日历方案仅为设计文档，不表示新功能已实现。
+- CI 覆盖 API、site、admin、工作流静态检查、真实提交范围空白检查与 Git 可见文档；site 先生成 Next 类型，main 构建三端 Docker 镜像。
+- 源码 Release 与生产部署分离；本次未执行生产部署、数据库迁移或真实付款，未宣称新的生产冒烟结果。
+
 ### Changed
+
+- docs: 2026-10-17 将三类 UI 调研整理为三份详细 Markdown 方案：`homepage-ticket-hero-design-plan.md`、`route-booking-service-design-plan.md`、`calendar-services-design-plan.md`，保存到 `docs/2026-10-17/`，补齐 skills、交互与实现、测试、视觉验收、证据矩阵和分期回退，并更新文档索引。本次仅编写文档，功能与视觉验收均为待执行。本轮三份方案的章节、空白与本地链接检查通过；仓库可见的 88 份 Markdown 本地链接检查通过。
 
 - site: remove redundant subtitles and decorative labels across public pages, standardize service headings and controls, and keep the original compact header and map actions.
 - verification: site 22 files / 112 tests and API 28 suites / 201 tests passed; Docker site build passed; restored navigation, map actions and mobile menu verified in a browser at 390/901/1024/1354/1707px. No push, production deployment, migration or real payment.
@@ -14,6 +30,20 @@
 - api/site: price interpretation packages in USD, validate package IDs on the server, snapshot totals separately from deposits, and retain historical order currencies.
 
 - site: restore the legacy public navigation labels and map card actions (`Culture`, `Routes`, `Interpreting`, `Shop`, `BOOK`, `Story`, `Book`) after the copy refinement review.
+
+- docs: 弃用 `docs/CURRENT-STATE.md` 作为状态源。当前更新、验证、发布、部署和回滚记录统一写入 `CHANGELOG.md`；原状态文档保存在 `docs/2026-10-17/current-state-archive.md`。
+- docs: 将 `AGENTS.md` 收束为流程、规范和 SOP，补充版本号、CI、更新、发布和回滚规则。
+- ci: 每次 push/PR 检查三端、actionlint、Prettier、文档链接和提交空白；main 在检查通过后构建 API、site、admin 镜像。新增文档检查器及 5 个干净检出回归用例。
+- verification: git diff --check 通过；95 个 Markdown 文档的本地链接检查通过；三端 CI 等价验证结果见下方 `Flow validation`。
+
+### Flow validation
+
+- toolchain: `actionlint` v1.7.12 and Prettier 3.9.10 installed and passed for both GitHub Actions workflows.
+- dependencies: API, site, and admin `npm ci` completed; npm reported existing dependency audit findings (API 21, site 20, admin 11) and no automatic audit fixes were applied.
+- api: TypeScript check, 28 Jest suites / 201 tests, and production build passed. Test output contained the existing mailer connection-refused log while the suites remained green.
+- site: TypeScript check, lint (0 errors, 1081 warnings), 22 Vitest files / 112 tests, and production build passed.
+- admin: `vue-tsc` + Vite build passed for 4,660 modules; the existing large-chunk warning remains.
+- docker: working-tree API and site image builds passed; temporary validation images were removed after verification.
 
 ## 2026-09-22 — 认证防御修复与自动化收尾部署（root `1a25fa5`）
 
@@ -56,7 +86,7 @@
 
 ### Changed
 
-- docs: DESIGN.md 圆角/玻璃拟态词汇按线上现状裁决改写（radius 六档 `none/sm/md/lg/xl/pill`、`action-pill` 组件族、受控玻璃拟态五形态）；RESPONSIVE-SPEC 对齐实现现实（16px 实证背书、Tailwind 4 语法、S3 下拉面板与 S2 横滑轨道条款、九档视口表）；rebrand `9cb4eb0` 文档污染批次修复（AGENT.md/release.md/CHANGELOG 域名还原、backend 设计文档 17 处 `oss.lingtour.cn` 还原、5 个 archive 文件失真标注）；development.md 部署口径改 workflow_dispatch-only；AGENT.md 撤销 zh 保留规则、`INTERNAL_API_ORIGIN` 示例补 `/api/v1`、§10 部署块改写为 Docker workflow 通道、SSH 别名修正为 `Ravi-server`；CURRENT-STATE 基线同步。
+- docs: DESIGN.md 圆角/玻璃拟态词汇按线上现状裁决改写（radius 六档 `none/sm/md/lg/xl/pill`、`action-pill` 组件族、受控玻璃拟态五形态）；RESPONSIVE-SPEC 对齐实现现实（16px 实证背书、Tailwind 4 语法、S3 下拉面板与 S2 横滑轨道条款、九档视口表）；rebrand `9cb4eb0` 文档污染批次修复（AGENTS.md/release.md/CHANGELOG 域名还原、backend 设计文档 17 处 `oss.lingtour.cn` 还原、5 个 archive 文件失真标注）；development.md 部署口径改 workflow_dispatch-only；AGENTS.md 撤销 zh 保留规则、`INTERNAL_API_ORIGIN` 示例补 `/api/v1`、§10 部署块改写为 Docker workflow 通道、SSH 别名修正为 `Ravi-server`；CURRENT-STATE 基线同步。
 - admin: index.html `lang="zh-CN"`、中文启动文案与中文字体栈；AdminLayout 后备标题与「线上数据」标签。
 
 ### Fixed
@@ -212,7 +242,7 @@
 
 ### Added
 
-- 城市文化、故事路线、陪同传译与预约、店铺与 Stripe 支付、社区等业务域（设计详见 `docs/backend/`）。
+- 城市文化、故事路线、陪同传译与预约、店铺与 Stripe 支付、社区等业务域（设计详见 `docs/2026-05-11/backend/`）。
 - 运营后台 CMS：内容编辑、审计、订单/预约、媒体与状态流转。
 - 城市/路线/商品独立 SEO 标题与元数据。
 
@@ -233,4 +263,4 @@
 
 ## 历史里程碑（2026-05 ~ 2026-07）
 
-初始开发期的变更未按版本记录。关键节点查阅 Git 提交历史与 `docs/archive/` 内的 dated 文档（handoff、进度与旧部署手册）。
+初始开发期的变更未按版本记录。关键节点查阅 Git 提交历史与 `docs/YYYY-MM-DD/` 内的 dated 文档（handoff、进度与旧部署手册）。

@@ -1,6 +1,6 @@
 # 开发指南
 
-本地开发、分支、代码规范、提交规范与协作流程。操作硬约束（工作区保护、数据规则、禁止命令）见 [`../AGENT.md`](../AGENT.md)；发布与服务器见 [`release.md`](release.md)。
+本地开发、分支、代码规范、提交规范与协作流程。操作硬约束（工作区保护、数据规则、禁止命令）见 [`../../AGENTS.md`](../../AGENTS.md)；发布与服务器见 [`release.md`](release.md)。
 
 ## 1. 环境搭建
 
@@ -55,16 +55,17 @@ docker compose down               # 停止（加 -v 会连卷删除，谨慎）
 
 ## 2. 分支规范
 
-- `main`：主集成分支。push 即触发 CI（`.github/workflows/ci.yml`）；**push 不会触发部署**——`deploy.yml` 仅限 `workflow_dispatch` 手动运行（或在服务器上直接执行 `tools/deploy-docker.sh`），发布流程见 release.md。
-- `develop`：CI 同样覆盖；如需长周期集成再启用。
+- `main`：主集成分支。每次 push 和 pull request 都触发完整 CI；**push 不会触发部署**——`deploy.yml` 仅限 `workflow_dispatch` 手动运行。
+- 其他功能、修复和文档分支同样触发 CI；CI 通过是合并的必要条件。
+- 发布、部署和回滚遵循 `release.md` 与根目录 `AGENTS.md`。
 - 功能/修复分支建议：`feature/<topic>`、`fix/<topic>`、`chore/<topic>`，从最新 `main` 切出，完成后 PR 或快进合并。
-- 长期未合并的分支/worktree 会腐化：合并或删除前先与 `docs/CURRENT-STATE.md` 核对是否承载受保护工作。
+- 长期未合并的分支/worktree 会腐化：合并或删除前先核对 `git status`、`CHANGELOG.md` 和当前任务上下文，确认没有受保护工作。
 
 ## 3. 代码规范
 
 - TypeScript 严格类型；ESLint + Prettier；admin 使用 `<script setup>` SFC。
 - 文案：后台界面文案为**中文**；业务正文一次英文撰写、前台原样展示。
-- 视觉：公共站点遵循 `DESIGN.md`、`docs/UI-OVERHAUL-2026.md`、`docs/RESPONSIVE-SPEC.md`，使用现有 CSS 变量/token，不得模板化；GSAP 遵守 `useGSAP()`（React）/ `gsap.context()`（Vue）清理与 reduced-motion 要求。
+- 视觉：公共站点遵循 `DESIGN.md`、`docs/reference/UI-OVERHAUL-2026.md`、`docs/reference/RESPONSIVE-SPEC.md`，使用现有 CSS 变量/token，不得模板化；GSAP 遵守 `useGSAP()`（React）/ `gsap.context()`（Vue）清理与 reduced-motion 要求。
 - 文字排版一律横向；移动端触控目标 ≥ 44px、表单控件 ≥ 16px。
 
 ### 验证命令（改动的每一端都必须通过）
@@ -128,7 +129,7 @@ chore: add impeccable design tooling and shared workspace config
 
 2. admin 改动验证通过后，先在独立仓库以精确路径提交，再在根仓库提交对应 `admin-frontend/...` 路径；保持逻辑与字节等价，并汇报两个 SHA。
 3. 唯一已知受控差异：`admin-frontend/.vscode/extensions.json` 仅由独立仓库跟踪。
-4. 责任、Git 状态、生产状态或清理/恢复状态实质变化时，更新 `docs/CURRENT-STATE.md`。
+4. 每次有意义的代码、文档、配置、验证、发布或回滚变化时，更新 `CHANGELOG.md` 的 `[Unreleased]` 或对应版本分节。
 
 ## 6. 数据与种子（警告）
 

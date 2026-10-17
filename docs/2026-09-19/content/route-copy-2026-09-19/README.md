@@ -17,7 +17,7 @@ Routes: [A Southern Sea Table](southern-sea-table.md) ·
 Identical to the city batch, and unresolved by the owner’s *publish directly*
 decision: writing these values means **writing production business data** (the
 route and route-stop rows in the production CMS). Production business data writes
-are excluded from the standing authorization of this run (`AGENT.md` §6 and the
+are excluded from the standing authorization of this run (`AGENTS.md` §6 and the
 run’s own authorization statement), and no administrator credential exists in this
 environment (`LINGTOUR_ADMIN_EMAIL`, `LINGTOUR_ADMIN_PASSWORD`,
 `LINGTOUR_ADMIN_TOKEN` are all unset — verified again this run). The run therefore

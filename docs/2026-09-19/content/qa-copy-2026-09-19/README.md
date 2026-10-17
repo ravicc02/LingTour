@@ -13,7 +13,7 @@ The three FAQ records live in `GET /api/v1/public/interpreting` → `faqs[]`, al
 
 Same as the city, route and product batches: writing these values means **writing
 production business data** (FAQ rows in the production CMS). Production business
-data writes are excluded from the standing authorization of this run (`AGENT.md`
+data writes are excluded from the standing authorization of this run (`AGENTS.md`
 §6 and the run’s own authorization statement), and no administrator credential
 exists in this environment (verified this run: `LINGTOUR_ADMIN_EMAIL`,
 `LINGTOUR_ADMIN_PASSWORD`, `LINGTOUR_ADMIN_TOKEN` all unset).

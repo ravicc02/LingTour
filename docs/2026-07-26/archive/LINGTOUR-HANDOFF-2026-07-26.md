@@ -1,6 +1,6 @@
 # Culvoy 项目进度迁移交接
 
-> **历史快照（2026-07-26）：** 本文保留当日交接背景，不再代表当前 Git、生产或待办状态。稳定工作规范见 [`../AGENT.md`](../AGENT.md)，实时状态与任务进度见 [`CURRENT-STATE.md`](CURRENT-STATE.md)。
+> **历史快照（2026-07-26）：** 本文保留当日交接背景，不再代表当前 Git、生产或待办状态。稳定工作规范见 [`../../../AGENTS.md`](../../../AGENTS.md)，实时状态与任务进度见 [`../../CURRENT-STATE.md`](../../CURRENT-STATE.md)。
 >
 > ⚠️ **历史失真标注（2026-09-16）**：文中的域名记载曾被 rebrand 提交 `9cb4eb0` 批量误替换——本文写作时（2026-07-26）尚未发生域名迁移，当时真实域名均为 `lingfengtranstour.cn` 族；文中出现的 `culvoy.com` 域名应按此理解。
 
@@ -15,7 +15,7 @@
 
 接手代理不要直接开始改页面。先按下面顺序执行：
 
-1. 阅读本文件、根目录 `PRODUCT.md`、`DESIGN.md`，以及 `docs/RESPONSIVE-SPEC.md`、`docs/UI-OVERHAUL-2026.md`。
+1. 阅读本文件、根目录 `PRODUCT.md`、`DESIGN.md`，以及 `docs/reference/RESPONSIVE-SPEC.md`、`docs/reference/UI-OVERHAUL-2026.md`。
 2. 分别检查根仓库和 `admin-frontend` 子仓库的 `git status`，确认并保护大量现有未提交改动。
 3. 阅读本文件“必须使用的 Skills”，确认 Taste、GSAP 和浏览器测试能力可用。
 4. 本地前台和后台连接线上 API，不重置本地数据库，不运行带 `reset`/`--apply` 的数据脚本。

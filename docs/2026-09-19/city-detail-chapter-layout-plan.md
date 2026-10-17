@@ -85,7 +85,7 @@
 
 > ⚠️ 这两条会改变**全站页面节奏**的观感，必须做九档宽度回归，不能只看单页。
 
-### 步骤 3 · 动效（遵循 AGENT.md §7）
+### 步骤 3 · 动效（遵循 AGENTS.md §7）
 
 - 需要动效时用 `useGSAP()` + scoped root，代码内已引入 `@/lib/motion`
 - 只动 `transform` / `opacity`，配 `gsap.matchMedia()` 做响应式与 `prefers-reduced-motion` 降级

@@ -252,7 +252,7 @@ Or Tailwind: `hover:md:shadow-lg` (requires custom config or `@media (hover: hov
 
 ## Testing Checklist
 
-Validate responsive changes in a real browser first (AGENT.md §9 viewports and interaction checks). The scripts below are supplemental only: they cover a subset of viewports, may require undeclared Puppeteer dependencies, and write temporary reports/screenshots that must not be committed.
+Validate responsive changes in a real browser first (the browser-verification rules in AGENTS.md). The scripts below are supplemental only: they cover a subset of viewports, may require undeclared Puppeteer dependencies, and write temporary reports/screenshots that must not be committed.
 
 ```bash
 node tools/mobile-verify.mjs   # supplemental mobile checks

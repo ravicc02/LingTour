@@ -15,7 +15,7 @@ Products: [Canton Porcelain Tea Cup](canton-porcelain-cup.md) ·
 Identical to the city and route batches: writing these values means **writing
 production business data** (the shop product rows in the production CMS).
 Production business data writes are excluded from the standing authorization of
-this run (`AGENT.md` §6 and the run’s own authorization statement), and no
+this run (`AGENTS.md` §6 and the run’s own authorization statement), and no
 administrator credential exists in this environment (verified this run:
 `LINGTOUR_ADMIN_EMAIL`, `LINGTOUR_ADMIN_PASSWORD`, `LINGTOUR_ADMIN_TOKEN` all
 unset). The run stops here rather than writing quietly.

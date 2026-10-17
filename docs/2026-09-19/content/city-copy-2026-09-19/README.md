@@ -13,7 +13,7 @@ Cities: [Guangzhou](guangzhou.md) · [Chaozhou](chaozhou.md) · [Foshan](foshan.
 
 Writing these values means **writing production business data** (the city rows in
 the production CMS). That is outside the standing authorization of the assistant
-run (verified against `AGENT.md` §6 and the run's own authorization statement),
+run (verified against `AGENTS.md` §6 and the run's own authorization statement),
 so the run stops here and asks for it explicitly instead of doing it quietly.
 
 To finish the todo, either

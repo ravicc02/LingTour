@@ -17,7 +17,7 @@
 2. **设计系统的纪律已经松散**——token 层存在但被绕过（22 个 class 零引用）、卡片层混装了两套互斥的组件方言（约 90 处阴影 / 7 档圆角）、266 处小于 12px 的微字。
 3. **动效系统停在一个"看起来在动、但没有任何主张"的状态**——19 个互不相干的时长、单一缓动向下的 `power3.out`、移动端完全没有入场动效、装了 rung 4 的两套库却没有任何一处用到 rung 4 的能力。
 
-按 `AGENT.md` 声明的设计拨盘（`MOTION_INTENSITY=7`），当前动效实现大致停在 **4**。
+按 `AGENTS.md` 声明的设计拨盘（`MOTION_INTENSITY=7`），当前动效实现大致停在 **4**。
 
 **建议的推进顺序**：先清 P0 缺陷（一批小改动，风险低）→ 再定组件方言与 token 层（一次决策 + 批量收敛）→ 然后才动动效编排（这时候动效有地方落）。
 
@@ -34,7 +34,7 @@
 | **P0-1** | **未定义的 CSS 变量导致装饰不渲染**。`var(--field)` 全站**仅此 1 处引用、0 处定义**，该 `background-color` 在计算值阶段失效 → 社区页 hero 右侧墨团装饰实际是透明的。motion-web 明确把「引用了但未定义的 custom property」列为应直接判 fail 的项 | `site/src/app/community/page.tsx:507`（已人工复核：全仓 grep `--field` 只此一处） | 改为 `bg-[var(--jade)]/[0.13]`（语义上"田野"用玉色）或删除该装饰。**1 行** |
 | **P0-2** | **无错误边界**。全站没有 `app/error.tsx`、没有 `app/global-error.tsx`（Glob 确认），任何 5xx / 运行时错误落到框架默认页 | `site/src/app/` 下无对应文件 | 补 `error.tsx` + `global-error.tsx`：一句话 + 一个「重试 / 回首页」动作，沿用档案纸语气（`not-found.tsx` 已是正确范例） |
 | **P0-3** | **无 skip link**。键盘用户每页要穿过约 10 个导航链接才能到达内容 | 全站 grep `skip` 无命中；`layout.tsx:57` 的 `<main>` 无 `id` | `SiteHeader.tsx:129` 前加 `<a class="skip" href="#main">`，`<main>` 加 `id="main"` |
-| **P0-4** | **无 `rel=canonical`**。`culvoy.com` 与遗留 `lingfengtranstour.cn` 家族并行服务（`AGENT.md` §2 明确这是进行中状态），两套域名同内容且无 canonical → 搜索引擎判重复内容的真实风险 | 全站 grep `alternates`/`canonical` 0 命中 | `layout.tsx` metadata 加 `alternates: { canonical: "./" }`，详情页覆写为自身路径 |
+| **P0-4** | **无 `rel=canonical`**。`culvoy.com` 与遗留 `lingfengtranstour.cn` 家族并行服务（`AGENTS.md` §2 明确这是进行中状态），两套域名同内容且无 canonical → 搜索引擎判重复内容的真实风险 | 全站 grep `alternates`/`canonical` 0 命中 | `layout.tsx` metadata 加 `alternates: { canonical: "./" }`，详情页覆写为自身路径 |
 | **P0-5** | **交互子树被 `role="img"` 屏蔽**。外层 `<svg role="img">` 会让辅助技术忽略其全部子节点，内部的 `role="button" tabIndex={0}` 城市按钮**对读屏与键盘实际不可达** | `site/src/components/home/GuangdongMapSection.tsx:380` vs `:449-460` | 外层改 `role="group"` + `aria-label`（或把 label 下移到 `<g>`）。注意：`RouteMapCanvas.tsx` 的 `role="img"` 是**正确**的——它确实是静态示意图，不要一起改 |
 | **P0-6** | **`<main>` landmark 嵌套**。layout 提供 `<main>`，多个页面又各自渲染 `<main>` → 双 landmark，屏幕阅读器的"跳到主内容"行为不确定 | `layout.tsx:57` vs `not-found.tsx:18`、`LoginPanel.tsx:232`、`checkout/success/page.tsx:128`、`ProfilePageClient.tsx:403`、`CultureDetailClient.tsx:76`、`ProductDetailClient.tsx:57` | 子页面根元素 `<main>` → `<div>`，landmark 只由 layout 提供 |
 | **P0-7** | **未声明 `color-scheme`**。暗色系统下原生控件（滚动条、checkbox、date picker、光标）渲染成浅色件 | 全站 grep `color-scheme` 0 命中 | `:root { color-scheme: light; }`。本站是单一浅色 ground，不做暗色是合法选择，**但必须声明**，否则等于把原生控件的配色交给浏览器猜 |
@@ -53,7 +53,7 @@ cd site && npx tsc --noEmit --skipLibCheck && npm run build
 # 构建后检查 .next 产出的 <head>：canonical / theme-color / color-scheme
 ```
 
-浏览器侧（按 `AGENT.md` §9 的九档宽度）：
+浏览器侧（按 `AGENTS.md` §9 的九档宽度）：
 - **对比度**：DevTools 取 `--muted` 正文与 footer 金色标签的实际计算色，跑 contrast 检查；**不要只看 token 值**，要取最忙的那一帧的背景采样。
 - **skip link**：Tab 一次即应出现，Enter 后焦点落到主内容。
 - **地图可达性**：关掉 CSS 视觉、只用读屏（或 `Accessibility` 面板的 full-page tree）确认城市按钮出现在可访问树里。
@@ -100,7 +100,7 @@ cd site && npx tsc --noEmit --skipLibCheck && npm run build
 | **三个列表页共用同一套段序**（① 12 栏 7:5 左文右图 hero ② 筛选条 + 网格 ③ 深底居中 H2 + 单金色按钮），三页结构完全一致 | `CulturePageClient.tsx:76/113/235`、`RoutesPageClient.tsx:80/173/302`、`ShopPageClient.tsx:86/137/227` | 至少给一页换段序：shop 把 CTA 段提到精选之前，或 routes 的 hero 改成全幅 ticket 卡横铺 |
 | **三张等宽卡一行重复 4 次** | `CulturePageClient.tsx:180`、`ShopPageClient.tsx:154,217`、`InterpretingPageClient.tsx:357`、`AllProductsClient.tsx:146` | 首页 `HomeClient.tsx:206-216` 已经有正确答案（双列 + `md:pt-20 lg:pt-28` 错位 + 只显示 2 件），移植到 culture 列表页 |
 | **社区 hero 是完整默认英雄**：居中标题 + 居中副标题 + 居中统计行 + 两个 `blur-2xl` 有机色团 | `community/page.tsx:509,511-521,503,507` | 改成左对齐"投递栏"式版式（左侧标题 + 右侧最新 1 条 note 预览），删掉两个色团——社区内容本身就是最好的版面素材 |
-| **装饰性旋转常规化**：`rotate-1`×19、`rotate-2`×13、`rotate-3`×3、`rotate-[0.7deg]`×4 等共 36 处 | `CultureGallery.tsx:103`、`RoutesPageClient.tsx:260`、`CityArchivalBook.tsx:205`、`GuangdongEventCalendar.tsx:244,295` | Field Journal 语言**允许**小角度旋转（`AGENT.md` §7 明确认可），但"每张卡都歪 1–2°"会长成新模板。规则：**同一屏内最多 1 个旋转元素**，只用在需要"手贴"语义处 |
+| **装饰性旋转常规化**：`rotate-1`×19、`rotate-2`×13、`rotate-3`×3、`rotate-[0.7deg]`×4 等共 36 处 | `CultureGallery.tsx:103`、`RoutesPageClient.tsx:260`、`CityArchivalBook.tsx:205`、`GuangdongEventCalendar.tsx:244,295` | Field Journal 语言**允许**小角度旋转（`AGENTS.md` §7 明确认可），但"每张卡都歪 1–2°"会长成新模板。规则：**同一屏内最多 1 个旋转元素**，只用在需要"手贴"语义处 |
 
 ### 2.4 配色与间距的体系问题
 
@@ -114,7 +114,7 @@ cd site && npx tsc --noEmit --skipLibCheck && npm run build
 
 ### 2.5 对 `bg-grain` 与噪点的判断（**需要与设计基线对齐，不要直接照改**）
 
-审查报告把"`bg-grain` 铺满全站"列为 `design-slop.md` A5"用纹理填补空白"。**我对此持保留意见**：`AGENT.md` §2 把公开站定义为"evolved Field Journal / Living Field Atlas——editorial, tactile, cinematic"，纸感纹理是这个世界观的构成要素，不是填充物。
+审查报告把"`bg-grain` 铺满全站"列为 `design-slop.md` A5"用纹理填补空白"。**我对此持保留意见**：`AGENTS.md` §2 把公开站定义为"evolved Field Journal / Living Field Atlas——editorial, tactile, cinematic"，纸感纹理是这个世界观的构成要素，不是填充物。
 
 **建议不做批量删除**，只做一次一致性检查：确认噪点在浅底段与深底段的密度是否被有意识地控制（`HomeClient.tsx:304` 的深底段无 `bg-grain`，`CulturePageClient.tsx:237` 有——这种不一致值得看一眼，但不构成缺陷）。
 
@@ -283,7 +283,7 @@ export const motionEase = { enter: "power3.out", exit: "power2.in", emphasized: 
 
 | # | 决策项 | 结论 | 对方案的改动 |
 |---|---|---|---|
-| D1 | 组件方言 creative / product | **creative**（与 `AGENT.md` §2 的 Field Journal 定位一致） | 批次 B 解锁：卡片层按 creative 收敛——阴影 3 档 token、圆角归 token、表面/边框/阴影三选一、抬升两档。**同时需在 `DESIGN.md` 侧记录该决定**，否则下次仍会出现方言漂移 |
+| D1 | 组件方言 creative / product | **creative**（与 `AGENTS.md` §2 的 Field Journal 定位一致） | 批次 B 解锁：卡片层按 creative 收敛——阴影 3 档 token、圆角归 token、表面/边框/阴影三选一、抬升两档。**同时需在 `DESIGN.md` 侧记录该决定**，否则下次仍会出现方言漂移 |
 | D2 | 5 个零引用组件的归属 | **判定废弃、清理** | 判据：城市详情页已改为纯 Markdown 渲染（`culture/[slug]/CultureDetailClient.tsx` + `MarkdownRenderer`），`CityArchivalBook` 的整册翻页已不在渲染路径上，"待启用资产"前提不成立。删除作为独立清理提交，清单见 §3.5 |
 | D3 | 是否移除 framer-motion | **保留，独立批次处理**（按方案建议） | 批次 C 不动依赖树；新增批次 E 专门做依赖瘦身，触发条件为批次 C 完成 |
 
@@ -293,7 +293,7 @@ export const motionEase = { enter: "power3.out", exit: "power2.in", emphasized: 
 
 ## 6. 执行路线图
 
-分四批，每批都可独立验证、独立发布。**同一批内不要混入下一批的内容**——`AGENT.md` §11 要求一次逻辑改动对应一次精确提交。
+分四批，每批都可独立验证、独立发布。**同一批内不要混入下一批的内容**——`AGENTS.md` §11 要求一次逻辑改动对应一次精确提交。
 
 ### 批次 A — 确定性缺陷（风险最低，建议先做）
 
@@ -351,7 +351,7 @@ P0-1 … P0-10 + 4-3（`scrollbar-gutter`，1 行）
 6. **`.lt-*` 等 22 个死 class 是否被跨仓引用**。只在 `site/src` 内做了引用计数；`site` 是独立构建，理论上不受 admin 影响，但未排除动态拼串。
 7. **`<title>` 的页面级覆盖情况**。只确认源码里只有 `layout.tsx` 一处 `title`；是否有页面用 `generateMetadata` 动态注入需跑起站点逐页取 `<head>`。
 
-**另外，有一项我明确不采纳子代理的建议**：§2.5 的 `bg-grain` 批量删除。纸感纹理是 Field Journal 世界观的构成要素（`AGENT.md` §2），不是"用纹理填补空白"。只建议做一致性检查，不建议删除。
+**另外，有一项我明确不采纳子代理的建议**：§2.5 的 `bg-grain` 批量删除。纸感纹理是 Field Journal 世界观的构成要素（`AGENTS.md` §2），不是"用纹理填补空白"。只建议做一致性检查，不建议删除。
 
 ---
 

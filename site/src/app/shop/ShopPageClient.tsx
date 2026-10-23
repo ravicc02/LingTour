@@ -83,7 +83,7 @@ export default function ShopPageClient({
         .map((product) => product.slug)
         .join("|")}`}
     >
-      <section className="relative overflow-hidden pb-16 pt-16 sm:pb-20 sm:pt-20">
+      <section data-site-hero="shop" className="relative overflow-hidden pb-16 pt-16 sm:pb-20 sm:pt-20">
         <div className="site-container">
           <div className="grid grid-cols-1 items-center gap-8 sm:grid-cols-[minmax(0,1.35fr)_minmax(12rem,0.75fr)] sm:gap-8 lg:grid-cols-12 lg:gap-16">
             <div className="min-w-0 max-w-3xl lg:col-span-8">
@@ -92,7 +92,9 @@ export default function ShopPageClient({
                   <span className="block overflow-hidden pb-1"><span data-pastoral-title className="block">{t("shop.atlas.titlePrimary")}</span></span>
                   <span className="block overflow-hidden pb-3"><span data-pastoral-title className="block italic text-[var(--gold)]">{t("shop.atlas.titleItalic")}</span></span>
                 </h1>
-
+                <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
+                  {t("shop.atlas.lede")}
+                </p>
               </Reveal>
             </div>
 

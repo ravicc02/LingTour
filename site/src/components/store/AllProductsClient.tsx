@@ -80,7 +80,7 @@ export function AllProductsClient({ products, collections, tags }: AllProductsCl
   );
 
   return (
-    <div ref={rootRef}>
+    <div data-polish-form ref={rootRef}>
       <div data-registry-board className="mb-12 rotate-[-0.5deg] border border-[var(--line)] bg-[var(--paper)] bg-grain p-5 scrapbook-shadow sm:mb-16 sm:p-6 lg:p-10">
         <div className="grid gap-6 lg:grid-cols-[1fr_14rem_12rem]">
           <label className="block">

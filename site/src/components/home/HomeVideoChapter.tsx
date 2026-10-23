@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { HomeVideo } from "@/types/content";
-import { gsap, motionDuration, motionEase, motionMedia, motionScrub, useGSAP } from "@/lib/motion";
+import { gsap, motionMedia, motionScrub, useGSAP } from "@/lib/motion";
 
 type HomeVideoChapterProps = {
   video?: HomeVideo;
@@ -24,9 +24,11 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
 
   useEffect(() => {
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const connection = (navigator as Navigator & {
-      connection?: { saveData?: boolean };
-    }).connection;
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean };
+      }
+    ).connection;
     const sync = () => {
       setReduceMotion(still.matches);
       setSaveData(Boolean(connection?.saveData));
@@ -39,7 +41,7 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
 
   useEffect(() => {
     const section = scope.current;
-    if (!section || !('IntersectionObserver' in window)) {
+    if (!section || !("IntersectionObserver" in window)) {
       setHasEnteredViewport(true);
       return;
     }
@@ -83,52 +85,33 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
     () => {
       const media = gsap.matchMedia();
       media.add(
-        {
-          animate: "(prefers-reduced-motion: no-preference)",
-          desktop: motionMedia.tablet,
-        },
+        { animate: motionMedia.allowMotion, desktop: motionMedia.tablet },
         (context) => {
-          if (!context.conditions?.animate || !scope.current) return;
-          const film = scope.current.querySelector<HTMLElement>("[data-home-film]");
+          if (
+            !context.conditions?.animate ||
+            !context.conditions?.desktop ||
+            !scope.current
+          )
+            return;
+          const film =
+            scope.current.querySelector<HTMLElement>("[data-home-film]");
           if (!film) return;
-
           gsap.fromTo(
             film,
-            { autoAlpha: 0, clipPath: "inset(12% 0 12% 0)" },
+            { scale: 1 },
             {
-              autoAlpha: 1,
-              clipPath: "inset(0% 0 0% 0)",
-              duration: motionDuration.cinematic,
-              ease: motionEase.enter,
-              clearProps: "clipPath",
+              scale: 1.035,
+              ease: "none",
               scrollTrigger: {
                 trigger: scope.current,
-                start: "top 88%",
-                once: true,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: motionScrub,
               },
             },
           );
-
-          if (context.conditions?.desktop) {
-            gsap.fromTo(
-              film,
-              { scale: 1.02, yPercent: -3 },
-              {
-                scale: 1.06,
-                yPercent: 0,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: scope.current,
-                  start: "top top",
-                  end: "bottom top",
-                  scrub: motionScrub,
-                },
-              },
-            );
-          }
         },
       );
-
       return () => media.revert();
     },
     { scope },
@@ -140,44 +123,44 @@ export function HomeVideoChapter({ video }: HomeVideoChapterProps) {
     <section
       ref={scope}
       aria-label={video?.title || "Guangzhou skyline film"}
-      className="pb-6 pt-8 sm:pb-8 sm:pt-10 lg:pb-10 lg:pt-0"
+      data-home-video-section
+      className="bg-[var(--paper-deep)] bg-grain pb-8 pt-12 sm:pb-10 sm:pt-14 lg:pt-16"
     >
-      <div className="relative w-full border-[0.4rem] border-[var(--paper-deep)] bg-[var(--paper-deep)] shadow-panel sm:border-[0.7rem]">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[var(--night)] sm:aspect-video">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[22%] bg-[linear-gradient(180deg,#ece9e2_0%,rgba(236,233,226,0.82)_30%,rgba(236,233,226,0)_100%)]"
-          />
-          <video
-            ref={videoRef}
-            data-home-film
-            src={shouldLoadVideo ? filmUrl : undefined}
-            poster={poster}
-            autoPlay={shouldAutoPlay}
-            muted
-            loop
-            playsInline
-            preload={shouldLoadVideo ? "metadata" : "none"}
-            onPlay={() => setPaused(false)}
-            onPause={() => setPaused(true)}
-            aria-label={video?.title || "Guangzhou skyline film"}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[18%] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.58)_68%,#ece9e2_100%)]"
-          />
-          <button
-            type="button"
-            onClick={togglePlayback}
-            aria-label={paused ? "Play Guangzhou skyline film" : "Pause Guangzhou skyline film"}
-            aria-pressed={!paused}
-            className="absolute bottom-4 right-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/45 bg-[var(--night)]/58 text-white shadow-lift backdrop-blur-md transition duration-300 hover:scale-105 hover:bg-[var(--night)]/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-6 sm:right-6 sm:h-12 sm:w-12"
-          >
-            <span aria-hidden className="text-sm font-bold leading-none">
-              {paused ? "▶" : "Ⅱ"}
-            </span>
-          </button>
+      <div className="site-container">
+        <div data-home-video-frame
+          className="relative w-full overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden sm:aspect-video">
+            <video
+              ref={videoRef}
+              data-home-film
+              src={shouldLoadVideo ? filmUrl : undefined}
+              poster={poster}
+              autoPlay={shouldAutoPlay}
+              muted
+              loop
+              playsInline
+              preload={shouldLoadVideo ? "metadata" : "none"}
+              onPlay={() => setPaused(false)}
+              onPause={() => setPaused(true)}
+              aria-label={video?.title || "Guangzhou skyline film"}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={togglePlayback}
+              aria-label={
+                paused
+                  ? "Play Guangzhou skyline film"
+                  : "Pause Guangzhou skyline film"
+              }
+              aria-pressed={!paused}
+              className="absolute bottom-4 right-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/45 bg-[var(--night)]/58 text-white shadow-lift backdrop-blur-md transition duration-300 hover:scale-105 hover:bg-[var(--night)]/78 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:bottom-6 sm:right-6 sm:h-12 sm:w-12"
+            >
+              <span aria-hidden className="text-sm font-bold leading-none">
+                {paused ? "▶" : "Ⅱ"}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

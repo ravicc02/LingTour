@@ -415,7 +415,7 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--paper-deep)] bg-grain py-10 text-[var(--river-deep)] sm:py-beat">
+    <div data-polish-form className="min-h-screen bg-[var(--paper-deep)] bg-grain py-10 text-[var(--river-deep)] sm:py-beat">
       <div className="site-container grid min-h-screen min-w-0 gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.75fr)] lg:gap-16 xl:gap-24">
         <section className="min-w-0">
           <div className="min-w-0">

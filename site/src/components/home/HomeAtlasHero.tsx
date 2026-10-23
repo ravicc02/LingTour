@@ -1,8 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import localFont from "next/font/local";
+import styles from "./home-hero-typography.module.css";
 import { useRef } from "react";
-import { gsap, motionEase, motionMedia, motionScrub, useGSAP } from "@/lib/motion";
+import {
+  gsap,
+  motionEase,
+  motionMedia,
+  motionScrub,
+  useGSAP,
+} from "@/lib/motion";
+
+const coverFont = localFont({
+  src: [
+    { path: "./fonts/BodoniModa-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/BodoniModa-Italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-home-cover",
+  display: "swap",
+  fallback: ["Bodoni MT", "Didot", "Georgia", "serif"],
+  adjustFontFallback: "Times New Roman",
+});
 
 type HomeAtlasHeroProps = {
   image: string;
@@ -35,9 +54,15 @@ export function HomeAtlasHero({
           if (!context.conditions?.animate) return;
           const root = scope.current;
           if (!root) return;
-          const copyItems = gsap.utils.toArray<HTMLElement>("[data-home-copy] > *", root);
-          const heroMedia = root.querySelector<HTMLElement>("[data-home-media]");
-          const timeline = gsap.timeline({ defaults: { ease: motionEase.enter } });
+          const copyItems = gsap.utils.toArray<HTMLElement>(
+            "[data-home-copy] > *",
+            root,
+          );
+          const heroMedia =
+            root.querySelector<HTMLElement>("[data-home-media]");
+          const timeline = gsap.timeline({
+            defaults: { ease: motionEase.enter },
+          });
           if (copyItems.length > 0) {
             timeline.fromTo(
               copyItems,
@@ -73,7 +98,7 @@ export function HomeAtlasHero({
   return (
     <section
       ref={scope}
-      className="home-hero relative isolate flex min-h-[100dvh] overflow-hidden bg-[var(--paper-deep)] text-[var(--river-deep)]"
+      className={`home-hero ${styles.hero} ${coverFont.variable} relative isolate flex min-h-[100dvh] overflow-hidden bg-[var(--paper-deep)] text-[var(--river-deep)]`}
     >
       <div className="absolute inset-0 overflow-hidden bg-[var(--paper-deep)]">
         <img
@@ -85,34 +110,35 @@ export function HomeAtlasHero({
         />
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(236,233,226,0.97)_0%,rgba(236,233,226,0.91)_22%,rgba(236,233,226,0.58)_43%,rgba(236,233,226,0.14)_66%,rgba(236,233,226,0.02)_84%)] max-lg:bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.02)_25%,rgba(236,233,226,0.26)_38%,rgba(236,233,226,0.94)_55%,#ece9e2_70%)]" />
-      {/* Desktop keeps the photo visible to the very bottom edge, so it used to
-          butt straight into the paper background below. Fade the last slice of
-          the image into --paper-deep instead, matching the section that follows. */}
+      {/* A short paper edge separates the cover from the framed film. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[32vh] bg-[linear-gradient(180deg,rgba(236,233,226,0)_0%,rgba(236,233,226,0.24)_42%,rgba(236,233,226,0.72)_76%,#ece9e2_100%)] max-lg:hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(236,233,226,0),#ece9e2)] sm:h-20 max-lg:hidden"
       />
 
-      <div className="site-container home-hero-container relative z-10 flex w-full flex-col justify-end pb-10 pt-36 sm:pb-12 lg:justify-center lg:pb-28 lg:pt-32 max-lg:pb-7 max-lg:pt-[36svh]">
-        <div data-home-copy className="max-w-[46rem] lg:max-w-[53rem]">
-
-          <h1 className="home-hero-title mt-7 max-w-[8.5ch] font-[family:var(--font-sans)] text-[clamp(3.1rem,8.6vw,8.4rem)] font-medium leading-[0.86] max-lg:mt-5">
-            {titleLine1}
-            <span className="mt-1 block italic text-[var(--gold)]">{accent}</span>
-            <span className="block">{titleLine3}</span>
+      <div className={`home-hero-container ${styles.container} relative z-10`}>
+        <div data-home-copy className={styles.copy}>
+          <h1 className={`home-hero-title ${styles.title}`}>
+            <span className={styles.opening}>{titleLine1}</span>{" "}
+            <span className={styles.journey}>{accent}</span>{" "}
+            <span className={styles.destination}>{titleLine3}</span>
           </h1>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row max-lg:mt-6">
-            <Link href="/interpreting#interpreting-booking" className="lt-action lt-action-gold min-w-[12rem]">
+          <div className={styles.actions}>
+            <Link
+              href="/interpreting#interpreting-booking"
+              className={`lt-action lt-action-gold ${styles.primaryAction}`}
+            >
               {primaryLabel} <span aria-hidden>→</span>
             </Link>
-            <Link href="/routes" className="lt-action lt-action-secondary min-w-[12rem]">
+            <Link
+              href="/routes"
+              className={`lt-action lt-action-secondary ${styles.secondaryAction}`}
+            >
               {secondaryLabel}
             </Link>
           </div>
         </div>
-
-
       </div>
     </section>
   );

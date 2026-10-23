@@ -23,11 +23,11 @@ export function ProductNarrative({ product }: { product: StoreProduct }) {
   const narrativeMedia = media[1] ?? media[0] ?? null;
 
   return (
-    <section className="border-y border-[var(--river-deep)]/10 bg-[var(--paper-deep)] bg-grain py-beat xl:py-32">
+    <section data-product-narrative className="border-y border-[var(--line)] bg-[var(--paper-deep)] bg-grain py-beat xl:py-32">
       <div className="site-container">
-        <div className="grid min-w-0 grid-cols-1 items-center gap-8 min-[620px]:grid-cols-[minmax(0,1.25fr)_minmax(14rem,0.75fr)] min-[620px]:gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)] lg:gap-16">
-          <Reveal className="order-2 -mx-1 -mt-16 border border-[var(--line)] bg-[var(--paper-deep)]/96 p-5 scrapbook-shadow sm:-mt-20 sm:p-6 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:border-0 min-[620px]:bg-transparent min-[620px]:p-0 min-[620px]:shadow-none">
-            <div className="max-w-2xl space-y-7 sm:space-y-8">
+        <div data-product-story-layout className="grid min-w-0 grid-cols-1 items-stretch gap-8 min-[620px]:grid-cols-[minmax(0,1.25fr)_minmax(14rem,0.75fr)] min-[620px]:gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)] lg:gap-16">
+          <Reveal className="relative z-10 order-2 -mx-1 -mt-16 border border-[var(--line)] bg-[var(--paper-deep)]/96 bg-grain p-5 scrapbook-shadow sm:p-6 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:p-6 min-[620px]:shadow-none lg:p-7">
+            <div data-product-story-copy className="flex h-full max-w-2xl flex-col gap-7 sm:gap-8">
               <header>
                 <h2 className="text-balance font-[family:var(--font-display)] text-4xl leading-[1.02] text-[var(--river-deep)] sm:text-5xl">
                   {product.name}
@@ -53,7 +53,7 @@ export function ProductNarrative({ product }: { product: StoreProduct }) {
                 </div>
               </dl>
 
-              <div className="grid gap-3 pt-1 sm:flex sm:flex-wrap sm:gap-4">
+              <div className="mt-auto grid gap-3 pt-1 sm:flex sm:flex-wrap sm:gap-4">
                 <Link href="/routes" className="btn-paper min-h-12 w-full px-6 py-3 text-[12px] sm:w-auto sm:text-[11px]">
                   {t("shop.detail.routesCta")}
                 </Link>
@@ -70,8 +70,8 @@ export function ProductNarrative({ product }: { product: StoreProduct }) {
             </div>
           </Reveal>
 
-          <Reveal delay={120} className="order-1 min-[620px]:order-none">
-            <div className="relative mx-auto aspect-[5/4] w-full max-w-xl rotate-2 bg-white p-4 scrapbook-shadow sm:aspect-[3/4] sm:max-w-md sm:p-6 lg:max-w-none">
+          <Reveal delay={120} className="order-1 min-[620px]:order-none min-[620px]:h-full">
+            <div data-product-story-media className="relative mx-auto aspect-[5/4] w-full max-w-xl rotate-2 border border-[var(--line)] bg-white p-4 scrapbook-shadow sm:p-6 min-[620px]:aspect-auto min-[620px]:h-full min-[620px]:min-h-[26rem] min-[620px]:max-w-none min-[620px]:rotate-0">
               <div className="absolute -top-3 right-8 z-20 h-8 w-24 rotate-12 border border-white/20 bg-white/45 backdrop-blur-sm sm:right-12" />
               <div className="relative h-full w-full overflow-hidden">
                 <MediaFrame

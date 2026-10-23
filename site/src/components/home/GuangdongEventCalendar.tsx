@@ -65,11 +65,10 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
   );
 
   useEffect(() => {
-    if (!events.length) return;
+    // Initialize asynchronous data once; a visitor may select a date with no events.
+    if (selectedDate || !events.length) return;
 
-    const eventDates = new Set(events.map((event) => event.date));
-    const nextSelectedDate =
-      selectedDate && eventDates.has(selectedDate) ? selectedDate : events[0].date;
+    const nextSelectedDate = events[0].date;
 
     if (!nextSelectedDate) return;
 
@@ -134,7 +133,7 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
   }
 
   return (
-    <section className="site-container py-16 sm:py-20 lg:py-40">
+    <section data-polish-calendar className="site-container py-16 sm:py-20 lg:py-40">
       <div className="grid items-start gap-10 lg:grid-cols-[1fr_420px] lg:gap-20">
         <div className="flex flex-col">
           <Reveal>
@@ -215,6 +214,8 @@ export function GuangdongEventCalendar({ events = [], routes = [] }: Props) {
               return (
                 <button
                   key={key}
+                  aria-pressed={isSelected}
+                  aria-label={`${monthNames[month]} ${day}, ${year}`}
                   onClick={() => setSelectedDate(key)}
                   className={`group relative flex aspect-square min-h-11 flex-col items-center justify-center transition-all duration-500 ${
                     isSelected

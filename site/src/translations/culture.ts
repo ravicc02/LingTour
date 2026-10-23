@@ -1,7 +1,8 @@
 export const culture = {
   en: {
-    "culture.page.title": "Cultural Information",
-    "culture.page.subtitle": "Each city belongs to one of three cultural traditions that shape its food, dialect, and daily rhythm.",
+    "culture.page.title": "Culture",
+    "culture.page.subtitle":
+      "Each city belongs to one of three cultural traditions that shape its food, dialect, and daily rhythm.",
     "culture.page.backToAll": "See all cities",
 
     "culture.detail.tags": "Tags",
@@ -12,7 +13,8 @@ export const culture = {
     "culture.detail.readRoute": "Route details",
     "culture.detail.routeMap": "Route map",
     "culture.detail.routeCoverage": "No route selected yet.",
-    "culture.detail.routeMapLabel": "Guangdong map showing cities on the selected route",
+    "culture.detail.routeMapLabel":
+      "Guangdong map showing cities on the selected route",
     "culture.detail.selectedRoute": "Selected route",
     "culture.detail.noRelatedRoutes": "No linked routes",
     "culture.detail.routeLinks": "Related Routes",
@@ -33,9 +35,10 @@ export const culture = {
     "culture.progress.route": "Route",
 
     "culture.atlas.eyebrow": "City Culture · The Atlas",
-    "culture.atlas.titlePrimary": "Cultural",
-    "culture.atlas.titleItalic": "Information",
-    "culture.atlas.lede": "Guangdong does not hold still between cities. Chaozhou pours tea into thimble cups, Guangzhou does its loudest talking over morning dim sum, and the Hakka hills keep a language of their own.",
+    "culture.atlas.titlePrimary": "",
+    "culture.atlas.titleItalic": "City Culture",
+    "culture.atlas.lede":
+      "Guangdong does not hold still between cities. Chaozhou pours tea into thimble cups, Guangzhou does its loudest talking over morning dim sum, and the Hakka hills keep a language of their own.",
     "culture.atlas.archiveLabel": "City",
     "culture.atlas.archiveCode": "GD-020-0755",
     "culture.atlas.empty.title": "No cities available",
@@ -50,11 +53,11 @@ export const culture = {
     "culture.filter.region": "Region",
     "culture.filter.tags": "Threads",
     "culture.filter.emptyTitle": "No matches in this region.",
-    "culture.filter.emptyBody": "Try another cultural thread or clear the current filters.",
+    "culture.filter.emptyBody":
+      "Try another cultural thread or clear the current filters.",
 
     "culture.cta.eyebrow": "Start with a thread",
     "culture.cta.title": "Explore Routes",
     "culture.cta.button": "View routes",
-  }
-
+  },
 };

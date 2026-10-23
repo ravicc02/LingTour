@@ -17,6 +17,7 @@ export function BriefCard({ brief, onSelect, index }: BriefCardProps) {
 
   return (
     <button
+      data-polish-card="brief"
       onClick={() => onSelect(brief)}
       className={`group flex h-full w-full flex-col border border-[var(--line)] bg-[var(--paper)] p-6 text-left scrapbook-shadow transition-[transform,border-color] duration-300 hover:z-10 hover:scale-[1.03] hover:border-[var(--gold)]/40 sm:p-8 ${rotation}`}
     >

@@ -112,6 +112,7 @@ export function SiteHeader() {
 
   return (
     <header
+      data-site-header
       ref={headerRef}
       data-home-header={isHome ? "true" : undefined}
       className={[
@@ -127,7 +128,7 @@ export function SiteHeader() {
       ].filter(Boolean).join(" ")}
     >
       <Container className="grid h-[calc(var(--site-header-height)-1px)] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-5">
-        <nav className="hidden items-center justify-start gap-1 lg:flex" aria-label="Primary navigation">
+        <nav data-desktop-navigation className="hidden items-center justify-start gap-1 lg:flex" aria-label="Primary navigation">
           {leftNavigation.map((item) => {
             const active = isActivePath(pathname, item.href);
 
@@ -162,7 +163,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="hidden min-w-0 shrink-0 items-center justify-end gap-1 lg:flex">
-          <nav className="flex items-center gap-1" aria-label="Secondary navigation">
+          <nav data-desktop-navigation className="flex items-center gap-1" aria-label="Secondary navigation">
             {rightNavigation.map((item) => {
               const active = isActivePath(pathname, item.href);
 

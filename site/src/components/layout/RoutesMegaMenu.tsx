@@ -117,6 +117,7 @@ export function RoutesMegaMenu({ active }: { active: boolean }) {
       }}
     >
       <Link
+        data-header-route-link
         href="/routes"
         className={`inline-flex min-h-11 shrink-0 items-center px-2 py-3 text-sm transition xl:px-3 ${
           active

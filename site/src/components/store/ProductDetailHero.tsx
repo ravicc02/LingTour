@@ -173,6 +173,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
 
   return (
     <section
+      data-detail-hero="product"
       ref={rootRef}
       className="overflow-hidden bg-[var(--paper-deep)] bg-grain pb-14 pt-6 sm:pb-16 sm:pt-8 lg:pb-20 lg:pt-12"
     >
@@ -180,7 +181,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
           the document, so the object-file mount opens on parchment instead of
           a long "loading product media" beat. */}
       <link rel="preload" as="image" href={mediaPoster(activeMedia, product.image)} />
-      <div className="border-y border-[rgba(20,33,47,0.1)] bg-[var(--paper-deep)] bg-grain py-4">
+      <div className="border-y border-[var(--line)] bg-[var(--paper-deep)] bg-grain py-4">
         <div className="site-container">
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
@@ -342,7 +343,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
                       className={`group flex min-h-12 items-center justify-between border-2 px-4 py-3 text-left transition-all sm:px-5 ${
                         finish === option
                           ? "border-[var(--river-deep)] bg-[var(--river-deep)] text-white"
-                          : "border-[var(--river-deep)]/10 text-[var(--river-deep)]/65 hover:border-[var(--river-deep)]/30"
+                          : "border-[var(--line-strong)] text-[var(--river-deep)]/65 hover:border-[var(--river-deep)]/30"
                       }`}
                     >
                       <span className="text-[12px] font-bold uppercase tracking-[0.16em] sm:text-xs sm:tracking-widest">{option}</span>
@@ -364,7 +365,7 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
                       className={`min-h-12 border-2 px-2 py-3 text-[11px] font-bold uppercase tracking-[0.14em] transition-all sm:text-[12px] sm:tracking-widest ${
                         edition === option
                           ? "border-[var(--gold-light)] bg-[var(--gold-light)] text-[var(--night)]"
-                          : "border-[var(--river-deep)]/10 text-[var(--river-deep)]/65 hover:border-[var(--river-deep)]/30"
+                          : "border-[var(--line-strong)] text-[var(--river-deep)]/65 hover:border-[var(--river-deep)]/30"
                       }`}
                     >
                       {option}
@@ -374,27 +375,6 @@ export function ProductDetailHero({ product }: { product: StoreProduct }) {
               </fieldset>
 
               <ProductActions product={product} variant="editorial" />
-
-              <div className="grid gap-3 border-t border-dashed border-[var(--river-deep)]/18 pt-5">
-                <Link
-                  href="/routes"
-                  className="inline-flex min-h-11 items-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--river-deep)] underline-offset-4 hover:text-[var(--cinnabar)] hover:underline sm:text-[12px] sm:tracking-[0.24em]"
-                >
-                  Trace the route behind this object
-                </Link>
-                <Link
-                  href={`/community?compose=1&channel=Culture%20Desk&title=${encodeURIComponent(product.name)}&note=${encodeURIComponent(`Review: ${product.name}. `)}`}
-                  className="inline-flex min-h-11 items-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--gold)] underline-offset-4 hover:text-[var(--cinnabar)] hover:underline sm:text-[12px] sm:tracking-[0.24em]"
-                >
-                  Send this object to the community desk
-                </Link>
-              </div>
-
-              <div className="flex items-center gap-3 pt-2 text-[11px] font-bold uppercase tracking-widest text-[var(--river-deep)]/35 italic sm:gap-4 sm:text-[12px]">
-                <div className="h-px flex-1 bg-[var(--river-deep)]/10" />
-
-                <div className="h-px flex-1 bg-[var(--river-deep)]/10" />
-              </div>
             </div>
           </aside>
         </div>

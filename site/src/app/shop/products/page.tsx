@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { fetchStoreProductsServer } from "@/lib/server-data";
 import { AllProductsClient } from "@/components/store/AllProductsClient";
 import { EditorialIntro } from "@/components/ui/EditorialIntro";
@@ -19,19 +18,14 @@ export default async function ProductsPage() {
         <Reveal>
           <EditorialIntro
             eyebrow={`${String(products.length).padStart(2, "0")} products`}
-            title="From Zhanjiang clay to Chaozhou teacups."
-            description={
-              <>
-
-                <Link
-                  href="/shop"
-                  className="mt-6 inline-flex min-h-11 items-center font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--cinnabar)] transition hover:translate-x-1 hover:text-[var(--river-deep)]"
-                >
-                  Back to store →
-                </Link>
-              </>
-            }
+            title="The Culvoy Collection"
+            description={null}
           />
+          <div className="site-container">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg">
+              Tea ware, tableware and objects for everyday use.
+            </p>
+          </div>
         </Reveal>
       </section>
 

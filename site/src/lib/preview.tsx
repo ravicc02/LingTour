@@ -65,10 +65,11 @@ export function usePreviewBridge<T>(expectedType: PreviewType) {
     // ?previewSource query value is untrusted input, so it is matched
     // against this hard-coded allowlist instead of being used verbatim.
     // event.origin itself is browser-guaranteed and cannot be spoofed;
-    // localhost:5173 exists for local admin development.
+    // Explicit localhost and loopback origins support local admin development.
     const PREVIEW_SOURCE_ALLOWLIST = [
       "https://admin.culvoy.com",
       "http://localhost:5173",
+      "http://127.0.0.1:5173",
     ];
     const requestedSource = searchParams.get("previewSource") || "";
     const source = PREVIEW_SOURCE_ALLOWLIST.includes(requestedSource)

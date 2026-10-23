@@ -46,9 +46,9 @@ export const routes = {
     "routes.progress.stop": "Stop",
     "routes.progress.of": "of",
 
-    "routes.atlas.eyebrow": "Routes / Selection",
-    "routes.atlas.titlePrimary": "Route",
-    "routes.atlas.titleItalic": "Planning",
+    "routes.atlas.eyebrow": "Story Routes / Selection",
+    "routes.atlas.titlePrimary": "",
+    "routes.atlas.titleItalic": "Story Routes",
     "routes.atlas.lede": "Each route is written the way you would actually walk it: an 08:00 start, a market in the middle, a slow last hour before dinner.",
     "routes.atlas.archiveBadge": "Archive · Story routes",
     "routes.atlas.dispatchInfo": "Dispatch info",

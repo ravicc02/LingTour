@@ -6,6 +6,78 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-23
+
+> 源码发布（Not deployed）。本次发布不代表生产站点已更新。
+> 根发布提交由 `v1.2.0^{commit}` 唯一确定；完整 PR / main CI 和最终 root SHA 记录于 GitHub Release。
+> 独立 admin-frontend SHA：`015143fb3875a0e1cd1fdbeec66138cd5bca8b4d`；本次无后台源码变更。
+
+### Added
+
+- Culture 详情支持 Markdown 自动分章、响应式阅读目录、紧凑图文排版及原图查看；正式页面和后台真实前台预览共用渲染器，保留全部原文及媒体。
+- 恢复口译 Choose support 和 Rates，服务卡片读取当前 CMS 内容并预填预约需求；预约套餐与服务端计价契约保持。
+- 首页标题采用本地托管的 Bodoni Moda 正体与原生斜体，包含官方字体许可；不引入运行时 Google Fonts 请求。
+
+### Changed
+
+- 统一前台纸纹、边线、卡片、表单、导航、页面密度与响应式排版，恢复栏目简短介绍及 City Culture / Story Routes 标题。
+- 首页保留 Culture / Voyage / to China 三行排版，金色斜体强调 Voyage；地图城市卡片位于左上外侧，视频保留下移间距、左右留白与无黑边效果。
+- 口译价格使用美元 `$` 展示并保留原数值，移除重复套餐展示；不修改服务端套餐总额、定金、订单或商品币种。
+- 精简商品购买面板，商品故事两栏等高对齐并修正手机标题遮挡；商品列表采用 The Culvoy Collection 文案。社区帖子卡片缩小，提高浏览密度。
+- 增加 `@types/hast` 直接开发依赖，用于文章布局 AST 的严格类型检查。
+
+### Fixed
+
+- 修复首页日历选择无活动日期后被自动重置的问题；保持日期按钮至少 44 px、选择器边界及 Escape 焦点恢复。
+- 修复本地 `127.0.0.1:5173` 后台草稿预览来源缺失；保留明确来源白名单、发送窗口、类型与会话键校验。
+- 修复金色首页预约按钮悬浮时白底白字的问题，悬浮改用深河色背景，保持焦点和触摸操作可用。
+- 修复降低动态效果时动画清理误删头图背景的问题，以及路线卡片与手机布局溢出。
+
+### Verification and release boundary
+
+- API：类型检查、28 套件 / 201 个测试、Nest 构建通过；测试显式指向本地测试环境。
+- Site：类型生成、类型检查、25 个文件 / 135 个测试通过；完整 ESLint 为 0 errors、1078 个既有 warnings。当前源码的本地完整 Docker 构建通过，沿用忽略目录内构建覆盖，仓库构建配置保持。
+- Admin：vue-tsc 和 Vite 构建通过，保留既有 chunk 体积提示；与根仓库镜像仅有既定 `.vscode/extensions.json` 差异。
+- 工作流 actionlint 通过；Prettier 对 Git 保存的 LF 原文检查通过，Windows 工作区 ci.yml 的 CRLF 差异不作为仓库改动。文档检查器 5 个测试、98 份 Markdown 链接和 Git 空白检查通过。
+- 本轮沿用各修订记录中的只读浏览器证据：首屏 18 种视口、页面响应式、原图查看、后台草稿联动、价格/预约入口及 CTA 悬浮/焦点/触摸行为均已有验证记录。
+- 发布门禁为同一 PR head 的完整 CI，以及合并后 main 的完整 CI，包含 API、site、admin、docs 与三端 Docker 构建；仅在实际成功后创建 v1.2.0，精确 SHA 和执行记录随 GitHub Release 发布。
+- 本次未部署生产，未执行生产迁移、数据库备份或生产业务冒烟。已只读记录线上仓库基线及运行镜像 ID。
+- 原线上检出源码 `76f155224424efe3a6839c13d2819ea5c09a7d47` 已保留为 `archive/production-before-v1.2.0`；原 v1.1.0、历史 deploy-* 标签及现有线上容器保持。
+- 首页 Ticket 实验仍暂存；城市筛选方案仍为交互稿；原三类业务方案中尚未实施的路线与日历计划不计入本次已完成功能。发布顺序与旧版保留见 `docs/2026-10-23/release-v1.2.0-plan.md`。
+
+### Dated development records
+
+以下保留各轮修订当时的范围和验证；中间方案由后续用户反馈调整，最终行为以上方本版本概述为准。
+
+- site / homepage CTA hover（2026-10-22）：修复金色预约按钮悬浮时白底白字的问题，悬浮改用深河色底并保留白色文字和箭头；默认金色与跳转目标保持。最终本地 Docker 编译、类型检查与镜像构建通过；桌面悬浮、移出恢复、完整颜色过渡、键盘焦点与 Enter 跳转、手机触摸入口通过实测，悬浮对比度为 13.22:1。无浏览器异常或业务写请求，97 个 Markdown 链接与 Git 空白检查通过；3000 预览已更新，未触发远程 CI 或部署生产。本轮仅改 CSS 悬浮色，未重复运行单元测试；证据位于忽略目录 `.local-backups/home-cta-hover-2026-10-22/`。
+
+- site / homepage reference typography（2026-10-22）：依据用户新参考图重排首页三行标题，采用本地托管的 Bodoni Moda 正体与原生金色斜体，调整字号、行距、左边距和入口布局；保留现有照片、文案及下方内容。按后续反馈恢复视频左右留白，保留下移间距与无黑边效果。类型检查、目标 lint、25 个文件 / 135 个测试及最终本地 Docker 构建通过；18 组标题视口和七种视频宽度检查通过，正常动画、无 JavaScript、字体失败回退及两个入口跳转正常。两个字体从本地加载，浏览器无 Google Fonts 请求，未修改其他页面字体；3000 预览已更新，未触发远程 CI 或部署生产；详见 `docs/2026-10-22/homepage-reference-typography.md`。
+
+- site / border and layout feedback（2026-10-22）：首页视频下移并铺满左右，移除黑色边框；加深纸纹背景下的共用边线、地图和 Culture 信息框，商品故事两栏等高对齐，商品列表改用清晰品类文案。类型检查、目标 lint、25 个文件 / 135 个测试与最终本地 Docker 构建通过；60 组跨页面响应式及 18 组商品检查通过。1114 px 下视频间距从 32 px 增至 64 px，移除左右限宽和 1 px 外框；商品故事两栏上下坐标一致，并修正手机标题遮挡。浏览器运行异常和业务写请求为 0，3000 预览已更新，未触发远程 CI 或部署生产；详见 `docs/2026-10-22/borders-video-product-alignment.md`。
+
+- site / pricing and preview feedback（2026-10-22）：移除口译重复套餐展示，保留 Choose support 与 Rates，价格按用户要求统一为美元 `$` 并保留数值；商品购买面板删除两个底部链接。补齐 Culture 预览的本地 127.0.0.1 来源；类型、目标 lint、25 个文件 / 135 个测试与完整本地 Docker 构建通过。三页 × 五种宽度共 15 组浏览器检查通过；实际后台组件的未保存 Markdown、目录、图片和弹窗预览联动通过，未执行保存、上传或发布。3000 预览已更新，独立 admin 仓库干净；详见 `docs/2026-10-22/pricing-product-preview-fixes.md`。
+
+- site / finesse polish（2026-10-21）：使用 finesse-ui 审查并统一打磨前台共享组件、材质、排版、卡片、筛选、表单与响应式布局；保留此前确认的 Hero、内容、价格和功能区块。类型检查、24 个文件 / 121 个测试、完整 lint（0 errors、1078 个既有 warnings）通过，修改文件无 lint 消息；16 路由 × 7 宽度共 112 组检查及 10 项交互通过，无页面溢出、运行异常或业务写请求。修复首页日历选择无活动日期后被重置的问题，新增两个回归测试；日期按钮达到 44 px。最终本地 Docker 编译、类型检查与打包通过，使用忽略目录内 Debian Node 20 覆盖，并给构建的 TypeScript 子进程加 `--jitless` 规避本机构建异常，未跳过类型检查或修改仓库构建配置。3000 预览已更新；远程 CI 未触发。方案与边界见 `docs/2026-10-21/finesse-site-component-polish.md`。
+
+- site / interpreting restoration（2026-10-21）：恢复 Choose support 服务卡片和 Rates 等级参考价表，卡片读取当前 CMS 内容；Rates 标明历史 CNY 参考价，现有 USD 套餐与预约结算保持。类型检查、目标 lint、23 个文件 / 119 个测试、本地构建通过；浏览器 7 项场景、9 个宽度通过，服务需求预填、原 USD 套餐总额、Rates 锚点和手机横滑正常，无页面异常或业务写请求。93 份 Markdown 链接及空白检查通过。本地预览已更新，构建沿用 Node 24 builder、Node 20 runtime，远程 CI 未触发。详见 `docs/2026-10-21/interpreting-support-rates-restoration.md`。
+
+- site / tab hero copy（2026-10-21）：按最新反馈，五个栏目 Hero 恢复简短介绍；Culture、Routes 主标题改为 `City Culture`、`Story Routes`，沿用原金色斜体，去掉 `Guangdong` 标题行。保留现有图片、纹理与下方布局；五页 Hero 后的源码与本轮之前一致。类型检查、目标 lint、23 个文件 / 119 个测试、本地构建通过；浏览器 9 项场景、35 组页面/视口检查通过，无页面异常或业务写请求。92 份 Markdown 本地链接与空白检查通过，3000 预览已更新；本地构建使用 Node 24 builder、Node 20 runtime，远程 CI 未触发。详见 `docs/2026-10-21/browser-feedback-six-fixes.md` 栏目 Hero 文案恢复部分。
+
+- site / layout follow-up（2026-10-21）：按三项后续批注，将首页视频外围恢复为与地图相同的纸张纹理；桌面地图城市卡片向左上外移；收紧口译 Hero 与套餐区之间的留白。同时修复减少动态效果时动画清理误删头图背景的问题。1199 px 下，口译照片到套餐标题由 338 px 缩到 67 px；地图卡片位于画布左外 24 px、上外 40 px。类型检查、目标 lint、23 个文件 / 119 个测试、本地 Docker 构建通过；浏览器 8 项场景、9 个宽度通过，共用动画的 Culture/Shop 图片回归正常，页面异常及业务写请求为 0。92 份 Markdown 链接与空白检查通过。本地构建沿用 Node 24 builder、Node 20 runtime，远程 CI 未触发。详见 `docs/2026-10-21/browser-feedback-six-fixes.md` 后续批注部分。
+
+- site / culture detail（2026-10-21）：按 finesse-ui 重新设计城市文章阅读排版；根据用户最终反馈，Hero 恢复原样，下方保留缩小后的正文图片、章节目录、图文并排和原图查看，收紧引用及章节留白。正文、关联区域与吸顶目录统一复用 Hero 的纹理和底色。保留原文和既有业务入口；方案与结果见 `docs/2026-10-21/culture-detail-editorial-layout.md`。
+
+- verification / culture detail（2026-10-21）：Hero JSX 与原版一致；三城原文块及图片完整，正文高度缩短 59.0%～69.3%。类型检查、23 个文件 / 119 个测试、完整 lint（0 errors、1080 warnings）通过；纹理调整后的目标 lint、3 个文件 / 20 个测试通过。浏览器 11 项场景、9 个宽度通过，Hero、正文页面与吸顶目录的纹理图、尺寸、平铺及底色一致，无页面异常或业务写请求。92 份 Markdown 本地链接与空白检查通过。本地 Docker 预览已更新；构建使用忽略目录内 Node 24 builder，运行仍为 Node 20，以避开此前 Node 20 worker 原生崩溃，未绕过类型检查或修改 CI。关闭 JavaScript 的现有流式页面壳限制见方案。改动未提交或推送，远程 CI 未触发。
+
+- site / browser feedback（2026-10-21）：处理首页衔接与地图卡片位置、Culture 标题、口译卡片样式、开发预览商品 404 和社区卡片尺寸六项批注。口译保留六项 API USD 价格，手机套餐恢复横滑；社区改为桌面三列与独立发布横栏。方案与验证见 `docs/2026-10-21/browser-feedback-six-fixes.md`。
+- verification / browser feedback（2026-10-21）：site 类型检查、完整 lint（0 errors、1081 既有 warnings）、22 个文件 / 112 个测试及 Docker 构建通过。浏览器 15 项用户流程、20 组页面/视口和 4 组套餐横滑检查通过；三个商品详情从列表进入并刷新均为 HTTP 200，六项套餐金额与表单一致。停止已核实的本项目旧开发进程后，Docker 预览恢复至 3000；无业务写请求或生产操作。标准最终构建命中此前成功缓存，另有 Node/V8 原生构建崩溃日志留档，远程 CI 尚未触发。
+
+- site / typography（2026-10-21）：按用户最后提供的参考图调整首页标题：三行同级大字、左对齐、紧凑行距，中间一行金色斜体。保留 “culture voyage to China” 原始文案，以大写首字母显示前两行；沿用现有无衬线字体栈，不增加字体依赖。首页背景、入口与暂存的 Hero 分支保留。
+- verification（2026-10-21）：site 类型检查、目标 lint、22 个文件 / 112 个测试、最终 production / Docker build 通过；13 个视口的三行标题和首屏入口正常，5 项浏览器场景通过，页面无横向溢出与运行异常。90 份 Markdown 本地链接和 Git 空白检查通过。保留 3000 的现有预览服务；Docker 验证暂用 127.0.0.1:3001，说明见 `docs/2026-10-21/homepage-hero-typography.md`。
+
+- site: 按用户要求，在 main 原有首页布局中将主标题改为 “culture voyage to China”，保留三行排版。`codex/homepage-ticket-hero` 的未提交开发与文档已暂存，后续可恢复继续设计。
+- verification: site 类型检查、目标 lint、22 个文件 / 112 个测试、Next.js production / Docker build 通过；本地 Docker 首页在 1145 × 944、390 × 844、320 × 844 验证标题及原有入口正常，无横向溢出与页面运行异常。
+
 ## [1.1.0] - 2026-10-17
 
 > 源码发布（Not deployed）。本次发布不代表生产站点已更新。

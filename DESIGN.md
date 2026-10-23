@@ -11,7 +11,8 @@ colors:
   night: "#111923"
   ink: "#17202a"
   muted: "#66717d"
-  line: "rgba(23, 32, 42, 0.13)"
+  line: "rgba(20, 52, 61, 0.30)"
+  line-strong: "rgba(20, 52, 61, 0.56)"
   paper: "#f4f2ee"
   paper-deep: "#ece9e2"
   parchment: "#ede6d9"
@@ -133,19 +134,19 @@ The palette is drawn from a physical traveler's kit: river-deep ink, cinnabar wa
 
 ## 3. Typography
 
-**Display Font:** Georgia, "Times New Roman", serif
+**Public Heading Appearance:** The existing Trebuchet MS / Segoe UI humanist sans appearance is retained on public heroes and reading surfaces. Explicit Georgia remains on account entry pages and authored serif details.
 **Body Font:** "Trebuchet MS", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif
 **Label Font:** "Trebuchet MS", "Segoe UI", sans-serif (bold, uppercase)
 
-**Character:** A serif display that reads like a book cover — weighty, literate, slightly old-world — paired with a humanist sans body that's approachable and legible at small sizes. The pairing creates editorial authority without coldness; this is a magazine, not a manual.
+**Character:** Clear humanist headings, comfortable reading text, and a restrained italic accent create the editorial hierarchy. Preserve each existing font family; use size, line-height, spacing, and weight to improve hierarchy. Serif account headings retain their established appearance.
 
 ### Hierarchy
 
-- **Display** (400, clamp(2.55rem, 10vw, 10rem), line-height 0.88–0.98, tracking -0.04em to -0.05em): Hero headlines only. Always in Georgia. Tight leading and negative tracking create a composed, monumental presence. Cap at 10rem; above that is shouting.
-- **Headline** (400, 2.5rem–4rem, line-height 0.92–0.98): Section titles. Georgia. Leading tightens as size increases; always `text-wrap: balance`.
-- **Title** (400, 1.5rem–2rem, line-height 1.1): Card titles, feature headings. Georgia. Hover transitions to cinnabar on linked titles.
+- **Display** (400, clamp(2.55rem, 10vw, 10rem), line-height 0.88–0.98, tracking -0.04em to -0.05em): Hero headlines only. Preserve the existing font family. Shared tab heroes use clamp(2.25rem, 7vw, 5.75rem), line-height 1.04, with the existing italic accent; the approved homepage title retains its independent scale.
+- **Headline** (400, 2.5rem–4rem, line-height 0.92–0.98): Section titles. Preserve the existing font family; use leading around 1.12 and balanced wrapping.
+- **Title** (400, 1.5rem–2rem, line-height 1.1): Card titles and feature headings preserve their existing font family. Linked titles may transition to cinnabar on hover.
 - **Body** (400, 1rem, line-height 1.6, max 65ch): Running text. Trebuchet MS stack. Use `text-wrap: pretty` for long prose.
-- **Handwritten** (400 italic, 1rem–1.25rem, line-height 1.75): Supporting descriptions, testimonial quotes, editorial asides. Trebuchet MS italic — deliberately not a script font; avoids the "cursive AI default."
+- **Handwritten** (400 italic, 1rem–1.25rem, line-height 1.75): Quotes and authored asides may use Trebuchet MS italic. Shared hero descriptions and card body copy use an upright style, 15–16px with line-height 1.7, to keep longer copy readable.
 - **Label** (700, 10px, tracking 0.18em–0.4em, uppercase): Eyebrow labels above headings. Either cinnabar or gold. Used once per section — never as a reflex on every heading.
 
 ### Named Rules
@@ -160,7 +161,7 @@ This is a **layered, tactile** system. Surfaces lift on hover with shadow and di
 
 ### Shadow Vocabulary
 
-- **scrapbook-shadow:** The signature shadow — used on images, product cards, CTA panels. A broad, diffuse drop that reads as physical depth. Applied to rotated frames (2–3°) for the hand-placed feel.
+- **scrapbook-shadow:** The signature photo/frame shadow uses `--shadow-rest`. Card interaction uses `--shadow-lift`; menus and dialogs use `--shadow-panel`. Strong ambient depth is reserved for elevated surfaces.
 - **shadow-soft** (0 22px 70px rgba(17, 25, 35, 0.12)): Elevated panels, dialogs, dropdowns. Broad and ambient.
 - **Button shadows:** Primary and gold buttons carry their own subtle shadow (4px–12px blur at 15% opacity) that deepens and lifts on hover.
 
@@ -176,13 +177,13 @@ This is a **layered, tactile** system. Surfaces lift on hover with shadow and di
 
 **Character:** Tactile and confident. Every button lifts on hover; transitions are `cubic-bezier(0.22, 1, 0.36, 1)` with 300–400ms duration. Uppercase labels at 0.2em tracking. Two corner vocabularies coexist by intent: straight edges carry the editorial, print-derived aesthetic in forms and inline contexts; the full-pill `.lt-action` family carries hero CTAs and persistent navigation actions.
 
-- **Shape:** Either straight corners (0px radius, the `btn-*` family) or full pill (9999px, the `.lt-action` family). Do not invent intermediate radii on buttons.
+- **Shape:** Shared `btn-*` and `.lt-action` controls use a restrained 2px corner. Existing header account/booking pills and informational chips retain their specific navigation roles.
 - **Primary (btn-primary):** bg river-deep, white text, padding 1.25rem 2.5rem. Hover: bg shifts to cinnabar, lift -2px, shadow expands. Active: bg cinnabar-deep.
 - **Gold (btn-gold):** bg gold, white text. Hover: bg shifts to river-deep. Used on dark-section CTAs.
 - **Outline (btn-outline):** 1px river-deep border, transparent bg, river-deep text. Hover: bg fills river-deep, text → white.
 - **Paper (btn-paper):** 1px line border, white bg at 94% opacity, river-deep text. Hover: border darkens to river-deep, lift -2px.
 - **Ghost Dark (btn-ghost-dark):** rgba(17,25,35,0.58) bg with backdrop-blur, white text. Hover: bg → near-white, text → night. Used on river-deep/night backgrounds.
-- **Action Pill (lt-action / -primary / -secondary / -gold):** 9999px pill, min-height 3rem, 0.72rem bold uppercase labels at 0.16em tracking. Primary: river-deep bg → cinnabar on hover. Secondary: white/72 bg with 1px line border → river-deep border on hover. Gold: gold bg with night text → white bg on hover. This is the vocabulary for hero CTAs and header/card persistent actions; the straight `btn-*` family remains for forms and inline contexts.
+- **Shared Action (lt-action / -primary / -secondary / -gold):** 2px corner, at least 44px tall, bold labels at 0.12em tracking. Primary: river-deep bg → cinnabar on hover. Secondary: white/72 bg with 1px line border → river-deep border on hover. Gold: gold bg with night text → white bg on hover. This is the vocabulary for hero CTAs and header/card persistent actions; the straight `btn-*` family remains for forms and inline contexts.
 - **Focus-visible:** All buttons: 2px gold outline, 3px offset.
 
 **The Kinetic Link.** A shimmer effect on primary CTAs — a diagonal light sweep on hover via `::before` pseudo-element with `translateX(-120%)` → `translateX(120%)` transition. Reserved for the highest-priority action on each page; never used on secondary links.
@@ -193,7 +194,7 @@ This is a **layered, tactile** system. Surfaces lift on hover with shadow and di
 
 The card dialect is **creative** (owner decision D1, 2026-09-18), matching the canvas: one radius family and three shadow steps (`--shadow-rest` / `--shadow-lift` / `--shadow-panel`). A fourth arbitrary shadow value is a bug; map it into one of the three steps. Brand-coloured and focus-ring shadows are deliberate exceptions to the steps.
 
-- **Corner Style:** Soft-radius scale — `--radius-sm` 0.5rem, `--radius-md` 0.9rem, `--radius-lg` 1.4rem, `--radius-xl` 2rem. Chips and tags keep the 9999px pill. Pure 0px remains valid for framed, flat, or deliberately editorial cards — pick one vocabulary per component, don't mix within a component.
+- **Corner Style:** Shared editorial cards use 2px corners. Public dialogs use 8px on desktop and 4px on mobile. Existing chips, avatars, and non-editorial surfaces retain their specific radius tokens.
 - **Lift:** two steps only — controls `-2px`, cards `-6px`.
 - **Background:** paper / white at 70–94% opacity.
 - **Shadow:** scrapbook-shadow at rest; deepens on hover.
@@ -247,3 +248,14 @@ A follow-mouse radial gradient effect on `.spotlight-panel`. A cinnabar-tinted r
 - **Don't** use cold corporate SaaS patterns (blank white bg, gray text, sterile data tables). The admin dashboard uses Element Plus — that's acceptable for the tool surface, but the brand site must feel like a field journal, not a dashboard.
 - **Don't** animate CSS layout properties (width, height, top, left). Use `transform` and `opacity` only.
 - **Don't** use arbitrary z-index values like 999 or 9999. The scale is: dropdown → sticky → modal-backdrop → modal → toast → tooltip.
+
+
+## Shared Editorial Finish
+
+Public surfaces use the shared `--paper-grain`: a low-contrast monochrome texture at 256px repeat size. The background color roles stay unchanged. Header, hero, article, sticky contents, and footer use the same grain asset; journal cards use the same pattern on their own paper tone.
+
+The shared spacing rhythm is `tight = clamp(1.75rem, 3.5vw, 3rem)`, `beat = clamp(3rem, 5.5vw, 5.5rem)`, and `land = clamp(4rem, 7vw, 7rem)`. Page-specific compositions may retain their established media proportions and section spacing when needed.
+
+Search and filter groups use a quiet framed surface with a separate search field. All public editing fields use at least 16px text and 48px control height. Narrow-screen date selection uses a viewport-bound panel so the seven-day grid remains usable.
+
+Component refinements are scoped by explicit data attributes in `site/src/app/styles/refinement.css`. They must preserve content, links, data, validation, API contracts, focus behavior, and reduced-motion presentation. A visual polish does not authorize generating replacement assets or changing authored prices.

@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="grid min-h-[100dvh] place-items-center bg-[var(--paper-deep)] bg-grain px-6 py-14 text-[var(--river-deep)]">
+    <div data-polish-form data-polish-reset className="grid min-h-[100dvh] place-items-center bg-[var(--paper-deep)] bg-grain px-6 py-14 text-[var(--river-deep)]">
       <div className="w-full max-w-md">
         <h1 className="font-[Georgia,'Times_New_Roman',serif] text-[clamp(2.5rem,4vw,3.5rem)] leading-[1] tracking-[-0.04em]">
           Reset your password

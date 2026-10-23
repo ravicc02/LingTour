@@ -118,7 +118,7 @@ const copy = {
   "interpreting.atlas.titleItalic": "Services",
   "interpreting.atlas.from": "From",
   "interpreting.atlas.includes": "Includes",
-  "interpreting.atlas.chooseShape": "Interpretation Packages",
+  "interpreting.atlas.chooseShape": "Choose support",
 
   // Pricing matrix (was in two locales hardcoded inside the component)
   "interpreting.pricing.city": "City",

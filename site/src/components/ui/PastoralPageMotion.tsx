@@ -38,7 +38,9 @@ export function PastoralPageMotion({
           );
 
           if (!context.conditions?.animate) {
-            gsap.set([...heroMedia, ...cards, ...introElements, ...titles], { clearProps: "all" });
+            // Keep authored media backgrounds when clearing entrance motion.
+            gsap.set(heroMedia, { clearProps: "transform,opacity,visibility" });
+            gsap.set([...cards, ...introElements, ...titles], { clearProps: "all" });
             return;
           }
 

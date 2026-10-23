@@ -477,6 +477,7 @@ export function ProfilePageClient({ initialUser }: { initialUser: LocalUser }) {
 
       <div className="site-container min-w-0 py-beat">
         <div
+          data-polish-form
           id="profile-panel"
           role="tabpanel"
           aria-labelledby={`profile-tab-${activeTab}`}

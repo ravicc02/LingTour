@@ -14,9 +14,9 @@ export function SectionHeading({
   const alignment = align === "center" ? "mx-auto text-center" : "";
 
   return (
-    <div className={["space-y-3", alignment, className].filter(Boolean).join(" ")}>
+    <div className={["ui-section-heading space-y-3", alignment, className].filter(Boolean).join(" ")}>
 
-      <h2 className="font-[family:var(--font-display)] text-3xl text-[var(--deep-blue)] md:text-4xl">
+      <h2 className="font-[family:var(--font-display)] text-3xl text-[var(--river-deep)] md:text-4xl">
         {title}
       </h2>
 

@@ -125,7 +125,6 @@ export function PostDetailDialog({
     setLikeCount(post?.likes ?? 0);
     setSaveCount(post?.saves ?? 0);
     // scrollTrackTo is stable for the lifetime of the component.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post]);
 
   // Dialog lifecycle: scroll lock, Escape, the focus trap and the initial
@@ -212,7 +211,6 @@ export function PostDetailDialog({
     window.addEventListener("keydown", handleArrowKeys);
     return () => window.removeEventListener("keydown", handleArrowKeys);
     // scrollTrackTo is stable for the lifetime of the component.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post, mediaCount]);
 
   const metaLine = useMemo(() => {
@@ -304,6 +302,7 @@ export function PostDetailDialog({
       />
 
       <div
+        data-polish-dialog
         role="dialog"
         aria-modal="true"
         aria-labelledby="community-post-title"

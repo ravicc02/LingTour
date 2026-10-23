@@ -19,7 +19,7 @@ export function EditorialIntro({
 
   return (
     <div
-      className={`site-container ${actions ? "grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_auto]" : ""} ${className}`}
+      className={`ui-editorial-intro site-container ${actions ? "grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_auto]" : ""} ${className}`}
     >
       <div className="max-w-4xl">
 

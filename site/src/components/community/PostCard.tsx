@@ -32,7 +32,9 @@ export function PostCard({
   const [saved, setSaved] = useState(Boolean(post.saved));
   const [likeCount, setLikeCount] = useState(post.likes);
   const [saveCount, setSaveCount] = useState(post.saves);
-  const cover = post.media[0] ?? (post.image ? { type: "image" as const, url: post.image } : null);
+  const cover =
+    post.media[0] ??
+    (post.image ? { type: "image" as const, url: post.image } : null);
   const hasImage = Boolean(cover);
   const hasText = Boolean(post.excerpt.trim());
   const isPendingReview = post.status === "pending_review";
@@ -112,7 +114,7 @@ export function PostCard({
   };
 
   return (
-    <article
+    <article data-polish-card="post"
       className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] scrapbook-shadow transition-[transform,box-shadow] duration-500 hover:-translate-y-0.5 ${variantClasses}`}
     >
       <a
@@ -133,8 +135,8 @@ export function PostCard({
           <div
             className={`relative shrink-0 overflow-hidden ${
               variant === "feature"
-                ? "aspect-[1.12] border-b border-[var(--line)]"
-                : "aspect-[1.1]"
+                ? "aspect-[16/10] border-b border-[var(--line)]"
+                : "aspect-[16/10]"
             }`}
           >
             {cover.type === "live" ? (
@@ -178,7 +180,7 @@ export function PostCard({
             </span>
             {variant === "feature" ? (
               <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="font-[family:var(--font-display)] text-3xl leading-[0.95] text-white [text-shadow:0_2px_16px_rgba(17,25,35,0.45)]">
+                <p className="font-[family:var(--font-display)] line-clamp-2 text-2xl leading-[1.05] text-white [text-shadow:0_2px_16px_rgba(17,25,35,0.45)]">
                   {post.title}
                 </p>
               </div>
@@ -187,12 +189,16 @@ export function PostCard({
         ) : (
           <div className="relative overflow-hidden px-6 pb-2 pt-8 sm:px-7">
             <div className="max-w-[13rem]">
-              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">{communityChannelLabel(post.channel)}</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-[var(--cinnabar)]">
+                {communityChannelLabel(post.channel)}
+              </p>
             </div>
           </div>
         )}
 
-        <div className={`flex flex-1 flex-col ${variant === "feature" ? "p-5" : variant === "text" ? "p-6 sm:p-7" : "p-5"}`}>
+        <div
+          className={`flex flex-1 flex-col ${variant === "feature" ? "p-4" : variant === "text" ? "p-5" : "p-4"}`}
+        >
           <div className="flex items-center gap-2">
             <Avatar
               src={post.user.avatar}
@@ -205,7 +211,9 @@ export function PostCard({
                   : "border border-white/40 ring-2 ring-[var(--paper-deep)]"
               }
             />
-            <span className={`text-sm ${variant === "image" ? "handwritten" : "font-medium"} text-[var(--river-deep)]`}>
+            <span
+              className={`text-sm ${variant === "image" ? "handwritten" : "font-medium"} text-[var(--river-deep)]`}
+            >
               {post.user.name}
             </span>
             {isPendingReview ? (
@@ -213,7 +221,11 @@ export function PostCard({
                 className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--gold)]/45 bg-[var(--gold)]/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--river-deep)]"
                 title="Visible only to you while an editor reviews it"
               >
-                <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 fill-current" aria-hidden="true">
+                <svg
+                  viewBox="0 0 12 12"
+                  className="h-2.5 w-2.5 fill-current"
+                  aria-hidden="true"
+                >
                   <path d="M6 1a5 5 0 100 10A5 5 0 006 1zm.5 2v3.2l2.1 1.25-.5.85L5.5 6.7V3h1z" />
                 </svg>
                 Pending review
@@ -223,9 +235,9 @@ export function PostCard({
 
           {variant !== "feature" ? (
             <h2
-              className={`mt-4 font-[family:var(--font-display)] leading-tight ${
+              className={`mt-3 line-clamp-2 font-[family:var(--font-display)] leading-tight ${
                 variant === "text"
-                  ? "text-3xl text-[var(--river-deep)]"
+                  ? "text-2xl text-[var(--river-deep)]"
                   : "text-2xl text-[var(--river-deep)] underline decoration-[var(--gold)]/30 decoration-2 underline-offset-4"
               }`}
             >
@@ -237,10 +249,10 @@ export function PostCard({
             <p
               className={`mt-4 ${
                 variant === "feature"
-                  ? "text-sm leading-7 text-[var(--river-deep)]/76"
+                  ? "line-clamp-2 text-sm leading-6 text-[var(--river-deep)]/76"
                   : variant === "text"
-                    ? "handwritten text-base leading-8 text-[var(--river-deep)]/80"
-                    : "line-clamp-3 text-sm italic leading-relaxed text-[var(--muted)]"
+                    ? "line-clamp-3 handwritten text-sm leading-6 text-[var(--river-deep)]/80"
+                    : "line-clamp-2 text-sm italic leading-relaxed text-[var(--muted)]"
               }`}
             >
               {post.excerpt}
@@ -249,22 +261,30 @@ export function PostCard({
 
           <div className="mt-4 flex flex-wrap gap-2">
             {post.route ? (
-              <span className="rounded-full bg-[var(--paper-deep)] px-2.5 py-1 text-[12px] text-[var(--cinnabar)]">#{post.route}</span>
+              <span className="rounded-full bg-[var(--paper-deep)] px-2.5 py-1 text-[12px] text-[var(--cinnabar)]">
+                #{post.route}
+              </span>
             ) : null}
             {post.location ? (
-              <span className="rounded-full bg-[var(--paper-deep)] px-2.5 py-1 text-[12px] text-[var(--cinnabar)]">@{post.location}</span>
+              <span className="rounded-full bg-[var(--paper-deep)] px-2.5 py-1 text-[12px] text-[var(--cinnabar)]">
+                @{post.location}
+              </span>
             ) : null}
           </div>
         </div>
       </a>
 
-      <div className={`flex items-center justify-between border-t border-[var(--line)] py-2 text-[var(--river-deep)] ${variant === "text" ? "px-4 sm:px-5" : "px-5"}`}>
+      <div
+        className={`flex items-center justify-between border-t border-[var(--line)] py-2 text-[var(--river-deep)] ${variant === "text" ? "px-4 sm:px-5" : "px-5"}`}
+      >
         <button
           type="button"
           onClick={handleLike}
           aria-pressed={liked}
           className={`min-h-11 px-2 text-xs transition-colors active:scale-[0.97] ${
-            liked ? "text-[var(--cinnabar)]" : "text-[var(--muted)] hover:text-[var(--cinnabar)]"
+            liked
+              ? "text-[var(--cinnabar)]"
+              : "text-[var(--muted)] hover:text-[var(--cinnabar)]"
           } ${isLoggedIn ? "" : "opacity-60"}`}
         >
           Like {likeCount}
@@ -274,7 +294,9 @@ export function PostCard({
           onClick={handleSave}
           aria-pressed={saved}
           className={`min-h-11 px-2 text-xs transition-colors active:scale-[0.97] ${
-            saved ? "text-[var(--gold)]" : "text-[var(--muted)] hover:text-[var(--gold)]"
+            saved
+              ? "text-[var(--gold)]"
+              : "text-[var(--muted)] hover:text-[var(--gold)]"
           } ${isLoggedIn ? "" : "opacity-60"}`}
         >
           Save {saveCount}

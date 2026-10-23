@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -14,7 +14,13 @@ import type { EventData } from "@/lib/api-data";
 import type { Region } from "@/types/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { useLocale } from "@/lib/locale-context";
-import { gsap, motionDuration, motionEase, motionMedia, useGSAP } from "@/lib/motion";
+import {
+  gsap,
+  motionDuration,
+  motionEase,
+  motionMedia,
+  useGSAP,
+} from "@/lib/motion";
 
 const initialFeatures = getMapFeatures();
 
@@ -111,7 +117,7 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section || !('IntersectionObserver' in window)) {
+    if (!section || !("IntersectionObserver" in window)) {
       setIsSectionVisible(true);
       return;
     }
@@ -217,8 +223,13 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
 
     const centroidByAdcode = new Map(
       features
-        .map((feature) => [feature.properties.adcode, feature.properties.centroid] as const)
-        .filter((entry): entry is readonly [number, Position] => Boolean(entry[1])),
+        .map(
+          (feature) =>
+            [feature.properties.adcode, feature.properties.centroid] as const,
+        )
+        .filter((entry): entry is readonly [number, Position] =>
+          Boolean(entry[1]),
+        ),
     );
     const routePaths = MAP_ROUTE_ANCHORS.map((anchors) =>
       buildSmoothPath(
@@ -245,10 +256,11 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
 
   // Marker geometry is in user units, so it has to track the viewBox in use:
   // at 420 units across a ~330px phone container one unit is ~0.8px, which
-  // keeps a 4-unit dot legible and a 44px finger target ~18 units wide.
+  // keeps a 4-unit dot legible; a 34-unit hit radius remains at least
+  // 44 CSS pixels across on the narrowest supported phone viewport.
   const dotRadius = isCompact ? 4 : 3;
   const labelSize = isCompact ? 15 : 14;
-  const hitRadius = isCompact ? 18 : 14;
+  const hitRadius = isCompact ? 34 : 14;
 
   const panelTitle = activeCity.name;
 
@@ -298,12 +310,13 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
           </Reveal>
         </div>
 
-        <div className="relative">
-          {/* At lg the card overlaps only ~15% of the province (the north-west
-              hills, no showcased city), which is the intended scrapbook layer.
-              At md that same overlap swallows 31% including Zhanjiang and
-              Maoming, so the card stays in flow until there is room for it. */}
-          <div className="scrapbook-shadow relative z-30 hidden border-white bg-white/95 backdrop-blur-sm lg:absolute lg:block lg:left-0 lg:top-0 lg:w-52 lg:border-8 lg:p-4">
+        <div className="relative mx-auto max-w-[66rem]">
+          {/* Desktop card hangs outside the map's upper-left corner. Keep
+              enough viewport inset at lg; the mobile panel stays in flow. */}
+          <div
+            data-map-city-card
+            className="scrapbook-shadow relative z-30 hidden border-white bg-white/95 backdrop-blur-sm lg:absolute lg:block lg:-left-6 lg:-top-10 lg:w-52 lg:border-8 lg:p-4 xl:-left-10"
+          >
             <Reveal delay={400}>
               <Link
                 href={`/culture/${activeCity.slug}`}
@@ -327,7 +340,6 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
 
               <div className="space-y-3 md:space-y-4">
                 <div>
-
                   <h3 className="font-[family:var(--font-display)] text-[1.75rem] italic leading-none text-[var(--river-deep)] md:text-2xl">
                     {panelTitle}
                   </h3>
@@ -356,12 +368,17 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
           {/* Taller than the map's own 1.43 ratio, with the province pinned to
               the top, so the scrapbook panel below can overlap the leftover
               strip without covering Zhanjiang in the south-west corner. */}
-          <div className="relative z-10 aspect-[1.13/1] overflow-hidden rounded-sm border border-[var(--line)] bg-[var(--background)] lg:aspect-auto lg:h-[40rem] lg:rounded-none lg:border-0 lg:bg-transparent">
-            <div className="pointer-events-auto h-full w-full opacity-80 md:opacity-60">
+          <div
+            data-map-frame
+            className="relative z-10 aspect-[1.13/1] overflow-hidden rounded-sm border border-[var(--line)] bg-[var(--background)] lg:aspect-[1.43/1] lg:rounded-none lg:bg-transparent"
+          >
+            <div className="pointer-events-auto h-full w-full opacity-90">
               {mapData ? (
                 <svg
                   viewBox={`0 0 ${mapData.width} ${mapData.height}`}
-                  preserveAspectRatio={isCompact ? "xMidYMin meet" : "xMidYMid meet"}
+                  preserveAspectRatio={
+                    isCompact ? "xMidYMin meet" : "xMidYMid meet"
+                  }
                   className="h-full w-full"
                   role="group"
                   aria-label="Map of Guangdong: cities with published stories are listed below this graphic"
@@ -378,7 +395,7 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
                         key={routePath.slice(0, 24) || index}
                         d={routePath}
                         fill="none"
-                        stroke="#444b54"
+                        stroke="var(--muted)"
                         strokeWidth="1"
                         strokeDasharray="6 6"
                         vectorEffect="non-scaling-stroke"
@@ -395,7 +412,8 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
                       <path
                         key={city.adcode}
                         d={city.path}
-                        stroke="#fff"
+                        data-map-city={city.adcode}
+                        stroke={isActive ? "var(--cinnabar)" : "var(--line-strong)"}
                         strokeWidth={isActive ? (hasEvent ? 2 : 1.5) : 1}
                         vectorEffect="non-scaling-stroke"
                         opacity={1}
@@ -425,6 +443,10 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
                     const focusCity = focusCityByCode.get(city.adcode);
                     if (!focusCity || !city.point) return null;
                     const [x, y] = city.point;
+                    const labelOnLeft =
+                      x >
+                      mapData.width -
+                        labelSize * (focusCity.name.length * 0.65 + 2);
                     const isActive = resolvedActiveCode === city.adcode;
                     const hasEvent = eventsByCity.has(city.adcode);
 
@@ -481,12 +503,17 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
                           fill={isActive ? "#b64235" : "var(--river-deep)"}
                         />
                         <text
-                          x={x + dotRadius + 5}
+                          x={x + (labelOnLeft ? -1 : 1) * (dotRadius + 5)}
+                          textAnchor={labelOnLeft ? "end" : "start"}
                           y={y + labelSize / 3}
                           className={`pointer-events-none select-none font-[family:var(--font-display)] italic transition-[opacity,transform] duration-500 ${
                             isActive
-                              ? "opacity-100 translate-x-2"
-                              : "opacity-0 -translate-x-2"
+                              ? labelOnLeft
+                                ? "opacity-100 -translate-x-2"
+                                : "opacity-100 translate-x-2"
+                              : labelOnLeft
+                                ? "opacity-0 translate-x-2"
+                                : "opacity-0 -translate-x-2"
                           }`}
                           style={{
                             fontSize: `${labelSize}px`,
@@ -527,7 +554,6 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
             </Link>
 
             <div className="flex min-w-0 flex-col justify-center py-0.5">
-
               <div className="mt-1 flex min-w-0 items-baseline justify-between gap-2">
                 <h3 className="truncate font-[family:var(--font-display)] text-[1.55rem] italic leading-none text-[var(--river-deep)]">
                   {panelTitle}
@@ -540,7 +566,6 @@ export function GuangdongMapSection({ cities, events = [] }: Props) {
                   →
                 </Link>
               </div>
-
             </div>
           </div>
 

@@ -7,21 +7,27 @@ type DispatchCardProps = {
   onLogin: () => void;
 };
 
-export function DispatchCard({ onDispatch, isLoggedIn, onLogin }: DispatchCardProps) {
+export function DispatchCard({
+  onDispatch,
+  isLoggedIn,
+  onLogin,
+}: DispatchCardProps) {
   return (
-    <div className="group flex h-full w-full flex-col bg-[var(--night)] p-6 sm:p-8 scrapbook-shadow text-white rotate-1 transition-transform hover:rotate-0">
-      <h3 className="font-[family:var(--font-display)] text-3xl italic text-white">
+    <div
+      data-polish-compose
+      data-community-compose
+      className="flex w-full flex-col gap-4 border-y border-[var(--line)] py-5 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <h3 className="font-[family:var(--font-display)] text-2xl text-[var(--river-deep)]">
         Create a Post
       </h3>
 
-
-
-      <div className="mt-auto flex flex-col gap-4 pt-8">
+      <div className="shrink-0">
         {isLoggedIn ? (
           <button
             type="button"
             onClick={onDispatch}
-            className="min-h-12 w-full bg-[var(--paper)] py-4 text-sm font-bold uppercase tracking-[0.14em] text-[var(--night)] transition-colors hover:bg-white"
+            className="min-h-11 w-full bg-[var(--river-deep)] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar-deep)] sm:w-auto"
           >
             Create post
           </button>
@@ -29,7 +35,7 @@ export function DispatchCard({ onDispatch, isLoggedIn, onLogin }: DispatchCardPr
           <button
             type="button"
             onClick={onLogin}
-            className="min-h-12 w-full bg-[var(--cinnabar)] py-4 text-sm font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar-deep)]"
+            className="min-h-11 w-full bg-[var(--cinnabar)] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--cinnabar-deep)] sm:w-auto"
           >
             Log in to post
           </button>

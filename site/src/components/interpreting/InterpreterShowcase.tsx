@@ -55,7 +55,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
 
           return (
             <Reveal key={profile.id} delay={index * 100} className="flex h-full w-[82vw] max-w-[24rem] shrink-0 snap-start flex-col lg:w-auto lg:max-w-none lg:shrink lg:snap-none">
-              <article
+              <article data-polish-card="interpreter"
                 className={[
                   "group relative flex h-full flex-1 flex-col overflow-hidden bg-[var(--paper)] bg-grain transition-all duration-500 scrapbook-shadow border border-[var(--line)]",
                   index % 2 === 0 ? "sm:rotate-1" : "sm:-rotate-1",
@@ -84,7 +84,7 @@ export function InterpreterShowcase({ profiles, onSelectGuide }: Props) {
 
 
                   <div className="absolute bottom-6 left-6 right-6 z-10">
-                    <p className="mb-1 line-clamp-2 text-[11px] font-bold uppercase leading-snug tracking-[0.16em] text-[var(--gold)] handwritten sm:text-[12px] sm:tracking-[0.2em]">
+                    <p className="mb-1 line-clamp-2 text-[11px] font-bold uppercase leading-snug tracking-[0.16em] text-[var(--gold-light)] handwritten sm:text-[12px] sm:tracking-[0.2em]">
                       {profile.specialty}
                     </p>
                     <h3 className="font-[family:var(--font-display)] text-2xl leading-tight text-white sm:text-3xl">

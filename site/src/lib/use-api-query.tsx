@@ -149,7 +149,7 @@ export function LoadingSpinner({
   const displayText = text ?? t("common.state.loadingFile");
 
   return (
-    <div className="flex min-h-[40vh] items-center justify-center">
+    <div data-ui-state="loading" role="status" aria-live="polite" className="flex min-h-[40vh] items-center justify-center">
       <div className="text-center">
         <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[var(--line)] border-t-[var(--cinnabar)]" />
         {displayText ? (
@@ -178,7 +178,7 @@ export function ErrorState({
   const displayMessage = message ?? t("common.state.errorMessage");
 
   return (
-    <div className="flex min-h-[40vh] items-center justify-center px-6">
+    <div data-ui-state="error" className="flex min-h-[40vh] items-center justify-center px-6">
       <div className="max-w-md text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.4em] text-[var(--cinnabar)]">
           ! {displayTitle}

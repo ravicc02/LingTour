@@ -76,21 +76,27 @@ export default function RoutesPageClient({
       className="min-h-screen bg-[var(--paper-deep)] bg-grain"
       motionKey={filteredRoutes.map((route) => route.slug).join("|")}
     >
-      <section className="relative overflow-hidden pb-12 pt-16 sm:pb-16 sm:pt-20 lg:pb-24 lg:pt-32">
+      <section data-site-hero="routes" className="relative overflow-hidden pb-12 pt-16 sm:pb-16 sm:pt-20 lg:pb-24 lg:pt-32">
         <div className="site-container relative">
           <div className="grid grid-cols-1 items-center gap-10 sm:gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="z-10 min-w-0 max-w-3xl lg:col-span-7">
               <Reveal>
-
+                <p data-pastoral-kicker className="mb-6 text-[12px] font-bold uppercase tracking-[0.32em] text-[var(--cinnabar)] sm:mb-8">
+                  {t("routes.atlas.eyebrow")}
+                </p>
                 <h1 className="font-[family:var(--font-display)] text-[clamp(2.25rem,7vw,6rem)] leading-[0.92] tracking-[-0.04em] text-[var(--river-deep)]">
-                  <span className="block overflow-hidden pb-1">
-                    <span data-pastoral-title className="block">{t("routes.atlas.titlePrimary")}</span>
-                  </span>
+                  {t("routes.atlas.titlePrimary") ? (
+                    <span className="block overflow-hidden pb-1">
+                      <span data-pastoral-title className="block">{t("routes.atlas.titlePrimary")}</span>
+                    </span>
+                  ) : null}
                   <span className="block overflow-hidden pb-3">
                     <span data-pastoral-title className="block italic text-[var(--gold)]">{t("routes.atlas.titleItalic")}</span>
                   </span>
                 </h1>
-
+                <p data-pastoral-subtitle className="handwritten mt-5 max-w-xl text-[13px] leading-6 text-[var(--muted)] sm:mt-8 sm:text-base sm:leading-relaxed lg:mt-12 lg:text-lg">
+                  {t("routes.atlas.lede")}
+                </p>
               </Reveal>
             </div>
 
@@ -227,7 +233,7 @@ export default function RoutesPageClient({
                 return (
                   <div key={route.slug} className="h-full min-w-0 w-[82vw] max-w-[24rem] shrink-0 snap-start md:h-auto md:w-auto md:max-w-none md:shrink md:snap-none">
                     <Link href={`/routes/${route.slug}`} className="group block h-full" data-pastoral-card>
-                      <article className={`flex h-full flex-col transition-transform duration-500 motion-reduce:transform-none hover:-translate-y-1.5 ${index % 2 === 0 ? "sm:rotate-[0.7deg]" : "sm:-rotate-[0.7deg]"}`}>
+                      <article data-polish-card="route" className={`flex h-full flex-col transition-transform duration-500 motion-reduce:transform-none hover:-translate-y-1.5 ${index % 2 === 0 ? "sm:rotate-[0.7deg]" : "sm:-rotate-[0.7deg]"}`}>
                         <div className="relative aspect-[16/10] overflow-hidden border-[0.55rem] border-white bg-white scrapbook-shadow sm:border-[0.85rem]">
                           <div
                             className="absolute inset-0 bg-cover bg-center transition-transform duration-700 motion-reduce:transform-none group-hover:scale-105"

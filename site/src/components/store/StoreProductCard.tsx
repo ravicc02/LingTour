@@ -18,7 +18,7 @@ export function StoreProductCard({ product, index = 0 }: StoreProductCardProps) 
   const fallbackImage = product.gallery?.find((image) => image?.trim());
   return (
     <Reveal delay={index * 80} className="min-w-0">
-      <article
+      <article data-polish-card="product"
         className={[
           "group relative min-w-0 overflow-hidden bg-white shadow-2xl transition-all duration-700 md:aspect-[4/5] md:overflow-visible",
           index % 2 === 0 ? "md:rotate-[-1deg]" : "md:rotate-[1deg]",

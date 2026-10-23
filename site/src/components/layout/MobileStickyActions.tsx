@@ -15,7 +15,7 @@ type Props = {
 
 export function MobileStickyActions({ actions }: Props) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--line)] bg-[rgba(248,244,236,0.94)] shadow-lift backdrop-blur-xl md:hidden">
+    <div data-mobile-actions className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--line)] bg-[rgba(248,244,236,0.94)] shadow-lift backdrop-blur-xl md:hidden">
       <div className="flex items-center gap-3 px-[max(1rem,env(safe-area-inset-left))] pt-3 pr-[max(1rem,env(safe-area-inset-right))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {actions.map((action) =>
           action.href ? (

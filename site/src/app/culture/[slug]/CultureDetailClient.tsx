@@ -14,6 +14,7 @@ import { RelatedCitiesHub } from "@/components/culture/RelatedCitiesHub";
 import { RelatedRouteHub } from "@/components/culture/RelatedRouteHub";
 import type { StoryRoute } from "@/data/routes";
 import type { CityCulture } from "@/data/culture";
+import styles from "./CultureDetail.module.css";
 
 type CultureDetailClientProps = {
   slug: string;
@@ -67,11 +68,11 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
       : null
   );
   const briefTextClassName = mastheadMedia
-    ? "relative z-10 order-2 mx-2 -mt-8 min-w-0 max-w-3xl border border-[var(--line)] bg-[var(--background)] p-4 scrapbook-shadow sm:mx-3 sm:-mt-12 sm:p-5 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:border-0 min-[620px]:bg-transparent min-[620px]:p-0 min-[620px]:shadow-none lg:max-w-none"
-    : "relative z-10 min-w-0 max-w-3xl lg:max-w-none";
+    ? "relative z-10 order-2 mx-2 -mt-8 min-w-0 max-w-3xl border border-[var(--line)] bg-[var(--background)] bg-grain p-4 scrapbook-shadow sm:p-5 min-[620px]:order-none min-[620px]:mx-0 min-[620px]:mt-0 min-[620px]:p-6 min-[620px]:shadow-none lg:p-8 lg:max-w-none"
+    : "relative z-10 min-w-0 max-w-3xl border border-[var(--line)] bg-[var(--background)] bg-grain p-5 sm:p-6 lg:max-w-none lg:p-8";
 
   return (
-    <div className="min-h-[100dvh] overflow-hidden bg-[var(--background)] bg-grain text-[var(--river-deep)]">
+    <div data-city-detail className={`${styles.page} bg-grain`}>
       <header id="section-masthead" className="relative border-b border-[var(--line)] bg-[var(--background)] bg-grain">
         <div className="site-container py-tight">
           <div className="grid min-w-0 items-center gap-6 min-[620px]:grid-cols-[minmax(13rem,0.78fr)_minmax(0,1.1fr)] min-[620px]:gap-10 lg:grid-cols-[minmax(20rem,0.84fr)_minmax(0,1.16fr)] lg:gap-16">
@@ -87,7 +88,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
               </div>
             ) : null}
 
-            <div className={briefTextClassName}>
+            <div data-culture-brief-panel className={briefTextClassName}>
               <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[var(--cinnabar)]">
                 {activeCity.label}
               </p>
@@ -114,13 +115,21 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
         </div>
       </header>
 
-      <article id="section-chapters" aria-label={`${activeCity.name} city article`} className="relative py-beat">
+      <article
+        id="section-chapters"
+        aria-label={`${activeCity.name} city article`}
+        className={styles.article}
+      >
         <div className="relative site-container">
-          <MarkdownRenderer content={activeCity.contentMarkdown ?? ""} />
+          <MarkdownRenderer
+            key={activeCity.slug}
+            content={activeCity.contentMarkdown ?? ""}
+            layout="city"
+          />
         </div>
       </article>
 
-      <section id="section-cities" className="site-container py-14 sm:py-20">
+      <section id="section-cities" className={`site-container ${styles.related}`}>
         <div className="max-w-3xl">
           <h2 className="text-balance font-[family:var(--font-display)] text-3xl leading-[0.98] text-[var(--river-deep)] sm:text-4xl">
             {relatedRoutes.length ? t("culture.detail.routeLinks") : t("culture.detail.nearbyCities")}
@@ -130,7 +139,7 @@ export function CultureDetailClient({ slug, initialCity, initialCityCultures, in
       </section>
 
       {previous || next ? (
-        <nav aria-label="City archives" className="site-container flex flex-wrap justify-between gap-6 border-t border-[var(--line)] py-8">
+        <nav aria-label="City archives" className={`site-container flex flex-wrap justify-between gap-6 border-t border-[var(--line)] py-8 ${styles.cityNavigation}`}>
           {previous ? (
             <Link href={`/culture/${previous.slug}`} className="inline-flex min-h-11 items-center text-[var(--river-deep)] underline decoration-[var(--cinnabar)]/55 underline-offset-4">
               Previous: {previous.name}

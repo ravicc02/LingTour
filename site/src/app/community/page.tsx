@@ -27,7 +27,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { FieldKit } from "@/components/community/FieldKit";
 import { useLocale } from "@/lib/locale-context";
 import { LocalUser, readStoredUser, signInWithGoogle } from "@/lib/auth-client";
-import { getGoogleIdentityApi, requestGoogleCredential } from "@/lib/google-identity";
+import {
+  getGoogleIdentityApi,
+  requestGoogleCredential,
+} from "@/lib/google-identity";
 
 const channels = [
   "All",
@@ -130,7 +133,10 @@ export default function CommunityPage() {
     [],
   );
   const [engagementOverrides, setEngagementOverrides] = useState<
-    Record<string, Partial<Pick<CommunityFeedPost, "liked" | "likes" | "saved" | "saves">>>
+    Record<
+      string,
+      Partial<Pick<CommunityFeedPost, "liked" | "likes" | "saved" | "saves">>
+    >
   >({});
   const [activeChannel, setActiveChannel] = useState<Channel>("All");
   const [sortMode, setSortMode] = useState<SortMode>("Live");
@@ -155,10 +161,7 @@ export default function CommunityPage() {
   } = useApiQuery(() => fetchCommunityFeed({ limit: 50 }), []);
 
   // Editorial briefs: independent fetch, won't block the main feed render.
-  const { data: briefs } = useApiQuery(
-    () => fetchCommunityBriefs(),
-    [],
-  );
+  const { data: briefs } = useApiQuery(() => fetchCommunityBriefs(), []);
   const fieldBriefs = useMemo(() => briefs ?? [], [briefs]);
 
   // When briefs arrive (and nothing has been selected yet), default to the first.
@@ -251,7 +254,7 @@ export default function CommunityPage() {
   }, [basePosts, engagementOverrides]);
 
   // Resolve a deep-linked post once the feed (or the local optimistic posts)
-// actually carries it.
+  // actually carries it.
   useEffect(() => {
     if (!pendingPostId) return;
     const target = allPosts.find((post) => post.id === pendingPostId);
@@ -336,19 +339,15 @@ export default function CommunityPage() {
     return sortPosts(bySearch, sortMode);
   }, [activeChannel, allPosts, query, sortMode]);
 
-  // Combine posts, briefs, and dispatch card into a single masonry array
+  // Keep the publishing action outside the compact content grid.
   const masonryItems = useMemo(() => {
     type MasonryItem =
       | { type: "post"; data: CommunityFeedPost }
-      | { type: "brief"; data: FieldBrief }
-      | { type: "dispatch"; id: string };
+      | { type: "brief"; data: FieldBrief };
 
     const items: MasonryItem[] = [];
     const posts = [...filteredPosts];
     const briefs = [...fieldBriefs];
-
-    // Always insert dispatch CTA near the top
-    items.push({ type: "dispatch", id: "dispatch-cta" });
 
     // Mix posts and briefs
     let postIndex = 0;
@@ -397,14 +396,8 @@ export default function CommunityPage() {
     setActiveChannel(channel);
   };
 
-  /**
-   * Two even columns at `lg`. Earlier the feed mixed 7/5, full-width and
-   * 4/4/4 rows, so neighbouring cards were wildly different sizes and short
-   * cards left a gap beside tall ones. A single six-of-twelve span keeps every
-   * card the same width; the cards themselves stretch to the row height.
-   * DOM order still matches visual order for keyboard users.
-   */
-  const feedSpanClass = (): string => "lg:col-span-6";
+  // Two columns on tablets, three on desktop; preserve row and keyboard order.
+  const feedSpanClass = (): string => "sm:col-span-6 lg:col-span-4";
 
   const resolveVariant = (
     post: CommunityFeedPost,
@@ -475,24 +468,22 @@ export default function CommunityPage() {
     }
 
     try {
-      const created = await createCommunityFeedPost(
-        {
-          title,
-          note,
-          channel: kitDraft.channel,
-          media: kitDraft.media,
-          location: draft.location || selectedBrief?.location || "",
-          route: draft.route || selectedBrief?.route || "",
-          mood: draft.mood || selectedBrief?.mood || "",
-          user: {
-            id: user?.id,
-            email: user?.email,
-            name: user?.name || "Culvoy Guest",
-            handle: user?.email ? `@${user.email.split("@")[0]}` : "@you",
-            avatar: user?.avatarUrl || "",
-          },
+      const created = await createCommunityFeedPost({
+        title,
+        note,
+        channel: kitDraft.channel,
+        media: kitDraft.media,
+        location: draft.location || selectedBrief?.location || "",
+        route: draft.route || selectedBrief?.route || "",
+        mood: draft.mood || selectedBrief?.mood || "",
+        user: {
+          id: user?.id,
+          email: user?.email,
+          name: user?.name || "Culvoy Guest",
+          handle: user?.email ? `@${user.email.split("@")[0]}` : "@you",
+          avatar: user?.avatarUrl || "",
         },
-      );
+      });
 
       const nextPosts = [created, ...optimisticPosts];
       const nextStamps = stampCount + 1;
@@ -522,270 +513,307 @@ export default function CommunityPage() {
   return (
     <CommunityJournalMotion
       motionKey={`${activeChannel}:${sortMode}:${query}:${masonryItems
-        .map((item) => (item.type === "dispatch" ? item.id : item.data.id))
+        .map((item) => item.data.id)
         .join("|")}`}
     >
-    <div className="min-h-screen overflow-clip bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)]">
-      <section data-community-hero className="relative overflow-hidden border-b border-[var(--line)] py-land">
-        <div className="site-container">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="font-[family:var(--font-display)] text-[clamp(3.25rem,15vw,5rem)] leading-[0.86] tracking-tight md:text-8xl lg:text-[8rem]">
-              <span className="block overflow-hidden pb-1"><span data-community-title className="block">{t("community.hero.title")}</span></span>
-              <span className="block overflow-hidden pb-3"><span data-community-title className="block italic text-[var(--gold)]">{t("community.hero.titleAccent")}</span></span>
-            </h1>
-
-
+      <div className="min-h-screen overflow-clip bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)]">
+        <section data-site-hero="community"
+          data-community-hero
+          className="relative overflow-hidden border-b border-[var(--line)] py-land"
+        >
+          <div className="site-container">
+            <div className="mx-auto max-w-4xl text-center">
+              <h1 className="font-[family:var(--font-display)] text-[clamp(3.25rem,15vw,5rem)] leading-[0.86] tracking-tight md:text-8xl lg:text-[8rem]">
+                <span className="block overflow-hidden pb-1">
+                  <span data-community-title className="block">
+                    {t("community.hero.title")}
+                  </span>
+                </span>
+                <span className="block overflow-hidden pb-3">
+                  <span
+                    data-community-title
+                    className="block italic text-[var(--gold)]"
+                  >
+                    {t("community.hero.titleAccent")}
+                  </span>
+                </span>
+              </h1>
+              <p className="handwritten mx-auto mt-8 max-w-xl text-base leading-7 text-[var(--river-deep)]/85 sm:text-lg">
+                What travellers noticed on the ground, and what the editors are chasing next.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section data-community-toolbar className="sticky top-[var(--site-header-height)] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)]/92 bg-grain py-3 backdrop-blur-xl sm:py-4">
-        <div className="site-container grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-          <div
-            role="group"
-            aria-label={t("community.toolbar.channels")}
-            className="scroll-fade-x scrollbar-hide flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible md:pb-0"
-          >
-            {channels.map((channel) => (
-              <button
-                key={channel}
-                type="button"
-                onClick={() => setActiveChannel(channel)}
-                aria-pressed={activeChannel === channel}
-                className={`min-h-11 shrink-0 border px-4 py-2 text-[12px] font-bold uppercase tracking-[0.14em] transition-colors sm:px-5 sm:text-[11px] ${
-                  activeChannel === channel
-                    ? "border-[var(--river-deep)] bg-[var(--river-deep)] text-white"
-                    : "border-[var(--line)] bg-transparent text-[var(--river-deep)] hover:border-[var(--river-deep)]"
-                }`}
-              >
-                {t(CHANNEL_I18N[channel])}
-              </button>
-            ))}
-          </div>
-          <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto] lg:flex lg:items-center">
-            <label className="relative min-w-0 lg:w-52">
-              <span className="sr-only">{t("community.search.placeholder")}</span>
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t("community.search.placeholder")}
-                className="h-[54px] w-full border-b border-[var(--line)] bg-transparent pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-[var(--muted)] focus:border-[var(--river-deep)]"
-              />
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </label>
+        <section
+          data-polish-form
+          data-community-toolbar
+          className="sticky top-[var(--site-header-height)] z-30 border-b border-[var(--line)] bg-[var(--paper-deep)]/92 bg-grain py-3 backdrop-blur-xl sm:py-4"
+        >
+          <div className="site-container grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div
               role="group"
-              aria-label={t("community.toolbar.sort")}
-              className="scrollbar-hide flex min-w-0 overflow-x-auto border border-[var(--line)] p-1"
+              aria-label={t("community.toolbar.channels")}
+              className="scroll-fade-x scrollbar-hide flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible md:pb-0"
             >
-              {(["Live", "Loved", "Saved"] as SortMode[]).map((mode) => (
+              {channels.map((channel) => (
                 <button
-                  key={mode}
+                  key={channel}
                   type="button"
-                  onClick={() => setSortMode(mode)}
-                  aria-pressed={sortMode === mode}
-                  className={`min-h-11 shrink-0 px-3 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition ${
-                    sortMode === mode
-                      ? "bg-[var(--river-deep)] text-white"
-                      : "text-[var(--muted)] hover:text-[var(--cinnabar)]"
+                  onClick={() => setActiveChannel(channel)}
+                  aria-pressed={activeChannel === channel}
+                  className={`min-h-11 shrink-0 border px-4 py-2 text-[12px] font-bold uppercase tracking-[0.14em] transition-colors sm:px-5 sm:text-[11px] ${
+                    activeChannel === channel
+                      ? "border-[var(--river-deep)] bg-[var(--river-deep)] text-white"
+                      : "border-[var(--line)] bg-transparent text-[var(--river-deep)] hover:border-[var(--river-deep)]"
                   }`}
                 >
-                  {mode}
+                  {t(CHANNEL_I18N[channel])}
                 </button>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="site-container py-beat">
-        {loading && !masonryItems.length ? (
-          <div className="py-20 text-center">
-            <p className="handwritten text-lg text-[var(--muted)]">
-              {t("community.loading")}
-            </p>
-          </div>
-        ) : error && !masonryItems.length ? (
-          <div className="py-20 text-center">
-            <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
-              {t("community.error.feedOffline")}
-            </p>
-            <p className="mt-4 text-sm text-[var(--muted)]">{error}</p>
-            <button
-              type="button"
-              onClick={refetch}
-              className="mt-6 border border-[var(--line)] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[var(--river-deep)] transition hover:bg-[var(--river-deep)] hover:text-white"
-            >
-              {t("common.btn.retry")}
-            </button>
-          </div>
-        ) : (
-          <div className="grid gap-6 pb-6 sm:gap-8 lg:grid-cols-12">
-            {visibleItems.length ? (
-              visibleItems.map((item, index) => {
-                const span = feedSpanClass();
-                if (item.type === "dispatch") {
-                  return (
-                    <div key={item.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40} className="h-full">
-                        <DispatchCard
-                          stampCount={stampCount}
-                          onDispatch={openFieldKit}
-                          isLoggedIn={isLoggedIn}
-                          onLogin={handleGoogleLogin}
-                        />
-                      </Reveal>
-                    </div>
-                  );
-                }
-
-                if (item.type === "brief") {
-                  return (
-                    <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40} className="h-full">
-                        <BriefCard
-                          brief={item.data}
-                          index={index}
-                          onSelect={(brief) => {
-                            selectBrief(brief);
-                            openFieldKit();
-                          }}
-                        />
-                      </Reveal>
-                    </div>
-                  );
-                }
-
-                if (item.type === "post") {
-                  return (
-                    <div key={item.data.id} data-community-card className={`min-w-0 ${span}`}>
-                      <Reveal delay={index * 40} className="h-full">
-                        <PostCard
-                          post={item.data}
-                          index={index}
-                          variant={resolveVariant(item.data, index)}
-                          onOpen={setSelectedPost}
-                          isLoggedIn={isLoggedIn}
-                          onRequireLogin={() => setToast(AUTH_PROMPTS.connectGoogleToInteract)}
-                          onEngagementChange={updatePostEngagement}
-                        />
-                      </Reveal>
-                    </div>
-                  );
-                }
-
-                return null;
-              })
-            ) : (
-              <div className="py-20 text-center lg:col-span-12">
-                <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
-                  {t("community.empty")}
-                </p>
-                <p className="mx-auto mt-4 max-w-md text-base leading-7 text-[var(--muted)]">
-                  {t("community.empty.body")}
-                </p>
-                <button
-                  type="button"
-                  onClick={openFieldKit}
-                  className="btn-outline mt-8 px-8"
+            <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto] lg:flex lg:items-center">
+              <label className="relative min-w-0 lg:w-52">
+                <span className="sr-only">
+                  {t("community.search.placeholder")}
+                </span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t("community.search.placeholder")}
+                  className="h-[54px] w-full border-b border-[var(--line)] bg-transparent pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-[var(--muted)] focus:border-[var(--river-deep)]"
+                />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {t("community.empty.cta")}
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </label>
+              <div
+                role="group"
+                aria-label={t("community.toolbar.sort")}
+                className="scrollbar-hide flex min-w-0 overflow-x-auto border border-[var(--line)] p-1"
+              >
+                {(["Live", "Loved", "Saved"] as SortMode[]).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setSortMode(mode)}
+                    aria-pressed={sortMode === mode}
+                    className={`min-h-11 shrink-0 px-3 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition ${
+                      sortMode === mode
+                        ? "bg-[var(--river-deep)] text-white"
+                        : "text-[var(--muted)] hover:text-[var(--cinnabar)]"
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
           </div>
-        )}
+        </section>
 
-        {hasMore ? (
-          <div className="flex flex-col items-center gap-3 pb-20 pt-4">
-            <p className="font-mono text-[12px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
-              {visibleItems.length} / {masonryItems.length}
-            </p>
-            <button
-              type="button"
-              onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-              className="btn-outline px-8"
+        <section className="site-container py-beat">
+          <div className="mb-6 sm:mb-8">
+            <DispatchCard
+              stampCount={stampCount}
+              onDispatch={openFieldKit}
+              isLoggedIn={isLoggedIn}
+              onLogin={handleGoogleLogin}
+            />
+          </div>
+          {loading && !masonryItems.length ? (
+            <div className="py-20 text-center">
+              <p className="handwritten text-lg text-[var(--muted)]">
+                {t("community.loading")}
+              </p>
+            </div>
+          ) : error && !masonryItems.length ? (
+            <div className="py-20 text-center">
+              <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
+                {t("community.error.feedOffline")}
+              </p>
+              <p className="mt-4 text-sm text-[var(--muted)]">{error}</p>
+              <button
+                type="button"
+                onClick={refetch}
+                className="mt-6 border border-[var(--line)] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[var(--river-deep)] transition hover:bg-[var(--river-deep)] hover:text-white"
+              >
+                {t("common.btn.retry")}
+              </button>
+            </div>
+          ) : (
+            <div
+              data-community-grid
+              className="grid gap-5 pb-6 sm:grid-cols-12 sm:gap-6"
             >
-              Load more notes
-            </button>
-          </div>
-        ) : (
-          <div className="pb-20" />
-        )}
-      </section>
+              {visibleItems.length ? (
+                visibleItems.map((item, index) => {
+                  const span = feedSpanClass();
+                  if (item.type === "brief") {
+                    return (
+                      <div
+                        key={item.data.id}
+                        data-community-card
+                        className={`min-w-0 ${span}`}
+                      >
+                        <Reveal delay={index * 40} className="h-full">
+                          <BriefCard
+                            brief={item.data}
+                            index={index}
+                            onSelect={(brief) => {
+                              selectBrief(brief);
+                              openFieldKit();
+                            }}
+                          />
+                        </Reveal>
+                      </div>
+                    );
+                  }
 
-      <FieldKit
-        isOpen={isKitOpen}
-        onClose={() => setIsKitOpen(false)}
-        isLoggedIn={isLoggedIn}
-        onRequireLogin={() =>
-          setToast(AUTH_PROMPTS.connectGoogleToPublish)
-        }
-        onPublish={handleKitPublish}
-        initialBrief={
-          selectedBrief
-            ? {
-                title: selectedBrief.title,
-                prompt: selectedBrief.prompt,
-                channel: coerceChannel(selectedBrief.channel),
-              }
-            : undefined
-        }
-        initialDraft={{
-          title: draft.title,
-          note: draft.note,
-          channel: draft.channel,
-          media: draft.media,
-        }}
-        channels={channels}
-      />
+                  if (item.type === "post") {
+                    return (
+                      <div
+                        key={item.data.id}
+                        data-community-card
+                        className={`min-w-0 ${span}`}
+                      >
+                        <Reveal delay={index * 40} className="h-full">
+                          <PostCard
+                            post={item.data}
+                            index={index}
+                            variant={resolveVariant(item.data, index)}
+                            onOpen={setSelectedPost}
+                            isLoggedIn={isLoggedIn}
+                            onRequireLogin={() =>
+                              setToast(AUTH_PROMPTS.connectGoogleToInteract)
+                            }
+                            onEngagementChange={updatePostEngagement}
+                          />
+                        </Reveal>
+                      </div>
+                    );
+                  }
 
-      <PostDetailDialog
-        post={selectedPost}
-        onClose={() => {
-          setSelectedPost(null);
-          // Drop the ?post= deep-link parameter when the reader closes the
-          // note, so back/refresh lands on the feed rather than reopening it.
-          if (typeof window !== "undefined") {
-            window.history.replaceState({}, "", "/community");
+                  return null;
+                })
+              ) : (
+                <div className="py-20 text-center lg:col-span-12">
+                  <p className="font-[family:var(--font-display)] text-4xl text-[var(--river-deep)]">
+                    {t("community.empty")}
+                  </p>
+                  <p className="mx-auto mt-4 max-w-md text-base leading-7 text-[var(--muted)]">
+                    {t("community.empty.body")}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={openFieldKit}
+                    className="btn-outline mt-8 px-8"
+                  >
+                    {t("community.empty.cta")}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {hasMore ? (
+            <div className="flex flex-col items-center gap-3 pb-20 pt-4">
+              <p className="font-mono text-[12px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
+                {visibleItems.length} / {masonryItems.length}
+              </p>
+              <button
+                type="button"
+                onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+                className="btn-outline px-8"
+              >
+                Load more notes
+              </button>
+            </div>
+          ) : (
+            <div className="pb-20" />
+          )}
+        </section>
+
+        <FieldKit
+          isOpen={isKitOpen}
+          onClose={() => setIsKitOpen(false)}
+          isLoggedIn={isLoggedIn}
+          onRequireLogin={() => setToast(AUTH_PROMPTS.connectGoogleToPublish)}
+          onPublish={handleKitPublish}
+          initialBrief={
+            selectedBrief
+              ? {
+                  title: selectedBrief.title,
+                  prompt: selectedBrief.prompt,
+                  channel: coerceChannel(selectedBrief.channel),
+                }
+              : undefined
           }
-        }}
-        isLoggedIn={isLoggedIn}
-        onRequireLogin={() => setToast(AUTH_PROMPTS.connectGoogleToInteract)}
-        onEngagementChange={updatePostEngagement}
-        currentUser={
-          user
-            ? {
-                name: user.name,
-                handle: user.email ? `@${user.email.split("@")[0]}` : undefined,
-                avatar: user.avatarUrl,
-              }
-            : null
-        }
-      />
+          initialDraft={{
+            title: draft.title,
+            note: draft.note,
+            channel: draft.channel,
+            media: draft.media,
+          }}
+          channels={channels}
+        />
 
-      {/* Toast is anchored to both edges on phones. With only `left-1/2` set,
+        <PostDetailDialog
+          post={selectedPost}
+          onClose={() => {
+            setSelectedPost(null);
+            // Drop the ?post= deep-link parameter when the reader closes the
+            // note, so back/refresh lands on the feed rather than reopening it.
+            if (typeof window !== "undefined") {
+              window.history.replaceState({}, "", "/community");
+            }
+          }}
+          isLoggedIn={isLoggedIn}
+          onRequireLogin={() => setToast(AUTH_PROMPTS.connectGoogleToInteract)}
+          onEngagementChange={updatePostEngagement}
+          currentUser={
+            user
+              ? {
+                  name: user.name,
+                  handle: user.email
+                    ? `@${user.email.split("@")[0]}`
+                    : undefined,
+                  avatar: user.avatarUrl,
+                }
+              : null
+          }
+        />
+
+        {/* Toast is anchored to both edges on phones. With only `left-1/2` set,
           the shrink-to-fit rule caps its width at 50vw regardless of the
           message, so a one-line prompt wrapped to four lines at 320px. */}
-      {toast ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-5 left-4 right-4 z-[70] flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--night)] px-5 py-3 text-sm text-white shadow-panel sm:left-1/2 sm:right-auto sm:w-auto sm:-translate-x-1/2 sm:justify-start sm:rounded-full"
-        >
-          <span>{toast}</span>
-          <button
-            type="button"
-            onClick={() => setToast(null)}
-            className="-my-3 inline-flex min-h-11 shrink-0 items-center px-1 text-white/55 hover:text-white"
+        {toast ? (
+          <div
+            role="status"
+            aria-live="polite"
+            className="fixed bottom-5 left-4 right-4 z-[70] flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[var(--night)] px-5 py-3 text-sm text-white shadow-panel sm:left-1/2 sm:right-auto sm:w-auto sm:-translate-x-1/2 sm:justify-start sm:rounded-full"
           >
-            {t("community.toast.close")}
-          </button>
-        </div>
-      ) : null}
-    </div>
+            <span>{toast}</span>
+            <button
+              type="button"
+              onClick={() => setToast(null)}
+              className="-my-3 inline-flex min-h-11 shrink-0 items-center px-1 text-white/55 hover:text-white"
+            >
+              {t("community.toast.close")}
+            </button>
+          </div>
+        ) : null}
+      </div>
     </CommunityJournalMotion>
   );
 }

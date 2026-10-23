@@ -41,7 +41,7 @@ export function ProductActions({ product, variant = "dark" }: ProductActionsProp
   };
   const editorialClasses = {
     secondary:
-      "border border-[rgba(20,33,47,0.14)] bg-white text-[var(--river-deep)] hover:border-[var(--river-deep)]",
+      "border border-[var(--line-strong)] bg-white text-[var(--river-deep)] hover:border-[var(--river-deep)]",
     primary: "bg-[var(--night)] text-white hover:bg-[var(--river-deep)]",
   };
 

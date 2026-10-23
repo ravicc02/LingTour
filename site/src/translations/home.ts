@@ -1,9 +1,9 @@
 export const home = {
   en: {
     "home.hero.eyebrow": "Culvoy Guangdong",
-    "home.hero.headingLine1": "Guangdong",
-    "home.hero.headingAccent": "Travel",
-    "home.hero.headingLine3": "Services",
+    "home.hero.headingLine1": "culture",
+    "home.hero.headingAccent": "voyage",
+    "home.hero.headingLine3": "to China",
     "home.hero.body": "Travel Guangdong with clear routes, cultural context, and language support.",
     "home.hero.primaryCta": "Book interpretation",
     "home.hero.secondaryCta": "View routes",

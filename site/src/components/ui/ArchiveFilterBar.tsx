@@ -45,7 +45,7 @@ export function ArchiveFilterBar({
   const activeFilterCount = groups.filter((group) => group.value).length;
 
   return (
-    <div className="mb-12 border-y border-[var(--line)] py-4 sm:mb-16 sm:py-5">
+    <div data-archive-filter className="mb-12 border-y border-[var(--line)] py-4 sm:mb-16 sm:py-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="flex min-h-12 min-w-0 flex-1 items-center gap-3 border-b border-[var(--line)] bg-transparent px-1 py-3 transition-colors focus-within:border-[var(--river-deep)] focus-within:shadow-[0_2px_0_rgba(20,52,61,0.16)]">
             <span className="sr-only">{searchLabel}</span>

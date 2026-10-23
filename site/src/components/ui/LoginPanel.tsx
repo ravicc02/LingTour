@@ -237,7 +237,7 @@ export function LoginPanel() {
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <div className="grid min-h-[100dvh] bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)] lg:grid-cols-[minmax(0,1.08fr)_minmax(25rem,0.92fr)]">
+    <div data-polish-auth data-polish-form className="grid min-h-[100dvh] bg-[var(--paper-deep)] bg-grain text-[var(--river-deep)] lg:grid-cols-[minmax(0,1.08fr)_minmax(25rem,0.92fr)]">
       <section className="relative isolate hidden min-h-[100dvh] overflow-hidden border-r border-[var(--line)] bg-[var(--night)] text-white lg:block">
         <img
           src="/editorial/guangzhou-arcade-street.jpg"

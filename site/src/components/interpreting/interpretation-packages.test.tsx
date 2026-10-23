@@ -26,14 +26,14 @@ describe("interpretation package booking", () => {
     const submit = screen.getByRole("button", { name: "Submit request" });
     expect(submit).toBeDisabled();
     fireEvent.change(screen.getByLabelText("Interpretation package"), { target: { value: "custom-5h" } });
-    expect(screen.getByText("Package total: USD 500.00")).toBeInTheDocument();
+    expect(screen.getByText("Package total: $500.00")).toBeInTheDocument();
     fireEvent.click(submit);
     await waitFor(() => expect(createInterpretingDepositCheckout).toHaveBeenCalledOnce());
     const payload = vi.mocked(createInterpretingDepositCheckout).mock.calls[0][0];
     expect(payload.packageId).toBe("custom-5h");
     expect(payload).not.toHaveProperty("amount");
     expect(payload).not.toHaveProperty("currency");
-    expect(await screen.findByText("USD 90.00")).toBeInTheDocument();
-    expect(screen.getByText("Package total: USD 500.00")).toBeInTheDocument();
+    expect(await screen.findByText("$90.00")).toBeInTheDocument();
+    expect(screen.getByText("Package total: $500.00")).toBeInTheDocument();
   });
 });

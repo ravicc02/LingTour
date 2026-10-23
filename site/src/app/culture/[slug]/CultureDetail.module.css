@@ -1,0 +1,21 @@
+.page {
+  min-height: 100svh;
+  overflow-x: clip;
+  background-color: var(--background);
+  color: var(--river-deep);
+}
+.article {
+  padding-block: 1.75rem 2rem;
+}
+.related {
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--line);
+}
+.cityNavigation {
+  font-size: 14px;
+}
+@media (min-width: 1100px) {
+  .article {
+    padding-block: 2rem 2.5rem;
+  }
+}

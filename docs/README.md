@@ -23,6 +23,9 @@
 | `2026-10-08/` | 原始反馈记录 |
 | `2026-10-14/` | Optical Alignment 记录 |
 | `2026-10-17/` | 首页、路线预约和日历三类功能修改方案 |
+| `2026-10-21/` | [首页标题字体修订](2026-10-21/homepage-hero-typography.md)、[六项页面批注修订](2026-10-21/browser-feedback-six-fixes.md)、[Culture 详情页排版修订](2026-10-21/culture-detail-editorial-layout.md)、[口译服务与价目表恢复](2026-10-21/interpreting-support-rates-restoration.md)、[前台组件与排版打磨](2026-10-21/finesse-site-component-polish.md) |
+| `2026-10-22/` | [口译价格、商品链接与编辑器预览修订](2026-10-22/pricing-product-preview-fixes.md)、[纸纹边界、视频与商品对齐修订](2026-10-22/borders-video-product-alignment.md)、[首页参考图字体与排版修订](2026-10-22/homepage-reference-typography.md) |
+| `2026-10-23/` | [v1.2.0 源码发布与旧线上版本保留](2026-10-23/release-v1.2.0-plan.md) |
 
 ## 本期详细方案（2026-10-17）
 

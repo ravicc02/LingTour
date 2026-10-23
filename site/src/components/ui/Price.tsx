@@ -7,5 +7,5 @@ type PriceProps = {
 };
 
 export function Price({ amount, currency = "CNY", className }: PriceProps) {
-  return <span className={className}>{formatCurrency(amount, currency)}</span>;
+  return <span className={["ui-price", className].filter(Boolean).join(" ")}>{formatCurrency(amount, currency)}</span>;
 }
